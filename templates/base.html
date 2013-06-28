@@ -6,13 +6,46 @@
 	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<script src="/static/js/jquery.js"></script>
 	<script src="/static/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="/static/main.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
 	{% block head %}
 		
 	{% endblock head %}
 </head>
 <body>
+	<div class = "navbar">
+		<div class = "navbar-inner">
+			<a href = "#" class = "brand">TOUGH</a>
+			<ul class = "nav">
+				<li><a href="#">Test 1</a></li>
+				<li><a href="#">Test 2</a></li>
+				<li><a href="#">Test 3</a></li>
+				<li><a href="#">Test 4</a></li>
+				<li><a href="#">Test 5</a></li>
+			</ul>
+			<a href = "#" class = "login"> Login </a>
+		</div>
+	</div>
 	
+	<div class = "container-fluid">
+		<div class = "row-fluid">
+			<div class = "span2">
+				<ul class = "nav nav-list">
+				{% block sidenav %}
+					<li class = "nav-header">Header</li>
+					<li class = "active"><a href="#">Link 1</a></li>
+					<li><a href="#">Link 2</a></li>	
+					<li><a href="#">Link 3</a></li>	
+					<li><a href="#">Link 4</a></li>
+					<li><a href="#">Link 5</a></li>
+				{% endblock sidenav %}
+				</ul>
+			</div>
+			<div class = "span10">
+				{% block container %}
+				{% endblock container %}
+			</div>
+		</div>
+	</div>
 </body>
 </html>

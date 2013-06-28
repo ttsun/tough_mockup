@@ -18,4 +18,5 @@ urlpatterns = patterns('',
     url(r'^input/$', TemplateView.as_view(template_name = "manage_jobs.html")),
     url(r'^input/create/$',TemplateView.as_view(template_name = "input_creation.html")),
     url(r'^input/info/$',TemplateView.as_view(template_name = "job_status.html")),
+    url(r'^input/create/computational/$',TemplateView.as_view(template_name = "computational_settings.html")),
 )

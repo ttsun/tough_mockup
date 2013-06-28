@@ -1,5 +1,6 @@
 # Django settings for tough_mockup project.
-PROJECT_ROOT = "/Users/tsun/Documents/Projects/tough_mockup"
+import os.path
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -73,7 +74,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    PROJECT_ROOT + "/static"
+    PROJECT_ROOT + "/static",
 )
 
 # List of finder classes that know how to find static files in

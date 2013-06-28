@@ -7,3 +7,28 @@
 .login:hover{
     text-decoration: none;
 }
+table{
+    padding:50px;
+}
+th{
+    border-bottom:2px solid black;
+    padding-right:100px;
+
+}
+td{
+    border-bottom:1px solid lightgray;
+    padding:10px;
+}
+tr:hover{
+    opacity:0.8;
+}
+.nav-pills{
+    font-size: 24px;
+    padding-top:45px;
+}
+.top{
+    font-size: 24px;
+}
+.row-fluid{
+    padding-bottom: 50px;
+}

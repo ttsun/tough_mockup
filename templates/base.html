@@ -15,37 +15,30 @@
 <body>
 	<div class = "navbar">
 		<div class = "navbar-inner">
-			<a href = "#" class = "brand">TOUGH</a>
+			<a href = "/" class = "brand">TOUGH</a>
 			<ul class = "nav">
-				<li><a href="#">Test 1</a></li>
-				<li><a href="#">Test 2</a></li>
-				<li><a href="#">Test 3</a></li>
-				<li><a href="#">Test 4</a></li>
-				<li><a href="#">Test 5</a></li>
+				<li><a href="/input">Manage Jobs</a></li>
+				<li class = "dropdown">
+					<a class = "dropdown-toggle" data-toggle = "dropdown" href="#">Recent Jobs <b class = "caret"></b></a>
+					<ul class = "dropdown-menu">
+						<li><a href="#">Job 1</a></li>
+						<li><a href="#">Job 2</a></li>
+						<li><a href="#">Job 3</a></li>
+						<li><a href="#">Job 4</a></li>
+						<li><a href="#">Job 5</a></li>
+					</ul>
+				</li>
+				<li><a href="#">TOUGH Manual</a></li>
+				<li><a href="#">About Project</a></li>
+				<li><a href="#">Report an error</a></li>
 			</ul>
 			<a href = "#" class = "login"> Login </a>
 		</div>
 	</div>
 	
 	<div class = "container-fluid">
-		<div class = "row-fluid">
-			<div class = "span2">
-				<ul class = "nav nav-list">
-				{% block sidenav %}
-					<li class = "nav-header">Header</li>
-					<li class = "active"><a href="#">Link 1</a></li>
-					<li><a href="#">Link 2</a></li>	
-					<li><a href="#">Link 3</a></li>	
-					<li><a href="#">Link 4</a></li>
-					<li><a href="#">Link 5</a></li>
-				{% endblock sidenav %}
-				</ul>
-			</div>
-			<div class = "span10">
-				{% block container %}
-				{% endblock container %}
-			</div>
-		</div>
-	</div>
-</body>
+		{% block content%}
+		
+		{% endblock content%}
+	</div></body>
 </html>

@@ -21,6 +21,7 @@ td{
 }
 tr:hover{
     opacity:0.8;
+    color:black;
 }
 .nav-pills{
     font-size: 24px;
@@ -31,4 +32,14 @@ tr:hover{
 }
 .row-fluid{
     padding-bottom: 50px;
+}
+.tablelinks{
+    color:black;
+}
+.tablelinks:hover{
+    text-decoration: none;
+    color:black;
+}
+h2{
+    color:steelblue;
 }

@@ -7,6 +7,9 @@
 textarea{
     width:auto;
 }
+#dirinput{
+    margin-left:35%;
+}
 </style>
 
 <script type="text/javascript">
@@ -41,7 +44,9 @@ $(document).ready(function(){
 
 
 function showBlock(id){
-    $(".blockactive").removeClass(".blockactive").hide();
+    $(".blockactive").removeClass("blockactive").hide();
+    $("#sidebar .active").removeClass("active");
+    $("[href="+id+"]").parent("li").addClass("active");
     $(id).addClass("blockactive").show();
     $(".block:not(.blockactive)").hide();
 }
@@ -53,7 +58,7 @@ function showBlock(id){
     <div class = "span2" id = "sidebar">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            <li id = "activeBlock" class = "active"><a href="#dirinput">Directory Setup</a></li>
+            <li class = "active"><a href="#dirsetup">Directory Setup</a></li>
             <li class = "nav-header">Required Blocks</li>
             <li><a href="#block1">Block 1</a></li>
             <li><a href="#block2">Block 2</a></li> 
@@ -68,33 +73,35 @@ function showBlock(id){
             <li><a href="#">Block 5</a></li>
         </ul>
     </div>
-     <div id="dirinput" class = "span10 block">
-        <div>
-        <label for="jobname">What do you want to name this job?</label>
-        <input type="text" name="jobname" id="jobname" size="50"/>
-        </div>
-        <div>
-            <label for="machine">Which machine should this job run on?</label>
-            <select name="machine" id="machine">
-                <option value="hopper" selected="selected">hopper</option>
-                <option value="carver">carver</option>
-            </select>
-        </div>
-        <div class="input-append">
-            <label for"jobdir">Where would you like to store this job?</label>
-            <input type="text" name="jobdir" id="jobdir" size="50" value="/global/">
-            <div class="btn-group">
-                <button class="btn dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" id="dirSelect">
-                    <li><a class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
-                    <li><a class='diroptions' href="#" data-dir="/global/scratch/sd/tsun">Scratch Directory</a><li>
-                </ul>
+    <div class = "span10 block" id = "dirsetup">
+         <div id="dirinput">
+            <div>
+            <label for="jobname">What do you want to name this job?</label>
+            <input type="text" name="jobname" id="jobname" size="50"/>
             </div>
-        </div>
-        <div>
-            <button class="btn" type="button" id='submitdir'>Submit</button>
+            <div>
+                <label for="machine">Which machine should this job run on?</label>
+                <select name="machine" id="machine">
+                    <option value="hopper" selected="selected">hopper</option>
+                    <option value="carver">carver</option>
+                </select>
+            </div>
+            <div class="input-append">
+                <label for"jobdir">Where would you like to store this job?</label>
+                <input type="text" name="jobdir" id="jobdir" size="50" value="/global/">
+                <div class="btn-group">
+                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" id="dirSelect">
+                        <li><a class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
+                        <li><a class='diroptions' href="#" data-dir="/global/scratch/sd/tsun">Scratch Directory</a><li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <button class="btn" type="button" id='submitdir'>Submit</button>
+            </div>
         </div>
     </div>
     <div class = "span10 block" id = "block1">

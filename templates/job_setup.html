@@ -18,16 +18,27 @@ textarea{
 </style>
 
 <script type="text/javascript">
+
+function setupBlocks(blockName){
+    var block = $("#reqblocks").append("<li></li>");
+    $("#reqblocks").children("li").last().attr("id", blockName);
+    $("#reqblocks").children("li").last().html("<a href=\"#\">" + blockName + "</a>");
+}
+
+function showRawInput(blockName){
+
+}
+
 $(document).ready(function(){
    $(".diroptions").click(function(e){
        e.preventDefault();
        $("#jobdir").val($(this).attr("data-dir"));
    });
-   $("submitdir").click(function(e){
-        console.log("submit clicked");
-        e.preventDefault();
-        $("reqblocks").display(block);
+   $("#submitdir").click(function(ev){
+        ev.preventDefault();
+        $("#reqblocks").removeClass("disabled").addClass("active");
    });
+   setupBlocks("blockblock");
 });
 </script>
 {% endblock head %}
@@ -37,22 +48,22 @@ $(document).ready(function(){
     <div class = "span2">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            <li class = "active"><a href="#">Directory Setup</a></li>
+            <li id = "activeBlock" class = "active"><a href="#">Directory Setup</a></li>
             <li class = "nav-header">Required Blocks</li>
-            <div id = 'reqblocks'>
-            <li class = "disabled"><a href="#">Block 1</a></li>
-            <li class = "disabled"><a href="#">Block 2</a></li> 
-            <li class = "disabled"><a href="#">Block 3</a></li> 
-            <li class = "disabled"><a href="#">Block 4</a></li>
-            <li class = "disabled"><a href="#">Block 5</a></li>
+            <div id = "reqblocks" class = "disabled">
+            <li><a href="#">Block 1</a></li>
+            <li><a href="#">Block 2</a></li> 
+            <li><a href="#">Block 3</a></li> 
+            <li><a href="#">Block 4</a></li>
+            <li><a href="#">Block 5</a></li>
             </div>
             <li class = "nav-header"> Optional Blocks</li>
-            <div id = 'optblocks'>
-            <li class = "disabled"><a href="#">Block 1</a></li>
-            <li class = "disabled"><a href="#">Block 2</a></li> 
-            <li class = "disabled"><a href="#">Block 3</a></li> 
-            <li class = "disabled"><a href="#">Block 4</a></li>
-            <li class = "disabled"><a href="#">Block 5</a></li>
+            <div id = 'optblocks' class = "disabled">
+            <li><a href="#">Block 1</a></li>
+            <li><a href="#">Block 2</a></li> 
+            <li><a href="#">Block 3</a></li> 
+            <li><a href="#">Block 4</a></li>
+            <li><a href="#">Block 5</a></li>
         </div>
         </ul>
     </div>
@@ -86,7 +97,7 @@ $(document).ready(function(){
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" id="dirSelect">
-                                <li><a id='diroptions' class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
+                                <li><a class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
                                 <li><a class='diroptions' href="#" data-dir="/global/scratch/sd/tsun">Scratch Directory</a><li>
                             </ul>
                         </div>

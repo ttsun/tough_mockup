@@ -1,46 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class = "row-fluid">
-    <div class = "span8">
-        <table>
-            <thead>
+    <div class = "row-fluid">
+        <div class = "span8 offset1">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Job Name</th>
+                        <th>PBS Job ID</th>
+                        <th>Time Queued</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tr>
-                    <th>Job Name</th>
-                    <th>PBS Job ID</th>
-                    <th>Time Queued</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <td><a href="/input/info" class = "tablelinks">Testing</a></td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
                 </tr>
-            </thead>
-            <tr>
-                <td><a href="/input/info" class = "tablelinks">Testing</a></td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-            </tr>
-             <tr>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-            </tr>
-             <tr>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-                <td>Testing</td>
-            </tr>
-        </table>
+                 <tr>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                </tr>
+                 <tr>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                    <td>Testing</td>
+                </tr>
+            </table>
+        </div>
+        <div class = "span2">
+            <ul class = "nav nav-pills nav-stacked">
+                <li><a href="/input/create">Create Job</a></li>
+                <li><a href="#">Import Job</a></li>
+            </ul>
+        </div>
     </div>
-    <div class = "span4">
-        <ul class = "nav nav-pills nav-stacked">
-            <li><a href="/input/create">Create Job</a></li>
-            <li><a href="#">Import Job</a></li>
-        </ul>
-    </div>
-</div>
 {% endblock content %}

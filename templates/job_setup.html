@@ -46,7 +46,7 @@ $(document).ready(function(){
 function showBlock(id){
     $(".blockactive").removeClass("blockactive").hide();
     $("#sidebar .active").removeClass("active");
-    $("[href="+id+"]").parent("li").addClass("active");
+    $("#sidebar [href="+id+"]").parent("li").addClass("active");
     $(id).addClass("blockactive").show();
     $(".block:not(.blockactive)").hide();
 }
@@ -58,7 +58,7 @@ function showBlock(id){
     <div class = "span2" id = "sidebar">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            <li class = "active"><a href="#dirsetup">Directory Setup</a></li>
+            <li><a href="#dirsetup">Directory Setup</a></li>
             <li class = "nav-header">Required Blocks</li>
             <li><a href="#block1">Block 1</a></li>
             <li><a href="#block2">Block 2</a></li> 

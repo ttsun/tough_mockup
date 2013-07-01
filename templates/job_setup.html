@@ -1,0 +1,107 @@
+
+{% extends "base.html" %}
+
+{% block head %}
+<style type="text/css"> 
+.dirinput
+{
+    margin-left:30%;
+    margin-right:30%;
+}
+textarea{
+    width:auto;
+}
+.disabled
+{
+    display:none;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+   $(".diroptions").click(function(e){
+       e.preventDefault();
+       $("#jobdir").val($(this).attr("data-dir"));
+   });
+   $("submitdir").click(function(e){
+        console.log("submit clicked");
+        e.preventDefault();
+        $("reqblocks").display(block);
+   });
+});
+</script>
+{% endblock head %}
+
+{%block content %}
+<div class = "row-fluid">
+    <div class = "span2">
+        <ul class = "nav nav-list">
+            <li class = "nav-header">Required Information</li>
+            <li class = "active"><a href="#">Directory Setup</a></li>
+            <li class = "nav-header">Required Blocks</li>
+            <div id = 'reqblocks'>
+            <li class = "disabled"><a href="#">Block 1</a></li>
+            <li class = "disabled"><a href="#">Block 2</a></li> 
+            <li class = "disabled"><a href="#">Block 3</a></li> 
+            <li class = "disabled"><a href="#">Block 4</a></li>
+            <li class = "disabled"><a href="#">Block 5</a></li>
+            </div>
+            <li class = "nav-header"> Optional Blocks</li>
+            <div id = 'optblocks'>
+            <li class = "disabled"><a href="#">Block 1</a></li>
+            <li class = "disabled"><a href="#">Block 2</a></li> 
+            <li class = "disabled"><a href="#">Block 3</a></li> 
+            <li class = "disabled"><a href="#">Block 4</a></li>
+            <li class = "disabled"><a href="#">Block 5</a></li>
+        </div>
+        </ul>
+    </div>
+    <div class = "span10" display = "hidden">
+        <ul class = "nav nav-tabs">
+            <li class = "active"><a href="#guided" data-toggle = "tab">Guided</a></li>
+            <li><a href="#raw" data-toggle = "tab">Raw Text</a></li>
+        </ul>
+        <div class = "tab-content" style =" height:500px">
+            <div class = "tab-pane active" id = "guided" style = "height:500px">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nisi ligula, varius sit amet convallis eget, ullamcorper vitae lorem. Ut ultricies erat turpis, quis eleifend ante ultrices id. Donec ut est venenatis, viverra enim nec, placerat quam. Duis hendrerit fringilla dolor id fringilla. Nulla facilisi. Proin aliquet nisi ultricies, luctus lacus in, sodales felis. Aenean quis ullamcorper est, ac gravida nunc. Phasellus nunc diam, vehicula quis tortor et, facilisis pellentesque dui. Praesent eleifend lorem nec odio pulvinar commodo. Integer at condimentum justo, ac placerat libero.
+                </p>
+                <div class="dirinput">
+                    <div>
+                    <label for="jobname">What do you want to name this job?</label>
+                    <input type="text" name="jobname" id="jobname" size="50"/>
+                    </div>
+                    <div>
+                        <label for="machine">Which machine should this job run on?</label>
+                        <select name="machine" id="machine">
+                            <option value="hopper" selected="selected">hopper</option>
+                            <option value="carver">carver</option>
+                        </select>
+                    </div>
+                    <div class="input-append">
+                        <label for"jobdir">Where would you like to store this job?</label>
+                        <input type="text" name="jobdir" id="jobdir" size="50" value="/global/">
+                        <div class="btn-group">
+                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="dirSelect">
+                                <li><a id='diroptions' class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
+                                <li><a class='diroptions' href="#" data-dir="/global/scratch/sd/tsun">Scratch Directory</a><li>
+                            </ul>
+                        </div>
+                    </div>
+                <div>
+                    <button class="btn" type="button" id='submitdir'>Submit</button>
+                </div>
+            </div>
+            </div>
+            <div class = "tab-pane" id = "raw">
+                <p><textarea name="thetext" rows="30" id="thetext" cols="150"></textarea></p>
+                <button class="btn" type="button" id='saveform'>Save</button>
+                <button class="btn" type="button" id='cancel'>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}    

@@ -552,3 +552,6 @@ class Job(models.Model):
     
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)
+
+class Block(models.model)
+    

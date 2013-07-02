@@ -338,7 +338,7 @@ def setup_new(request):
 
         #create default vasp files
         #render default setup form
-        return render_to_response('job_setup.html')
+        return 
     
 
 @login_required

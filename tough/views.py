@@ -329,13 +329,7 @@ def setup_new(request):
 
         #create default vasp files
         #render default setup form
-<<<<<<< HEAD
-        return 
-    
-=======
         return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname}), content_type="application/json")
-  
->>>>>>> 8bbfc6d05e0716ad1562ef3be850a5527e62a4bc
 
 @login_required
 def delete_job(request):

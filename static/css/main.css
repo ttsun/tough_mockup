@@ -1,5 +1,5 @@
 .container{
-    width:1024px;
+    width:1200px;
 }
 .login{
     float:right;
@@ -34,8 +34,8 @@ tr:hover{
     text-decoration: none;
     color:black;
 }
-h2{
-    color:steelblue;
+.error{
+    color:red;
 }
 .well{
     margin-top:20px;

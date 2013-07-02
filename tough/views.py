@@ -25,7 +25,6 @@ def home(request):
 
 @login_required
 def index(request):
-    #error here - something doesn't have a header?
     u = NoahUser.objects.get(pk=request.user.id)
     username = u.username
     jobs = Job.objects.filter(user=u.id).order_by('-time_last_updated')

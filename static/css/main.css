@@ -10,30 +10,6 @@
 .login:hover{
     text-decoration: none;
 }
-th{
-    border-bottom:2px solid black;
-}
-table{
-    width:100%;
-}
-td{
-    border-bottom:1px solid lightgray;
-    padding:10px;
-}
-tr:hover{
-    opacity:0.8;
-    color:black;
-}
-.row-fluid{
-    padding-bottom: 50px;
-}
-.tablelinks{
-    color:black;
-}
-.tablelinks:hover{
-    text-decoration: none;
-    color:black;
-}
 .error{
     color:red;
 }

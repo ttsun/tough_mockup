@@ -62,7 +62,15 @@ $(document).ready(function(){
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
-        document.forms['dirinput'].submit();
+        // document.forms['dirinput'].submit();
+        $.ajax({
+            url: $("#dirinput").attr("action"),
+            data: $("#dirinput").serialize(),
+            type: "POST",
+            success: function(data){
+                alert(data['job_name']+" created at "+data['job_dir']);
+            }
+        })
         $("#reqblocks li").removeClass("disabled");
         $("#opblocks li").removeClass("disabled");
         $("#compsetselect").parent().removeClass("disabled").addClass("active");

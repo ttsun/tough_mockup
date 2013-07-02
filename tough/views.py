@@ -49,17 +49,13 @@ def about(request):
 def jobs(request):
     u = NoahUser.objects.get(username = request.user)
     username = u.username
-    jobs=u.get_all_jobs()
+    jobs = u.get_all_jobs()
+
+    dirlist = [('scratch', 'My scratch directory'), ('home', 'My home directory'), ('project', 'Project'), ('root', '/')]
     
-    dirlist=[('scratch','My scratch directory'),('home','My home directory'),('project','Project'),('root','/')]
-    
-    return render_to_response('job_control.html', 
+    return render_to_response('job_control.html',
                               {'dirlist':dirlist, 'all_jobs': jobs, 'username': username}, 
                               context_instance=RequestContext(request))
-
-
-
-
 
 
 @login_required
@@ -69,8 +65,6 @@ def ajax_joblist(request):
 
     return render_to_response('job_list.html', 
                               {'all_jobs': jobs})
-
-
 
 
 @login_required
@@ -276,29 +270,27 @@ def ajax_mkdir(request, machine, directory):
 @login_required
 def setup_new(request):
     #create new job in database
-    u = NoahUser.objects.get(username = request.user)
+    u = NoahUser.objects.get(username=request.user)
     #add a timestamp-based directory name to the path that will become jobdir
     jobdir = request.POST['jobdir'] + '/NOVA_' + strftime("%Y%b%d-%H%M%S", localtime())
 
-    if request.POST['setup_type']=='new':
-        srcdir=None
-        oldjob=None
-    elif request.POST['setup_type']=='import':
+    if request.POST['setup_type'] == 'new':
+        srcdir = None
+        oldjob = None
+    elif request.POST['setup_type'] == 'import':
         srcdir = request.POST['srcdir']
         oldjob=None    
-    elif request.POST['setup_type']=='copy':
+    elif request.POST['setup_type'] == 'copy':
         oldjob=Job.objects.get(id=request.POST['jobid'])
         srcdir=oldjob.jobdir
-    elif request.POST['setup_type']=='move':
+    elif request.POST['setup_type'] == 'move':
         # Redefine jobdir back to user supplied value - we don't want to create a brand new dir for a move
         jobdir = request.POST['jobdir']
-        srcdir=None
-        oldjob=None
+        srcdir = None
+        oldjob = None
     else:
         return HttpResponseBadRequest("Invalid Setup Type")
-        
-                
-                
+
     if request.POST['setup_type']=='move':
         j=Job.objects.get(id=request.POST['jobid'])
         j.move_dir(jobdir)
@@ -307,7 +299,6 @@ def setup_new(request):
         j.jobdir=os.path.join(jobdir, basename)
         j.save()
         return redirect('tough.views.index')
-        
     else:
         j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
         #create directory with unique id
@@ -338,8 +329,13 @@ def setup_new(request):
 
         #create default vasp files
         #render default setup form
+<<<<<<< HEAD
         return 
     
+=======
+        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname}), content_type="application/json")
+  
+>>>>>>> 8bbfc6d05e0716ad1562ef3be850a5527e62a4bc
 
 @login_required
 def delete_job(request):

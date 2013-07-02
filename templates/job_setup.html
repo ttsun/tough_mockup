@@ -21,6 +21,26 @@ textarea{
 <script type="text/javascript" src="/static/js/setup.js"></script>
 <script type="text/javascript">
 
+var jobfiles;
+
+function getjobfiles(){
+    $('#fileloader').show();
+    $.ajax({
+        type: 'GET',
+
+        url: TOUGH_SUBDIR+'/get_tough_files/' + document.getElementById('jobid').value,
+
+        success: function(data){
+            jobfiles = data;
+            $('#fileloader').hide();
+        },
+        error: function(err){
+            // alert("There was a problem getting the input files.");
+            $('#fileloader').hide();
+        }
+    });
+}
+
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
     $("#reqblocks").children("li").last().attr("id", blockName);
@@ -33,7 +53,6 @@ function showRawInput(blockName){
 }
 
 $(document).ready(function(){
-    
 
    $(".diroptions").click(function(e){
        e.preventDefault();
@@ -47,9 +66,16 @@ $(document).ready(function(){
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
-        document.forms['dirinput'].submit();
+        // $.ajax({
+        //     url: $("#dirinput").attr("action"),
+        //     type: "post",
+        //     data: $("#dirinput").serialize(),
+        // });
+        $("#dirinput").submit();
         $("#reqblocks").removeClass("disabled").addClass("active");
         $("#submitdir").removeClass("active").addClass("disabled");
+        console.log("jobid: " + document.getElementById('jobid').value);
+        getjobfiles();
    });
    $("#sidebar a").click(function(e){
         
@@ -136,6 +162,7 @@ function showBlock(id){
     </div>
     <div class = "span10 block" id = "compset">
         {% include "batch_form.html" %}
+        <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
         <button class="btn" type="button" id='savecompset'>Save</button>
         <button class="btn" type="button" id='cancel'>Cancel</button>
     </div>

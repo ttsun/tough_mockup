@@ -171,9 +171,9 @@ class Job(models.Model):
         # TODO: add kwargs for dir
         cookie_str=self.user.cookie
         url = '/command/' + self.machine
-        # import pdb; pdb.set_trace()
         response, content = util.newt_request(url, 'POST', params={'executable': '/bin/mkdir -p ' + self.jobdir}, cookie_str=cookie_str)
-        if response['status']!='200':
+        if response['status']!='200':            
+            import ipdb; ipdb.set_trace()
             raise Exception(response)
         
         content=JSONDecoder().decode(content)

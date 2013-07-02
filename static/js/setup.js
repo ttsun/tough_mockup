@@ -2,17 +2,7 @@
  * @author agreiner
  */
 var current_doc = '';
-/*if(!jobfiles){
-	var jobfiles = {
-		INCAR: '',
-		POSCAR: '',
-		POTCAR: '',
-		KPOINTS: '',
-		batch: ''
-	}
-}*/
-show_div('default');
-update_numproc();
+
 
 function init_input(file_id){
 	if(warn_unsaved_changes() == true) return;
@@ -56,26 +46,26 @@ function form_was_changed(){
 	if($('#gui-text-buttons').hasClass('changed')) return true;
 }
 
-function update_numproc(){
-	//changed to fit Hopper
-	document.getElementById('product').innerHTML = document.getElementById('id_numnodes').value * 24
-	// document.getElementById('id_ppn').value;
-}
+// function update_numproc(){
+// 	//changed to fit Hopper
+// 	document.getElementById('product').innerHTML = document.getElementById('id_numnodes').value * 24
+// 	// document.getElementById('id_ppn').value;
+// }
 
-function show_div(div_name){
-	//hide all the divs for files that aren't being edited, show the div that is being edited
-	var maindiv = document.getElementById("main").childNodes;
-	l = maindiv.length;
-	for (i = 0; i < l; i++) {
-		n = maindiv[i];
-		if(n.nodeType === 1){
-			if (n.id != div_name) 
-				n.className = "hidden";
-			else 
-				n.className = n.className.replace(/\bhidden\b/, '');			
-		}
-	}
-}
+// function show_div(div_name){
+// 	//hide all the divs for files that aren't being edited, show the div that is being edited
+// 	var maindiv = document.getElementById("main").childNodes;
+// 	l = maindiv.length;
+// 	for (i = 0; i < l; i++) {
+// 		n = maindiv[i];
+// 		if(n.nodeType === 1){
+// 			if (n.id != div_name) 
+// 				n.className = "hidden";
+// 			else 
+// 				n.className = n.className.replace(/\bhidden\b/, '');			
+// 		}
+// 	}
+// }
 
 function show_buttons(div){
 	var content, theP;
@@ -176,7 +166,7 @@ function save_form(file_content){
 	jobfiles[current_doc] = post_data.content;
 	$.ajax({
 		type: 'POST',
-		url: NOAH_SUBDIR + '/save/' + document.getElementById('jobid').value,
+		url: TOUGH_SUBDIR + '/save/' + document.getElementById('jobid').value,
 		data: post_data,
 		success: function(data){
 		    if ($('#login_form', data).size() > 0) {
@@ -232,12 +222,11 @@ function init_batch(){
 function textify_batch(){
 	//changing to fit Hopper
 	var content = '';
-	content += '#PBS -N noah_tough\n';
+	content += '#PBS -N tough\n';
 	content += '#PBS -q ' + document.getElementById('id_queue').value + '\n';
 	content += '#PBS -l mppwidth=' + document.getElementById('id_numnodes').value * 24 
-	// + ':ppn=' + document.getElementById('id_ppn').value;
+	
 	var numprocs= parseInt(document.getElementById('id_numnodes').value) * 24
-	// parseInt(document.getElementById('id_ppn').value);
 
 	var nodemem = document.getElementById('id_nodemem').value;
 	
@@ -296,7 +285,7 @@ function guify_batch(){
 	//start from default form settings
 	document.forms['batch_form'].reset();
 	var lines = batchFile.split('\n');
-	if(lines[0] == '#PBS -N noah_tough'){
+	if(lines[0] == '#PBS -N tough'){
 		//this is a nova-generated file
 		for (i in lines) {
 			var line = lines[i];
@@ -351,9 +340,9 @@ function guify_batch(){
 					var module = line.match(/module load tough\/([\d\.]+)/)
 					if(module) document.getElementById('id_tough_version').value = module[1];
 				}
-			else if(line.slice(0,6) == 'mpirun'){
-				var mpirun = line.match(/mpirun -n \d+ (\w+)$/);
-				if(module) document.getElementById('id_tough_executable').value = mpirun[1];
+			else if(line.slice(0,6) == 'aprun'){
+				var aprun = line.match(/aprun -n \d+ (\w+)$/);
+				if(module) document.getElementById('id_tough_executable').value = aprun[1];
 			}
 		}
 		//update the total number of nodes

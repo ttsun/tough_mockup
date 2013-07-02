@@ -156,7 +156,7 @@ NEWT_BASE_URL = 'https://newt.nersc.gov/newt'
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL=TOUGH_SUBDIR + '/'
 LOGOUT_URL=TOUGH_SUBDIR + '/logout/'
-LOGOUT_REDIRECT_URL=TOUGH_SUBDIR + '/login/'
+LOGOUT_REDIRECT_URL='/login/'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

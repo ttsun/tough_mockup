@@ -125,6 +125,8 @@ class NoahUser(AbstractBaseUser):
         complete = Job.objects.filter(user=self.id).filter(nova_state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
 
         return {'toberun': toberun, 'running':running, 'complete': complete}   
+
+        
 class Job(models.Model):
     """
     Model for Jobs submitted to NEWT
@@ -550,4 +552,3 @@ class Job(models.Model):
     
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)
-         

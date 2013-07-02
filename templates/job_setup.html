@@ -9,15 +9,23 @@ textarea{
 }
 #dirinput{
     margin-left:35%;
+    margin-top:5%;
 }
+#compset{
+    margin-top:5%;
+}
+
 </style>
 
+<script type="text/javascript" src="{{TOUGH_STATIC_SUBDIR}}/js/blocks.js"></script>
+<script type="text/javascript" src="{{TOUGH_STATIC_SUBDIR}}/js/setup.js"></script>
 <script type="text/javascript">
 
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
     $("#reqblocks").children("li").last().attr("id", blockName);
-    $("#reqblocks").children("li").last().html("<a href=\"#\">" + blockName + "</a>");
+    $("#reqblocks").children("li").last().attr("class", "blockchoice");
+    $("#reqblocks").children("li").last().html("<a href=\"#\"" + blockName + ">" + blockName + "</a>");
 }
 
 function showRawInput(blockName){
@@ -25,28 +33,39 @@ function showRawInput(blockName){
 }
 
 $(document).ready(function(){
+    
+
    $(".diroptions").click(function(e){
        e.preventDefault();
        $("#jobdir").val($(this).attr("data-dir"));
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
+        document.forms['dirinput'].submit();
         $("#reqblocks").removeClass("disabled").addClass("active");
+        $("#submitdir").removeClass("active").addClass("disabled");
    });
    $("#sidebar a").click(function(e){
-        e.preventDefault();
-        showBlock($(this).attr("href"));
+        
+        if($(this).class!="disabled"){
+            e.preventDefault();
+            showBlock($(this).attr("href"));
+        }
         return false;
     });
    $(".block:not(.blockactive)").hide();
    setupBlocks("blockblock");
+   $(".blockchoice").addClass("disabled");
 });
 
 
 function showBlock(id){
     $(".blockactive").removeClass("blockactive").hide();
     $("#sidebar .active").removeClass("active");
-    $("#sidebar [href="+id+"]").parent("li").addClass("active");
+    console.log($("#sidebar [href="+id+"]").parent("li").attr("class"))
+    if ($("#sidebar [href="+id+"]").parent("li").attr("class") != "disabled"){
+        $("#sidebar [href="+id+"]").parent("li").addClass("active");
+    }
     $(id).addClass("blockactive").show();
     $(".block:not(.blockactive)").hide();
 }
@@ -55,26 +74,31 @@ function showBlock(id){
 
 {%block content %}
 <div class = "row-fluid">
-    <div class = "span2" id = "sidebar">
+    <div class = "span2 well" id = "sidebar">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
             <li><a href="#dirsetup">Directory Setup</a></li>
+            <li><a href="#compset">Computational Settings</a></li>
             <li class = "nav-header">Required Blocks</li>
-            <li><a href="#block1">Block 1</a></li>
-            <li><a href="#block2">Block 2</a></li> 
-            <li><a href="#">Block 3</a></li> 
-            <li><a href="#">Block 4</a></li>
-            <li><a href="#">Block 5</a></li>
+            <li><ul id = "reqblocks" class = "nav nav-list">
+                <li class = "blockchoice"><a href="#block1">Block 1</a></li>
+                <li class = "blockchoice"><a href="#block2">Block 2</a></li> 
+                <li class = "blockchoice"><a href="#">Block 3</a></li> 
+                <li class = "blockchoice"><a href="#">Block 4</a></li>
+                <li class = "blockchoice"><a href="#">Block 5</a></li>
+            </ul></li>
             <li class = "nav-header"> Optional Blocks</li>
-            <li><a href="#">Block 1</a></li>
-            <li><a href="#">Block 2</a></li> 
-            <li><a href="#">Block 3</a></li> 
-            <li><a href="#">Block 4</a></li>
-            <li><a href="#">Block 5</a></li>
+            <li class = "blockchoice"><a href="#">Block 1</a></li>
+            <li class = "blockchoice"><a href="#">Block 2</a></li> 
+            <li class = "blockchoice"><a href="#">Block 3</a></li> 
+            <li class = "blockchoice"><a href="#">Block 4</a></li>
+            <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
     </div>
-    <div class = "span10 block" id = "dirsetup">
-         <div id="dirinput">
+    <div class = "span10 blockactive" id = "dirsetup">
+         <form action="{% url 'tough.views.setup_new' %}" method = "POST" id="dirinput">
+            {% csrf_token %}
+            <input type = "hidden" name ="setup_type" id = "setup_type" value = "new" />
             <div>
             <label for="jobname">What do you want to name this job?</label>
             <input type="text" name="jobname" id="jobname" size="50"/>
@@ -102,7 +126,14 @@ function showBlock(id){
             <div>
                 <button class="btn" type="button" id='submitdir'>Submit</button>
             </div>
-        </div>
+        </form>
+    </div>
+    <div class = "span10 block" id = "compset">
+        <form action = "{% url 'init_batch()' %}" method = "POST" id = "compinput">
+        {% include "batch_form.html" %}
+        <button class="btn" type="button" id='saveform'>Save</button>
+        <button class="btn" type="button" id='cancel'>Cancel</button>
+    </form>
     </div>
     <div class = "span10 block" id = "block1">
         <ul class = "nav nav-tabs">
@@ -113,30 +144,11 @@ function showBlock(id){
             <div class = "tab-pane active" id = "guided" style = "height:500px">
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nisi ligula, varius sit amet convallis eget, ullamcorper vitae lorem. Ut ultricies erat turpis, quis eleifend ante ultrices id. Donec ut est venenatis, viverra enim nec, placerat quam. Duis hendrerit fringilla dolor id fringilla. Nulla facilisi. Proin aliquet nisi ultricies, luctus lacus in, sodales felis. Aenean quis ullamcorper est, ac gravida nunc. Phasellus nunc diam, vehicula quis tortor et, facilisis pellentesque dui. Praesent eleifend lorem nec odio pulvinar commodo. Integer at condimentum justo, ac placerat libero.
-                    </br>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nisi ligula, varius sit amet convallis eget, ullamcorper vitae lorem. Ut ultricies erat turpis, quis eleifend ante ultrices id. Donec ut est venenatis, viverra enim nec, placerat quam. Duis hendrerit fringilla dolor id fringilla. Nulla facilisi. Proin aliquet nisi ultricies, luctus lacus in, sodales felis. Aenean quis ullamcorper est, ac gravida nunc. Phasellus nunc diam, vehicula quis tortor et, facilisis pellentesque dui. Praesent eleifend lorem nec odio pulvinar commodo. Integer at condimentum justo, ac placerat libero.
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <p><textarea name="thetext" rows="30" id="thetext" cols="150"></textarea></p>
-                <button class="btn" type="button" id='saveform'>Save</button>
-                <button class="btn" type="button" id='cancel'>Cancel</button>
-            </div>
-        </div>
-    </div>
-    <div class = "span10 block" id = "block2">
-        <ul class = "nav nav-tabs">
-            <li class = "active"><a href="#guided" data-toggle = "tab">Guided</a></li>
-            <li><a href="#raw" data-toggle = "tab">Raw Text</a></li>
-        </ul>
-        <div class = "tab-content" style =" height:500px">
-            <div class = "tab-pane active" id = "guided" style = "height:500px">
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nisi ligula, varius sit amet convallis eget, ullamcorper vitae lorem. Ut ultricies erat turpis, quis eleifend ante ultrices id. Donec ut est venenatis, viverra enim nec, placerat quam. Duis hendrerit fringilla dolor id fringilla. Nulla facilisi. Proin aliquet nisi ultricies, luctus lacus in, sodales felis. Aenean quis ullamcorper est, ac gravida nunc. Phasellus nunc diam, vehicula quis tortor et, facilisis pellentesque dui. Praesent eleifend lorem nec odio pulvinar commodo. Integer at condimentum justo, ac placerat libero.
-                </p>
-            </div>
-            <div class = "tab-pane" id = "raw">
-                <p><textarea name="thetext" rows="30" id="thetext" cols="150"></textarea></p>
+
+                <p><textarea name="thetext" rows="30" id="thetext" cols="120"></textarea></p>
                 <button class="btn" type="button" id='saveform'>Save</button>
                 <button class="btn" type="button" id='cancel'>Cancel</button>
             </div>

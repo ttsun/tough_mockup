@@ -57,7 +57,8 @@
 {% endif %}
 <div id="login_form">
 	<p class="exhort">Log into this application with your <a href="http://nim.nersc.gov">NIM</a> username and password.</p>
-<form method="post" action="{% url 'login.views.login_view' %}">{% csrf_token %}
+<form action="{% url 'login.views.login_view' %}" method="POST"  >
+	{% csrf_token %}
 
   <div class="form-row">
     <p>{{ form.username.label_tag }}

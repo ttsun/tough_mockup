@@ -13,7 +13,6 @@ from dateutil import tz
 from django.utils.timezone import utc
 from django.template.response import TemplateResponse
 
-
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -25,6 +24,7 @@ def login_view(request):
         response = login(request)
     except Exception, ex:
         logging.error(ex)
+        raise Exception(ex)
     logger.debug('test is_authenticated: "%s"' %request.user.__class__)
     # If the user was authenticated get the cert expiry time to set session expiry time
     

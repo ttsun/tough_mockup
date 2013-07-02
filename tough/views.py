@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from nova.main.models import Job, NoahUser
+from tough.models import Job, NoahUser
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.core.urlresolvers import reverse
@@ -11,7 +11,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from operator import itemgetter
 from django.utils.simplejson import JSONEncoder
-from django.utils.simplejson import JSONDecoder
 import tough.util as util
 import json
 import re
@@ -22,6 +21,7 @@ from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
 from django.conf import settings
+import simplejson
 
 
 def home(request):
@@ -37,12 +37,12 @@ def index(request):
 
     dirlist=[('scratch','My scratch directory'),('home','My home directory'),('project','Project'),('root','/')]
     import_dirlist=[('scratch','My scratch directory'),('home','My home directory'),('project','Project'),('root','/'),('hfo2','Sample: HfO2'),('lialo2','Sample: LiAlO2'),('tio2','Sample: TiO2'),('liquidhg','Sample: Liquid Hg')]
-    return render_to_response('main/job_control.html', 
+    return render_to_response('job_control.html', 
                               {'dirlist':dirlist, 'import_dirlist': import_dirlist, 'all_jobs': jobs}, 
                               context_instance=RequestContext(request))
 
 def about(request):
-    return render_to_response('main/about.html', {}, 
+    return render_to_response('home.html', {}, 
                                context_instance=RequestContext(request)) 
 
 @login_required
@@ -53,7 +53,7 @@ def jobs(request):
     
     dirlist=[('scratch','My scratch directory'),('home','My home directory'),('project','Project'),('root','/')]
     
-    return render_to_response('main/jobs.html', 
+    return render_to_response('job_control.html', 
                               {'dirlist':dirlist, 'all_jobs': jobs, 'username': username}, 
                               context_instance=RequestContext(request))
 
@@ -67,7 +67,7 @@ def ajax_joblist(request):
     u = NoahUser.objects.get(username = request.user)
     jobs=u.get_all_jobs()
 
-    return render_to_response('main/job_list.html', 
+    return render_to_response('job_list.html', 
                               {'all_jobs': jobs})
 
 
@@ -136,11 +136,7 @@ def setup(request, jobid):
 def ajax_get_tough_files(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
     tough_files={
-        # "POTCAR" : "",
-        # "POSCAR" : "",
-        # "INCAR" : "",
         "batch": "",
-        # "GENER": "",
         "RAWTOUGH": ""
     }
     # Get various files
@@ -150,38 +146,8 @@ def ajax_get_tough_files(request, jobid):
         try:
             if key == "batch": tough_files[key] = j.get_file("tough.pbs")
             else: tough_files[key]=j.get_file(key)
-# Annette's version
-# def ajax_get_job_files(request, jobid):
-#     j = get_object_or_404(Job, id=int(jobid))
-#     # Get various files
-#     job_files={}
-#     appfiles = settings.APP_FILES
-#     # get input_files from job dir to see if there are extra ones
-#     input_files = ""
-#     try:
-#         input_files = j.get_file("input_files")
-#     except:
-#         #we should be okay, the file just isn't there
-#         print("an attempt to get input_files returned nothing")
-        
-#     if input_files != "":
-#         jsonDec = json.decoder.JSONDecoder()
-#         extra_files = jsonDec.decode(input_files)
-#         if len(extra_files) > 0:
-#             for extra in extra_files:
-#                 appfiles.append(extra)
-        
-#     for appfile in appfiles:
-#         try:
-#             job_files[appfile["id"]]=j.get_file(appfile["filename"])
 
         except IOError:
-            # This is OK - we never saved file so just set to blank
-            # commented out, probably works
-            # if "default" in appfile:
-            #     #set default INCAR settings, so that the GUI defaults are in agreement
-            #     tough_files[key] = "SYSTEM = " + j.jobname + "\nPREC = Normal\nENCUT = 300\nLREAL = .FALSE.\nISMEAR = 1"
-            # else: 
             tough_files[key]=""
             
     content = json.dumps(tough_files)
@@ -251,28 +217,6 @@ def stopjob(request, jobid):
             return HttpResponse("Unable to save the file")
     return HttpResponse("okay")
 
-    
-@login_required
-def save_potcar(request, jobid):
-    
-    j=Job.objects.get(id=jobid)
-    form_data = {'potentials': request.POST['potentials'], 'elements': request.POST['elements'], 'pot_type': request.POST['type'], 'functional': request.POST['functional']}
-    """
-    form_data =PotentialData(potentials=request.POST['potentials'], elements=request.POST['elements'], pot_type=request.POST['type'], functional=request.POST['functional'])
-    form_data.save()
-    j.potential_data = form_data
-    j.save()
-    """
-    try:
-        content = j.get_potcars(form_data)
-        
-    except:
-        return HttpResponse("Could not get the POTCAR settings as a file")
-
-    return HttpResponse(content, content_type="text/plain")
-
-
-
 @login_required
 def get_file(request, jobid, filename):
     j=Job.objects.get(id=jobid)
@@ -302,24 +246,6 @@ def view_job(request, jobid, do_run=False, *args, **kwargs):
                               {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'dir_info' : dir_info, 'pbs_id': j.pbsjobid, 'machine':j.machine, 'nova_state': j.nova_state, 'readable_state': state_map[j.nova_state], 'time_use': j.timeuse, 'do_run': do_run}, 
                               context_instance=RequestContext(request))
     
-@login_required
-def ajax_getoszicar(request, jobid):
-    j=Job.objects.get(id=jobid)
-    j.update()
-    out = {"nova_state": j.nova_state, "time_use": j.timeuse, "oszicar": {}}
-    try:
-        lines=j.get_file('OSZICAR')
-    except IOError, ex:
-        print("Attempt to retrieve OSZICAR file that does not exist") 
-        lines = ""
-    oszicar=Oszicar.load(lines.split('\n')) 
-    content_type='application/json'
-    if len(oszicar.steps) > 0:
-        out["oszicar"]=oszicar.to_db()
-    content = json.dumps(out)
-    return HttpResponse(content, content_type=content_type)
-    
-
 @login_required
 def ajax_getdir(request, machine, directory):
     u = NoahUser.objects.get(username = request.user)
@@ -380,7 +306,7 @@ def setup_new(request):
         basename=os.path.basename(j.jobdir.rstrip('/'))        
         j.jobdir=os.path.join(jobdir, basename)
         j.save()
-        return redirect('nova.main.views.index')
+        return redirect('tough.views.index')
         
     else:
         j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
@@ -412,7 +338,7 @@ def setup_new(request):
 
         #create default vasp files
         #render default setup form
-        return redirect('nova.main.views.setup', jobid=j.id)
+        return render_to_response('job_setup.html')
     
 
 @login_required
@@ -422,7 +348,7 @@ def delete_job(request):
     if request.POST['del_type']=='nova_and_files':
         j.del_dir()
     j.delete()
-    return redirect('nova.main.views.index')
+    return redirect('tough.views.index')
     
 @login_required
 def rename_job(request):
@@ -430,7 +356,7 @@ def rename_job(request):
     j=Job.objects.get(id=jobid)
     j.jobname = request.POST['new_name'];
     j.save();
-    return redirect('nova.main.views.view_job', jobid=j.id)
+    return redirect('tough.views.view_job', jobid=j.id)
     
     
 @login_required

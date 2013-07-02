@@ -15,9 +15,12 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'login.views.login_view'),
+    url(r'^login/$', 'login.views.login_view'),
+    url(r'^logout/$', 'login.views.logout_view'),
     url(r'^about/$',TemplateView.as_view(template_name = "about.html")),
     url(r'^job/$', TemplateView.as_view(template_name = "job_control.html")),
     url(r'^job/job_setup/$',TemplateView.as_view(template_name = "job_setup.html")),
+    url(r'^job/job_setup/(?P<jobid>\d+)/?$', 'tough.views.setup'),
     url(r'^job/job_status/$',TemplateView.as_view(template_name = "job_status.html")),
+    url(r'^job/new/$', 'tough.views.setup_new'),
 )

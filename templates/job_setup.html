@@ -17,8 +17,8 @@ textarea{
 
 </style>
 
-<script type="text/javascript" src="{{TOUGH_STATIC_SUBDIR}}/js/blocks.js"></script>
-<script type="text/javascript" src="{{TOUGH_STATIC_SUBDIR}}/js/setup.js"></script>
+<script type="text/javascript" src="/static/js/blocks.js"></script>
+<script type="text/javascript" src="/static/js/setup.js"></script>
 <script type="text/javascript">
 
 function setupBlocks(blockName){
@@ -38,6 +38,12 @@ $(document).ready(function(){
    $(".diroptions").click(function(e){
        e.preventDefault();
        $("#jobdir").val($(this).attr("data-dir"));
+   });
+   $("#compsetselect").click(function(e){
+        guify_batch();
+   });
+   $('#savecompset').click(function(e){
+        save_batch();
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
@@ -78,7 +84,7 @@ function showBlock(id){
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
             <li><a href="#dirsetup">Directory Setup</a></li>
-            <li><a href="#compset">Computational Settings</a></li>
+            <li><a href="#compset" id = "compsetselect">Computational Settings</a></li>
             <li class = "nav-header">Required Blocks</li>
             <li><ul id = "reqblocks" class = "nav nav-list">
                 <li class = "blockchoice"><a href="#block1">Block 1</a></li>
@@ -129,11 +135,9 @@ function showBlock(id){
         </form>
     </div>
     <div class = "span10 block" id = "compset">
-        <form action = "{% url 'init_batch()' %}" method = "POST" id = "compinput">
         {% include "batch_form.html" %}
-        <button class="btn" type="button" id='saveform'>Save</button>
+        <button class="btn" type="button" id='savecompset'>Save</button>
         <button class="btn" type="button" id='cancel'>Cancel</button>
-    </form>
     </div>
     <div class = "span10 block" id = "block1">
         <ul class = "nav nav-tabs">

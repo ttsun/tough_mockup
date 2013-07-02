@@ -149,7 +149,7 @@ WSGI_APPLICATION = 'tough.wsgi.application'
 
 TOUGH_SUBDIR = "/job"
 
-TOUGH_STATIC_SUBDIR = "/site_media/job"
+TOUGH_STATIC_SUBDIR = "/static"
 
 NEWT_BASE_URL = 'https://newt.nersc.gov/newt'
 

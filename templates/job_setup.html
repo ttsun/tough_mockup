@@ -7,12 +7,8 @@
 textarea{
     width:auto;
 }
-#dirinput{
-    margin-left:35%;
-    margin-top:5%;
-}
-#compset{
-    margin-top:5%;
+#dirinput, #batch_form{
+    padding:2em;
 }
 
 </style>
@@ -40,35 +36,36 @@ $(document).ready(function(){
        $("#jobdir").val($(this).attr("data-dir"));
    });
    $("#compsetselect").click(function(e){
-        guify_batch();
+        // guify_batch();
    });
    $('#savecompset').click(function(e){
         save_batch();
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
-        document.forms['dirinput'].submit();
-        $("#reqblocks").removeClass("disabled").addClass("active");
-        $("#submitdir").removeClass("active").addClass("disabled");
+        // document.forms['dirinput'].submit();
+        $("#reqblocks li").removeClass("disabled");
+        $("#opblocks li").removeClass("disabled");
+        $("#compsetselect").parent().removeClass("disabled").addClass("active");
+        $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
+        showBlock("#compset");
    });
    $("#sidebar a").click(function(e){
-        
-        if($(this).class!="disabled"){
+        if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             showBlock($(this).attr("href"));
         }
         return false;
     });
    $(".block:not(.blockactive)").hide();
-   setupBlocks("blockblock");
    $(".blockchoice").addClass("disabled");
+   $("#compsetselect").parent().addClass("disabled");
 });
 
 
 function showBlock(id){
     $(".blockactive").removeClass("blockactive").hide();
     $("#sidebar .active").removeClass("active");
-    console.log($("#sidebar [href="+id+"]").parent("li").attr("class"))
     if ($("#sidebar [href="+id+"]").parent("li").attr("class") != "disabled"){
         $("#sidebar [href="+id+"]").parent("li").addClass("active");
     }
@@ -85,14 +82,16 @@ function showBlock(id){
             <li class = "nav-header">Required Information</li>
             <li><a href="#dirsetup">Directory Setup</a></li>
             <li><a href="#compset" id = "compsetselect">Computational Settings</a></li>
+        </ul>
+        <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
-            <li><ul id = "reqblocks" class = "nav nav-list">
-                <li class = "blockchoice"><a href="#block1">Block 1</a></li>
-                <li class = "blockchoice"><a href="#block2">Block 2</a></li> 
-                <li class = "blockchoice"><a href="#">Block 3</a></li> 
-                <li class = "blockchoice"><a href="#">Block 4</a></li>
-                <li class = "blockchoice"><a href="#">Block 5</a></li>
-            </ul></li>
+            <li class = "blockchoice"><a href="#block1">Block 1</a></li>
+            <li class = "blockchoice"><a href="#block2">Block 2</a></li> 
+            <li class = "blockchoice"><a href="#">Block 3</a></li> 
+            <li class = "blockchoice"><a href="#">Block 4</a></li>
+            <li class = "blockchoice"><a href="#">Block 5</a></li>
+        </ul>
+        <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
             <li class = "blockchoice"><a href="#">Block 1</a></li>
             <li class = "blockchoice"><a href="#">Block 2</a></li> 
@@ -102,6 +101,7 @@ function showBlock(id){
         </ul>
     </div>
     <div class = "span10 blockactive" id = "dirsetup">
+        <h2>Directory Setup</h2>
          <form action="{% url 'tough.views.setup_new' %}" method = "POST" id="dirinput">
             {% csrf_token %}
             <input type = "hidden" name ="setup_type" id = "setup_type" value = "new" />
@@ -130,14 +130,13 @@ function showBlock(id){
                 </div>
             </div>
             <div>
-                <button class="btn" type="button" id='submitdir'>Submit</button>
+                <button class="btn btn-primary" type="button" id='submitdir'>Submit</button>
             </div>
         </form>
     </div>
     <div class = "span10 block" id = "compset">
+        <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
-        <button class="btn" type="button" id='savecompset'>Save</button>
-        <button class="btn" type="button" id='cancel'>Cancel</button>
     </div>
     <div class = "span10 block" id = "block1">
         <ul class = "nav nav-tabs">

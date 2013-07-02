@@ -34,8 +34,8 @@ tr:hover{
     text-decoration: none;
     color:black;
 }
-h2{
-    color:steelblue;
+.error{
+    color:red;
 }
 .well{
     margin-top:20px;

@@ -1,1 +1,66 @@
-sh: /usr/local/bin/node: No such file or directory
+{% extends "base.html" %} 
+{% load i18n %} 
+{% block title %}TOUGH{% endblock %} 
+{% block head %}
+<style type="text/css">
+	#login_form {
+		text-align: center;
+		width: 400px;
+		margin:0 auto;
+		padding:2em;
+		border:1px solid black;
+	}
+	#login_form form{
+		text-align: left;
+	}
+	.form-horizontal .control-label{
+		width:120px;
+	}
+	.form-horizontal .controls{
+		margin-left:130px;
+	}
+</style>
+
+{% endblock %} 
+{% block sidebar %}
+<p>This is a good place to put some info about your app, for users who are not yet logged in.</p>
+
+
+{% endblock %} 
+{% block content %} 
+	<div id="login_form" class="well">		
+		<h2>Login</h2>		
+		<p>
+			<strong>Login with your <a href="http://nim.nersc.gov">NIM</a> username and password.</strong>
+		<p>
+		<div id="login-loader" style="display:none">
+			<img alt="" src="{{TOUGH_STATIC_SUBDIR}}/main/images/ajax-loader-FFF7DC.gif" />
+			Authenticating
+		</div>
+		{% if form.errors %}
+			<p class="error">Your username and password didn't match. Please try again.</p>
+		{% endif %}
+		<form action="{% url 'login.views.login_view' %}" class="form-horizontal" method="POST">
+			{% csrf_token %}
+			
+			<div class="control-group">
+				<label for="id_{{form.username.html_name}}" class="control-label">{{form.username.label}}</label>
+				<div class="controls">
+					{{ form.username }}					
+				</div> 
+			</div>
+			<div class="control-group">
+				<label for="id_{{form.password.html_name}}" class="control-label">{{form.password.label}}</label>
+				<div class="controls">
+					{{ form.password }}					
+				</div> 
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<input type="submit" class="btn btn-primary" onclick="$('#login-loader').show();" />
+					<input type="hidden" name="next" value="{{ next }}" />
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

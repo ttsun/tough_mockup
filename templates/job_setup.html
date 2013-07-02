@@ -2,6 +2,9 @@
 {% extends "base.html" %}
 
 {% block head %}
+<script type="text/javascript" src="/static/js/alertify.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/alertify.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/alertify.bootstrap.css"/>
 <style type="text/css"> 
 
 textarea{
@@ -68,14 +71,19 @@ $(document).ready(function(){
             data: $("#dirinput").serialize(),
             type: "POST",
             success: function(data){
-                alert(data['job_name']+" created at "+data['job_dir']);
+                Alertify.log.success(data['job_name']+" created at "+data['job_dir']);
+                $("#reqblocks li").removeClass("disabled");
+                $("#opblocks li").removeClass("disabled");
+                $("#compsetselect").parent().removeClass("disabled").addClass("active");
+                $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
+                showBlock("#compset");
             }
-        })
-        $("#reqblocks li").removeClass("disabled");
-        $("#opblocks li").removeClass("disabled");
-        $("#compsetselect").parent().removeClass("disabled").addClass("active");
-        $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
-        showBlock("#compset");
+        });
+        var values = {};
+        $.each($('#dirinput').serializeArray(), function(i, field) {
+            values[field.name] = field.value;
+        });
+        Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
    });
    $("#sidebar a").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){

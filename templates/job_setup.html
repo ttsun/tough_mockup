@@ -18,9 +18,11 @@ textarea{
 <script type="text/javascript">
 
 var jobfiles;
+var current_doc;
 
 function getjobfiles(){
     $('#fileloader').show();
+    console.log(document.getElementById('jobid').value)
     $.ajax({
         type: 'GET',
 
@@ -28,6 +30,8 @@ function getjobfiles(){
 
         success: function(data){
             jobfiles = data;
+            console.log(data);
+            console.log(jobfiles);
             $('#fileloader').hide();
         },
         error: function(err){
@@ -54,10 +58,11 @@ $(document).ready(function(){
        e.preventDefault();
        $("#jobdir").val($(this).attr("data-dir"));
    });
-   $("#compsetselect").click(function(e){
-        // guify_batch();
+   $("#batch").click(function(e){
+        guify_batch();
    });
    $('#savecompset').click(function(e){
+        console.log("saved comp set")
         save_batch();
    });
    $("#submitdir").click(function(ev){
@@ -73,20 +78,23 @@ $(document).ready(function(){
         })
         $("#reqblocks li").removeClass("disabled");
         $("#opblocks li").removeClass("disabled");
-        $("#compsetselect").parent().removeClass("disabled").addClass("active");
+        $("#batch").parent().removeClass("disabled").addClass("active");
         $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
+        current_doc = "batch";
         showBlock("#compset");
    });
    $("#sidebar a").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             showBlock($(this).attr("href"));
+            current_doc = $(this).parent().attr("id");
         }
         return false;
     });
    $(".block:not(.blockactive)").hide();
    $(".blockchoice").addClass("disabled");
-   $("#compsetselect").parent().addClass("disabled");
+   $("#batch").parent().addClass("disabled");
+   getjobfiles();
 });
 
 
@@ -108,7 +116,7 @@ function showBlock(id){
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
             <li><a href="#dirsetup">Directory Setup</a></li>
-            <li><a href="#compset" id = "compsetselect">Computational Settings</a></li>
+            <li><a href="#compset" id = "batch">Computational Settings</a></li>
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>

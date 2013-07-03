@@ -205,15 +205,15 @@ function init_batch(){
 				required: true,
 				digits: true,
 				max: 400
-			},
-			ppn:{
-				required: true,
-				digits: true,
-				max: 8
-			},
-			pvmem:{
-				digits: true,
 			}
+			// ppn:{
+			// 	required: true,
+			// 	digits: true,
+			// 	max: 8
+			// },
+			// pvmem:{
+			// 	digits: true,
+			// }
 		},		
 		debug: true
 	});
@@ -235,12 +235,6 @@ function textify_batch(){
 	} else {
 	    content += '\n';
  	}
-	var pvmem = document.getElementById('id_pvmem').value
-	if(pvmem) {
-	    content += '#PBS -l pvmem=' + pvmem  + '\n';
-	} else { 
-	    content += '\n';
-	}
 	if (($('#id_wallhours').val()!="") && ($('#id_wallminutes').val()!="")) {
 	    content += '#PBS -l walltime=' + document.getElementById('id_wallhours').value + ':' + document.getElementById('id_wallminutes').value + ':00\n';
 	}
@@ -268,12 +262,10 @@ function textify_batch(){
 	content += '#PBS -d ' + document.getElementById('jobdir').value + '\n';
 	content += '#PBS -V\n\n';
 	content += 'cd ' + document.getElementById('jobdir').value + '\n';
-	var executable = document.getElementById('id_tough_executable').value;
-	var version = document.getElementById('id_tough_version').value;
 	content += 'module load tough/noah\n\n' 
 	// + version + '\n\n';
 	content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-	content += 'aprun -n ' + numprocs.toString() + ' ' + executable + '\n';
+	content += 'aprun -n ' + numprocs.toString() + ' ' + "tough"+ '\n';
 	content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n";
 	return content;
 }
@@ -367,7 +359,7 @@ function save_batch(){
         $('#id_wallhours').val("0");
     }
 
-	if(!$('#batch_form').valid()) return;
+	// if(!$('#batch_form').isValid()) return;
 	$('#save-loader').show();
 	//central function for saving batch settings from the GUI
 	var content = textify_batch();

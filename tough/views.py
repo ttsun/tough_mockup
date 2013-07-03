@@ -122,6 +122,12 @@ def setup(request, jobid):
                                'repo_choices': repo_choices, 'errors':errors},
                               context_instance=RequestContext(request))
 
+@login_required
+def job_show(request, jobid):
+    j = get_object_or_404(Job, id=int(jobid))
+    return render_to_response('job_setup.html', 
+                              {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'new_job': False},
+                              context_instance=RequestContext(request))
 
 @login_required
 def ajax_get_tough_files(request, jobid):
@@ -327,7 +333,7 @@ def create_job(request):
 
         #create default vasp files
         #render default setup form
-        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.setup', kwargs={"jobid": j.pk})}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.job_show', kwargs={"jobid": j.pk})}), content_type="application/json")
 
 
 @login_required

@@ -22,15 +22,15 @@ textarea{
 
 var jobfiles;
 var current_doc;
-var job_id;
+var jobid;
+var newjob;
 
 function getjobfiles(){
     $('#fileloader').show();
-    console.log(job_id)
     $.ajax({
         type: 'GET',
 
-        url: TOUGH_SUBDIR+'/get_tough_files/' + job_id,
+        url: TOUGH_SUBDIR+'/get_tough_files/' + jobid,
 
         success: function(data){
             jobfiles = data;
@@ -57,7 +57,15 @@ function showRawInput(blockName){
 }
 
 $(document).ready(function(){
-
+    if($("#dirset").attr("class")=="active"){
+        $("#dirsetup").removeClass("block").addClass("blockactive");
+        $(".blockchoice").addClass("disabled");
+    } else {
+        $("#compset").removeClass("block").addClass("blockactive");
+        jobid = {{job_id|default:None}};
+        getjobfiles();
+    }
+    $(".block:not(.blockactive)").hide();
    $(".diroptions").click(function(e){
        e.preventDefault();
        $("#jobdir").val($(this).attr("data-dir"));
@@ -70,6 +78,7 @@ $(document).ready(function(){
         save_batch();
    });
    $("#submitdir").click(function(ev){
+        current_doc = "batch";
         ev.preventDefault();
         // document.forms['dirinput'].submit();
         $.ajax({
@@ -83,7 +92,10 @@ $(document).ready(function(){
                 $("#compsetselect").parent().removeClass("disabled").addClass("active");
                 $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
                 showBlock("#compset");
-                window.location.href = data['job_url'];
+                jobid = data['job_id'];
+                getjobfiles();
+                // window.location.href = data['job_url'];
+                
             }
         });
         var values = {};
@@ -91,7 +103,7 @@ $(document).ready(function(){
             values[field.name] = field.value;
         });
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        job_id = values['job_id'];
+        
    });
    $("#sidebar a").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
@@ -101,10 +113,7 @@ $(document).ready(function(){
         }
         return false;
     });
-   $(".block:not(.blockactive)").hide();
-   $(".blockchoice").addClass("disabled");
-   $("#batch").parent().addClass("disabled");
-   getjobfiles();
+   
 });
 
 
@@ -125,8 +134,13 @@ function showBlock(id){
     <div class = "span2 well" id = "sidebar">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            <li><a href="#dirsetup">Directory Setup</a></li>
-            <li><a href="#compset" id = "batch">Computational Settings</a></li>
+            {% if job_id %}
+            <li id = "dirset" class = "disabled"><a href="#dirsetup">Directory Setup</a></li>
+            <li id = "batchselect" class = "active"><a href="#compset" id = "batch" >Computational Settings</a></a>
+            {% else %}
+            <li class = "active" id = "dirset"><a href="#dirsetup">Directory Setup</a></li>
+            <li class = "disabled" id = "batchselect"><a href="#compset">Computational Settings</a></li>
+            {% endif %}
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
@@ -145,7 +159,7 @@ function showBlock(id){
             <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
     </div>
-    <div class = "span10 blockactive" id = "dirsetup">
+    <div class = "span10 block" id = "dirsetup">
         <h2>Directory Setup</h2>
          <form action="{% url 'tough.views.create_job' %}" method = "POST" id="dirinput">
             {% csrf_token %}

@@ -2,7 +2,7 @@
  * @author agreiner
  */
 var current_doc = '';
-
+var csrftoken = getCookie('csrftoken');
 
 function init_input(file_id){
 	if(warn_unsaved_changes() == true) return;
@@ -109,35 +109,14 @@ function setup_div(div_name){
 			show_div('default');
 			current_doc = '';
 			break;
-		// case ('rawtough-text'):
-		// 	show_div('text-only');
-		// 	current_doc = 'RAWTOUGH';
-		// 	break;
 		case ('batch-gui'):
 			show_div('batch-gui');
 			current_doc = 'batch';
 			break;
-		// case ('poscar-text'):
-		// 	show_div('text-only');
-		// 	current_doc = file_id;
-		// 	break;
 		default:
 			show_div('text-only');
 			current_doc = div_name;
-			//no file selected yet, show the empty work area
-			// show_div('default');
-			// current_doc = '';
 		}
-		//Annette's version
-	// var div_name_array = div_name.split("-");
-	// var file_id = div_name_array[0];
-	// var div_type = div_name_array[1];
-	// switch (div_type){
-	// 	case ('gui'):
-	// 		show_div(file_id + '-gui');
-	// 		current_doc = file_id;
-	// 		break;
-	// 	case('text'):
 			
 	
 	show_buttons(div_name);
@@ -160,19 +139,23 @@ function cancel_form(){
 }
 
 function save_form(file_content){
+	console.log(current_doc);
 	file_name = current_doc=='batch'? 'tough.pbs': current_doc;
+
+	
 	//remove \r so IE doesn't mess up
 	var post_data = {filename: file_name, content: file_content.replace(/\r/g, '')};
 	jobfiles[current_doc] = post_data.content;
+
 	$.ajax({
 		type: 'POST',
-		url: TOUGH_SUBDIR + '/save/' + document.getElementById('jobid').value,
+		url: TOUGH_SUBDIR + '/save/' + jobid,
 		data: post_data,
 		success: function(data){
 		    if ($('#login_form', data).size() > 0) {
 				location.reload();
 			}
-			setup_div('default');
+			Alertify.log.success(file_name + " successfully created");
 			if (data) {
 				//do nothing
 			}
@@ -409,3 +392,45 @@ function is_valid_for_type(value, type){
 	}
 }
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+$.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});

@@ -17,6 +17,7 @@ from dateutil.tz import *
 from django.utils.timezone import utc
 from django.conf import settings
 import simplejson
+from django.core.urlresolvers import reverse
 
 
 def home(request):
@@ -252,20 +253,20 @@ def ajax_getdir(request, machine, directory):
     
 @login_required
 def ajax_mkdir(request, machine, directory):
-    cookie_str=request.user.cookie
+    cookie_str = request.user.cookie
     response, content = util.newt_request('/command/'+machine, 'POST', params={'executable': '/bin/mkdir -p ' + directory}, cookie_str=cookie_str)
     if response['status'] != '200':
         raise Exception(response)
 
-    contentjson=JSONDecoder().decode(content)
+    contentjson = JSONDecoder().decode(content)
     if contentjson['error'] != "":
         raise Exception(contentjson['error'])
 
     return HttpResponse(content, content_type='application/json')
 
-    
+
 @login_required
-def setup_new(request):
+def create_job(request):
     #create new job in database
     u = NoahUser.objects.get(username=request.user)
     #add a timestamp-based directory name to the path that will become jobdir
@@ -276,7 +277,7 @@ def setup_new(request):
         oldjob = None
     elif request.POST['setup_type'] == 'import':
         srcdir = request.POST['srcdir']
-        oldjob=None    
+        oldjob = None
     elif request.POST['setup_type'] == 'copy':
         oldjob = Job.objects.get(id=request.POST['jobid'])
         srcdir = oldjob.jobdir
@@ -288,12 +289,12 @@ def setup_new(request):
     else:
         return HttpResponseBadRequest("Invalid Setup Type")
 
-    if request.POST['setup_type']=='move':
-        j=Job.objects.get(id=request.POST['jobid'])
+    if request.POST['setup_type'] == 'move':
+        j = Job.objects.get(id=request.POST['jobid'])
         j.move_dir(jobdir)
         # Get the NOVA_ directory name without the path
-        basename=os.path.basename(j.jobdir.rstrip('/'))        
-        j.jobdir=os.path.join(jobdir, basename)
+        basename = os.path.basename(j.jobdir.rstrip('/'))
+        j.jobdir = os.path.join(jobdir, basename)
         j.save()
         return redirect('tough.views.index')
     else:
@@ -305,9 +306,9 @@ def setup_new(request):
         if srcdir:
             j.import_files(srcdir)
             # Delete any old timestamp files and update directory in batch file
-            # running this on imports, too, in case the user imports an old nova directory   
+            # running this on imports, too, in case the user imports an old nova directory
             dir_info = j.get_dir()
-            filelist=[ dirent['name'] for dirent in dir_info ]
+            filelist = [dirent['name'] for dirent in dir_info]
             if 'started' in filelist:
                 j.del_file('started')
             if 'completed' in filelist:
@@ -319,14 +320,14 @@ def setup_new(request):
                 batch_string = re.sub(r'#PBS -d \S+\n', d_repl, batch_string)
                 batch_string = re.sub(r'cd \S+\n', cd_repl, batch_string)
                 j.put_file('tough.pbs', batch_string)
-                
+
         #note creation time so that sorting works
         j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
         j.save()
 
         #create default vasp files
         #render default setup form
-        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.setup', kwargs={"jobid": j.pk})}), content_type="application/json")
 
 @login_required
 def delete_job(request):

@@ -29,7 +29,7 @@
                 </thead>
                 {% for job in all_jobs %}
                     <tr>
-                        <td class="name">{{job.jobname}}</td>
+                        <td class="name"><a href="{% url 'tough.views.setup' job.pk%}">{{job.jobname}}</a></td>
                         <td class="jobid">{{job.pbsjobid}}</td>
                         <td class="time">{{job.time_started}}</td>
                         <td class="state">{{job.nova_state}}</td>

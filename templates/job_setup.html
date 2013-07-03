@@ -83,7 +83,7 @@ $(document).ready(function(){
                 $("#compsetselect").parent().removeClass("disabled").addClass("active");
                 $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
                 showBlock("#compset");
-                current_doc = "batch";
+                window.location.href = data['job_url'];
             }
         });
         var values = {};
@@ -147,7 +147,7 @@ function showBlock(id){
     </div>
     <div class = "span10 blockactive" id = "dirsetup">
         <h2>Directory Setup</h2>
-         <form action="{% url 'tough.views.setup_new' %}" method = "POST" id="dirinput">
+         <form action="{% url 'tough.views.create_job' %}" method = "POST" id="dirinput">
             {% csrf_token %}
             <input type = "hidden" name ="setup_type" id = "setup_type" value = "new" />
             <div>

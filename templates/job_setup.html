@@ -26,11 +26,11 @@ var job_id;
 
 function getjobfiles(){
     $('#fileloader').show();
-    console.log(document.getElementById('jobid').value)
+    console.log(job_id)
     $.ajax({
         type: 'GET',
 
-        url: TOUGH_SUBDIR+'/get_tough_files/' + document.getElementById('jobid').value,
+        url: TOUGH_SUBDIR+'/get_tough_files/' + job_id,
 
         success: function(data){
             jobfiles = data;
@@ -83,15 +83,15 @@ $(document).ready(function(){
                 $("#compsetselect").parent().removeClass("disabled").addClass("active");
                 $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
                 showBlock("#compset");
+                current_doc = "batch";
             }
-        current_doc = "batch";
         });
         var values = {};
         $.each($('#dirinput').serializeArray(), function(i, field) {
             values[field.name] = field.value;
         });
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        job_id = values{'job_id'};
+        job_id = values['job_id'];
    });
    $("#sidebar a").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){

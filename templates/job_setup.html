@@ -88,9 +88,6 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
-   $("#batch").click(function(e){
-        guify_batch();
-   });
    $('#savecompset').click(function(e){
         console.log("saved comp set")
         save_batch();
@@ -153,7 +150,7 @@ function showInputArea(id){
             <li class = "nav-header">Required Information</li>
             {% if job_id %}
             <li id = "dirset" class = "disabled"><a href="#dirsetup">Directory Setup</a></li>
-            <li id = "batchselect" class = "blockchoice active"><a href="#blockinput" id = "batch" >Computational Settings</a></a>
+            <li id = "batchselect" class = "blockchoice active"><a href="#compset" id = "batch" >Computational Settings</a></a>
             {% else %}
             <li class = "active" id = "dirset"><a href="#dirsetup">Directory Setup</a></li>
             <li class = "blockchoice disabled" id = "batchselect"><a href="#compset" id = "batch">Computational Settings</a></li>

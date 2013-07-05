@@ -559,7 +559,7 @@ class Job(models.Model):
         return self
          
     def get_comp_settings_form(self):
-        return CompSettingsForm(data={"queue": "regular", "num_nodes": 1, "max_walltime": time(hour=0, minute=0), "email_notifications": "notifications_begin"})
+        return CompSettingsForm(data={"queue": "regular", "num_nodes": 1, "max_walltime": time(hour=1, minute=0), "email_notifications": "notifications_begin"})
     
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)

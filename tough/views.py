@@ -125,7 +125,6 @@ def setup(request, jobid):
 @login_required
 def job_edit(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
-    import ipdb; ipdb.set_trace()
     return render_to_response('job_setup.html', 
                               {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'new_job': False, 'job': j},
                               context_instance=RequestContext(request))

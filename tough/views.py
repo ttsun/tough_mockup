@@ -210,11 +210,10 @@ def ajax_save(request, jobid):
                 content = form.cleaned_data['rawinput']
             try:
                 j.save_block(blocktype, content)
-                return HttpResponse(simplejson.dumps({"success": True}))
+                return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
             except Exception:
-                import ipdb; ipdb.set_trace()
-                return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}))
-    return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}))
+                return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
 """
 @login_required

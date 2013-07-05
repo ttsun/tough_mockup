@@ -1,4 +1,4 @@
-<form id="batch_form" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST" class = "form-horizontal">
+<form id="compSettingsForm" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST" class = "form-horizontal">
     {% csrf_token %}
     <input type = "hidden" name = "blockType" value = "batch">
     {%for field in job.get_comp_settings_form%}
@@ -9,110 +9,10 @@
             </div> 
         </div>
     {%endfor%}
-    <!--<div class = "control-group">
-        <label class = "control-label" for = "id_queue">Queue Type</label>
-        <div class = "controls">
-            <select id = "id_queue">
-                <option value = "regular" selected = "selected">Regular</option>
-                <option value = "low">Low</option>
-                <option value = "debug">Debug</option>
-            </select>
-        </div>
-    </div>
-    <div class = "control-group">
-        <label class = "control-label" for = "id_numnodes"># Nodes</label>
-        <div class = "controls">
-            <input name = "numnodes" id = "id_numnodes" type = "text" value = "" placeholder = "Insert number of nodes"/>
-        </div>
-    </div>
-    <div class = "control-group">
-        <label class = "control-label" for = "id_wallhours"> Maximum Walltime</label>
-        <div class = "controls">
-        <select name = "wallhours" id = "id_wallhours">
-            <option value=""></option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select><label for="id_wallhours">Hours</label>
-        <select name="wallminutes" id="id_wallminutes">
-            <option value=""></option>
-            <option value="0">0</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="30">30</option>
-            <option value="35">35</option>
-            <option value="40">40</option>
-            <option value="45">45</option>
-            <option value="50">50</option>
-            <option value="55">55</option>
-            </select> <label for="id_wallminutes">Minutes</label></span>
-        </div>
-    </div>
-    <div class = "control-group">
-        <label class = "control-label" for = "id_nodemem">Node Memory</label>
-        <div class = "controls">
-            <select name = "nodemem" id = "id_nodemem">
-                <option value = "first" selected = "selected">First Available</option>
-                <option value = "bigmem">Big</option>
-                <option value = "smallmem">Small</option>
-            </select>
-        </div>
-    </div>
-    <div class = "control-group">
-        <label class = "control-label" for = "id_notifications_begin">Email Notifications</label>
-        <div class = "controls">
-            <label class = "checkbox">
-                <input name = "notifications_begin" id = "id_notifications_begin" type = "checkbox" value = "">
-                    On begin
-                </label>
-            <label class = "checkbox">
-                    <input type = "checkbox" value = "" name = "notifications_end" id = "id_notifications_end" >
-                    On end
-            </label>
-             <label class = "checkbox">
-                    <input type = "checkbox" value = "" name = "notifications_abort" id = "id_notifications_abort">
-                    On abort
-            </label>
-        </div>
-    </div>
-    <div class = "control-group">
-        <label class = "control-label" for = "id_repo">Repository</label>
-        <div class = "controls">
-            <select name = "repo" id = "id_repo">
-                {% for choice, label in repo_choices %}
-                <option value="{{choice}}"{% if choice == 'default' %} selected="selected"{% endif %}>{{label}}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>-->
     <div class="control-group">
         <div class="controls">
             <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
-            <button class="btn btn-primary" type="button" id='savecompset'>Save</button>
+            <input class="btn btn-primary" type="submit" />
             <button class="btn" type="button" id='cancel'>Cancel</button>                
         </div>
     </div>

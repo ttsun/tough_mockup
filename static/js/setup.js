@@ -83,38 +83,6 @@ function warn_unsaved_changes(){
  	if(!confirm("Are you sure you want to navigate away from this form? Your changes have not been saved.")) return true;
 }
 
-function setup_div(div_name){
-	console.log(div_name);
-	switch (div_name){
-		case ('default'):
-			show_div('default');
-			current_doc = '';
-			break;
-		case ('batch-gui'):
-			show_div('batch-gui');
-			current_doc = 'batch';
-			break;
-		default:
-			show_div('text-only');
-			current_doc = div_name;
-		}
-			
-	
-	show_buttons(div_name);
-	//show the last saved state of the current document
-	//when moving between views, this is overridden by restoring the unsaved text later
-	document.getElementById('thetext').value = jobfiles[current_doc];
-	//turn off the highlighting in the file navigation for all files
-	var lis = document.getElementById('filenav').childNodes;
-	var l= lis.length;
-	for(i=0; i<l; i++){
-		lis[i].className = '';
-	}
-	document.getElementById('batch').className = '';
-	//turn on highlighting for the file that's being edited
-	if(current_doc) document.getElementById(current_doc).className='active';
-}
-
 function cancel_form(){
 	if(warn_unsaved_changes() != true) setup_div('default');		
 }
@@ -123,7 +91,6 @@ function save_form(file_content){
 	console.log(current_doc);
 	file_name = current_doc=='batch'? 'tough.pbs': current_doc;
 
-	
 	//remove \r so IE doesn't mess up
 	var post_data = {filename: file_name, content: file_content.replace(/\r/g, '')};
 	jobfiles[current_doc] = post_data.content;

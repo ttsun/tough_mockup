@@ -205,6 +205,7 @@ function showInputArea(id){
             </div>
         </form>
     </div>
+    {% if job_id %}
     <div class = "span10 inputarea" id = "compset">
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
@@ -237,5 +238,6 @@ function showInputArea(id){
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}    

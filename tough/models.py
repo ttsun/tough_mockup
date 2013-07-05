@@ -562,8 +562,9 @@ class Job(models.Model):
         return CompSettingsForm(initial={"queue": "regular",
                                 "num_nodes": 1,
                                 "max_walltime": time(hour=0, minute=30),
-                                "email_notifications": ["notifications_begin", "notifications_end", "notifications_abort"]}
-                                )
+                                "email_notifications": ["notifications_begin", "notifications_end", "notifications_abort"],
+                                "nodemem": "first"},)
+                                
 
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)
@@ -580,6 +581,9 @@ EMAIL_CHOICES = (('notifications_begin', 'On begin'),
                 ('notifications_end', 'On end'),
                 ('notifications_abort', "On abort"),)
 
+MEM_CHOICES = (('first', 'First Available'),
+                ('big', 'Big'),
+                ('small', 'Small'),)
 
 class TimeSelectorWidget(widgets.MultiWidget):
     def __init__(self, attrs=None):
@@ -618,6 +622,7 @@ class CompSettingsForm(forms.Form):
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
     num_nodes = forms.IntegerField()
     max_walltime = forms.ChoiceField(widget=TimeSelectorWidget)
+    nodemem = forms.ChoiceField(choices=MEM_CHOICES)
     email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple)
 
 

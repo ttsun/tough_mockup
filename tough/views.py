@@ -171,14 +171,14 @@ def ajax_save(request, jobid):
 
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
-    blocktype = request.POST['blocktype']
+    blocktype = request.POST['blockType']
     if blocktype == "batch":
         content = ''
         content += '#PBS -N tough\n'
         content += '#PBS -q ' + request.POST.get('queue') + '\n'
-        content += '#PBS -l mppwidth=' + request.POST.get('numnodes') * 24 
+        content += '#PBS -l mppwidth=' + request.POST.get('num_nodes') * 24 
         
-        numprocs= parseInt(request.POST.get('numnodes')) * 24
+        numprocs= int(request.POST.get('num_nodes')) * 24
 
         nodemem = request.POST.get('nodemem')
         
@@ -187,8 +187,8 @@ def ajax_save(request, jobid):
         else:
             content += '\n'
         
-        if request.POST.get('wallhours')!="" and request.POST.get('wallminutes')!="" :
-            content += '#PBS -l walltime=' + request.POST.get('id_wallhours') + ':' + request.POST.get('id_wallminutes') + ':00\n'
+        if request.POST.get('max_walltime_0')!="" and request.POST.get('max_walltime_1')!="" :
+            content += '#PBS -l walltime=' + request.POST.get('max_walltime_0') + ':' + request.POST.get('max_walltime_1') + ':00\n'
         
         # gres_options={'/project': 'project', '/global/project': 'project', '/global/scratch': 'gscratch', '/projectb': 'projectb', '/global/projectb': 'projectb'};
         # gres_string = '';

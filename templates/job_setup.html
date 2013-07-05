@@ -90,7 +90,7 @@ $(document).ready(function(){
    });
    $('#savecompset').click(function(e){
         console.log("saved comp set")
-        save_batch();
+        $("#batch_form").submit();
    });
    $("#submitdir").click(function(ev){
         current_doc = "batch";
@@ -112,7 +112,7 @@ $(document).ready(function(){
    });
    $("#saverawblock").click(function(e){
         Alertify.log.info("Saving " + current_doc + " block");
-        save_form();
+        $("#rawtextform").submit();
    })
    $("#sidebar a").click(function(e){
         current_doc = $(this).attr("id")
@@ -220,7 +220,7 @@ function showInputArea(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <form id="rawtextform" action="url 'job/save/' jobid" method="POST">
+                <form id="rawtextform" action="url 'tough.views.ajax_save' jobid" method="POST">
                     {% csrf_token %}
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">

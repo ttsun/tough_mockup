@@ -178,16 +178,16 @@ def ajax_save(request, jobid):
         content += '#PBS -q ' + request.POST.get('queue') + '\n'
         content += '#PBS -l mppwidth=' + request.POST.get('numnodes') * 24 
         
-        var numprocs= parseInt(request.POST.get('numnodes')) * 24
+        numprocs= parseInt(request.POST.get('numnodes')) * 24
 
-        var nodemem = request.POST.get('nodemem')
+        nodemem = request.POST.get('nodemem')
         
         if nodemem!='first' :
             content += ':' + nodemem + '\n'
         else:
             content += '\n'
         
-        if request.POST.get('wallhours')!="" && request.POST.get('wallminutes')!="" :
+        if request.POST.get('wallhours')!="" and request.POST.get('wallminutes')!="" :
             content += '#PBS -l walltime=' + request.POST.get('id_wallhours') + ':' + request.POST.get('id_wallminutes') + ':00\n'
         
         # gres_options={'/project': 'project', '/global/project': 'project', '/global/scratch': 'gscratch', '/projectb': 'projectb', '/global/projectb': 'projectb'};
@@ -199,18 +199,18 @@ def ajax_save(request, jobid):
         # }
         # if(gres_string != '') content += '#PBS -l gres=' + gres_string + '\n';
         content += '#PBS -m '
-        var mail = ''
+        mail = ''
         if request.POST.get('id_notifications_begin').checked: 
             mail += 'b'
         if request.POST.get('id_notifications_end').checked:
             mail += 'e'
         if request.POST.get('id_notifications_abort').checked: 
             mail += 'a'
-        if !mail: 
+        if not mail: 
             mail = 'n';
         content += mail + '\n';
-        var repo = request.POST.get('id_repo')
-        if repo && repo!="default": 
+        repo = request.POST.get('id_repo')
+        if repo and repo!="default": 
             content += '#PBS -A ' + repo + '\n'
 
         content += '#PBS -j oe\n'

@@ -123,8 +123,9 @@ def setup(request, jobid):
                               context_instance=RequestContext(request))
 
 @login_required
-def job_show(request, jobid):
+def job_edit(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
+    import ipdb; ipdb.set_trace()
     return render_to_response('job_setup.html', 
                               {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'new_job': False, 'job': j},
                               context_instance=RequestContext(request))
@@ -346,7 +347,7 @@ def create_job(request):
         #create default vasp files
         #render default setup form
         
-        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.job_show', kwargs={"jobid": j.pk})}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.job_edit', kwargs={"jobid": j.pk})}), content_type="application/json")
 
 def populate_job(job):
     batch = Block(blockType="batch", job=job)

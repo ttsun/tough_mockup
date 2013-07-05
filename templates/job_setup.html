@@ -10,7 +10,7 @@
 textarea{
     width:auto;
 }
-#dirinput, #batch_form{
+#dirinput, #compSettingsForm{
     padding:2em;
 }
 
@@ -24,16 +24,12 @@ ul{
     list-style-type: none;
 }
 </style>
-
-<script type="text/javascript" src="/static/js/blocks.js"></script>
-<script type="text/javascript" src="/static/js/setup.js"></script>
 <script type="text/javascript">
 
 var current_doc;
 var newjob;
 var homedir;
 var scratchdir;
-
 
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
@@ -58,7 +54,7 @@ $(document).ready(function(){
         current_doc = "batch";
     }
     $(".inputarea:not(.inputareaactive)").hide();
-   $(".diroptions").click(function(e){
+    $(".diroptions").click(function(e){
        e.preventDefault();
        if($(this).attr("id") == "homedir"){
         $("#jobdir").val(homedir);
@@ -66,11 +62,17 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
-   $('#savecompset').click(function(e){
-        console.log("saved comp set")
-        $("#batchjobdir").val($("#jobdir").val());
-        $("#batch_form").submit();
-   });
+   $("form").submit(function(e){
+        e.preventDefault();
+        $.post($(this).attr("action"), $(this).serialize(), function(data){
+            if(data.success){
+                Alertify.log.success("Block successfully saved!");
+            }else{
+                Alertify.log.error(data.error);
+            }
+        });
+        return false;
+   })
    $("#submitdir").click(function(ev){
         current_doc = "batch";
         ev.preventDefault();
@@ -89,12 +91,9 @@ $(document).ready(function(){
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
         
    });
-   $("#saverawblock").click(function(e){
-        Alertify.log.info("Saving " + current_doc + " block");
-        $("#rawtextform").submit();
-   })
    $("#sidebar a").click(function(e){
-        current_doc = $(this).attr("id")
+        current_doc = $(this).attr("id");
+        $("#currentblock").val(current_doc);
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             showInputArea($(this).attr("id"));
@@ -134,7 +133,7 @@ function showInputArea(id){
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
-            <li class = "blockchoice"><a href="#blockinput" id = "ROCKS">ROCKS</a></li>
+            <li class = "blockchoice"><a href="#blockinput" id = "GENER">GENER</a></li>
             <li class = "blockchoice"><a href="#blockinput" id = "Block2">Block 2</a></li> 
             <li class = "blockchoice"><a href="#blockinput" id = "Block3">Block 3</a></li> 
             <li class = "blockchoice"><a href="#">Block 4</a></li>
@@ -148,6 +147,7 @@ function showInputArea(id){
             <li class = "blockchoice"><a href="#">Block 4</a></li>
             <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
+        <button class = "btn btn-success btn-large span11" type="button">SUBMIT</button>
     </div>
     <div class = "span10 inputarea" id = "dirsetup">
         <h2>Directory Setup</h2>
@@ -200,9 +200,9 @@ function showInputArea(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <form id="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
+                <form class="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
                     {% csrf_token %}
-                    <input type = "hidden" name = "blockType" />
+                    <input id = "currentblock" type = "hidden" name = "blockType" />
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">
                         <div class = "control">
@@ -210,7 +210,8 @@ function showInputArea(id){
                         </div>
                     </div>
                     {% endfor %}
-                <button class="btn" type="button" id='saverawblock'>Save</button>
+                <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
+                <input class="btn btn-primary" type="submit" id='saverawblock' />
                 <button class="btn" type="button" id='cancel'>Cancel</button>
                 </form>
             </div>

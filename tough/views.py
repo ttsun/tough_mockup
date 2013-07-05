@@ -154,6 +154,23 @@ def ajax_get_tough_files(request, jobid):
     return HttpResponse(content, content_type='application/json')
 
 @login_required
+def submit(request, jobid):
+    j = Job.objects.get(id=jobid)
+    finalinput = ''
+    for block in j.block_set.all():
+        if block.blockType != "MESH" and block.blockType != "batch":
+            finalinput += block.content + '\n'
+    batch = j.block_set.get(blockType="batch")
+    mesh = j.block_set.get(blockType="mesh")
+    j.put_file("input", finalinput)
+    j.put_file("tough.pbs", batch)
+    j.put_file("MESH", mesh)
+    j.submit()
+    return HttpResponse("")
+
+    
+
+@login_required
 def ajax_submit(request, jobid):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
@@ -210,11 +227,10 @@ def ajax_save(request, jobid):
                 content = form.cleaned_data['rawinput']
             try:
                 j.save_block(blocktype, content)
-                return HttpResponse(simplejson.dumps({"success": True}))
+                return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
             except Exception:
-                import ipdb; ipdb.set_trace()
-                return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}))
-    return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}))
+                return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
 """
 @login_required

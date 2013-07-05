@@ -1,5 +1,6 @@
-<form id="batch_form" action="url " method="post" class = "form-horizontal">
+<form id="batch_form" action="url 'job/save/' jobid" method="POST" class = "form-horizontal">
     {% csrf_token %}
+    <input style="display:hidden" name = "blockType" value = "batch">
     {%for field in job.get_comp_settings_form%}
         <div class="control-group">
             <label for="id_{{field.html_name}}" class="control-label">{{field.label}}</label>

@@ -228,7 +228,7 @@ function showInputArea(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <form id="rawtextform" action="" method="POST">
+                <form id="rawtextform" action="url 'job/save/' jobid" method="POST">
                     {% csrf_token %}
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">

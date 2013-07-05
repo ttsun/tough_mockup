@@ -143,7 +143,7 @@ def ajax_get_tough_files(request, jobid):
     # TODO: if job is new, don't bother
     for block in j.block_set.all():
         try:
-            key = block.name
+            key = block.blockType
             if key == "batch": tough_files.update({key:j.get_file("tough.pbs")})
             else: tough_files.update({key:j.get_file(key)})
 
@@ -349,9 +349,9 @@ def create_job(request):
         return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.job_show', kwargs={"jobid": j.pk})}), content_type="application/json")
 
 def populate_job(job):
-    batch = Block(name="batch", job=job)
+    batch = Block(blockType="batch", job=job)
     batch.save()
-    GENER = Block(name="GENER", job=job)
+    GENER = Block(blockType="GENER", job=job)
     GENER.save()
     # add more blocks here
 

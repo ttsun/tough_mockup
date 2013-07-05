@@ -115,9 +115,6 @@ $(document).ready(function(){
         save_form();
    })
    $("#sidebar a").click(function(e){
-        if($(this).parent().attr("id") == "batchselect" && $(this).parent("li[class~=disabled]").length == 0){
-            guify_batch();
-        }
         current_doc = $(this).attr("id")
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();

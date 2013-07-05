@@ -554,35 +554,37 @@ class Job(models.Model):
                 self.nova_state = 'completed'
             else:
                 self.nova_state = 'aborted'
-            
+
         self.save()
         return self
-         
+
     def get_comp_settings_form(self):
-        return CompSettingsForm(data={"queue": "regular", "num_nodes": 1, "max_walltime": time(hour=1, minute=0), "email_notifications": "notifications_begin"})
-    
+        return CompSettingsForm(initial={"queue": "regular",
+                                "num_nodes": 1,
+                                "max_walltime": time(hour=1, minute=30),
+                                "email_notifications": ["notifications_begin", "notifications_end", "notifications_abort"]}
+                                )
+
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)
 
     def get_raw_input_form(self):
-        return RawInputForm(data={"forminput":""})
+        return RawInputForm(initial={"forminput": ""})
 
 
-QUEUE_CHOICES = (
-        ('regular', 'Regular'),
-        ('low', 'Low'),
-        ('debug', "Debug"),
-    )
-EMAIL_CHOICES = (
-        ('notifications_begin', 'On begin'),
-        ('notifications_end', 'On end'),
-        ('notifications_abort', "On abort"),
-    )
+QUEUE_CHOICES = (('regular', 'Regular'),
+                ('low', 'Low'),
+                ('debug', "Debug"),)
+
+EMAIL_CHOICES = (('notifications_begin', 'On begin'),
+                ('notifications_end', 'On end'),
+                ('notifications_abort', "On abort"),)
+
 
 class TimeSelectorWidget(widgets.MultiWidget):
     def __init__(self, attrs=None):
         minute = ((x*5, x*5) for x in range(0, 12))
-        hour = ((x,x) for x in range(0, 7))
+        hour = ((x, x) for x in range(0, 7))
         # create choices for days, months, years
         # example below, the rest snipped for brevity.
         _widgets = (
@@ -611,6 +613,7 @@ class TimeSelectorWidget(widgets.MultiWidget):
         else:
             return str(T)
 
+
 class CompSettingsForm(forms.Form):
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
     num_nodes = forms.IntegerField()
@@ -619,11 +622,12 @@ class CompSettingsForm(forms.Form):
 
 
 class RawInputForm(forms.Form):
-    rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols":120, "rows": 30}))
+    rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
 
 # class BlockType(models.Model):
 #     blockname = models.CharField(max_length=255)
 #     template = models.CharField(max_length=255)
+
 
 class Block(models.Model):
     blockType = models.CharField(max_length=255)

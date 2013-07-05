@@ -65,7 +65,6 @@ $(document).ready(function(){
    });
    $("#submitdir").click(function(ev){
         ev.preventDefault();
-        // document.forms['dirinput'].submit();
         $.ajax({
             url: $("#dirinput").attr("action"),
             data: $("#dirinput").serialize(),

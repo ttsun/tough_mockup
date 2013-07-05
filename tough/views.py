@@ -114,12 +114,12 @@ def setup(request, jobid):
     u = NoahUser.objects.get(username=request.user)
 
     repos = u.get_repos()
-    repo_choices=[ (repo, repo) for repo in  repos ]
+    repo_choices = [(repo, repo) for repo in repos]
     repo_choices.insert(0, ('default', 'Default'))
 
     return render_to_response('job_setup.html', 
                               {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir,
-                               'repo_choices': repo_choices, 'errors':errors},
+                               'repo_choices': repo_choices, 'errors': errors},
                               context_instance=RequestContext(request))
 
 

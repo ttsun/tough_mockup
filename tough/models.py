@@ -6,17 +6,17 @@ import os
 from datetime import *
 from dateutil import parser
 from dateutil.tz import *
-from django.utils.simplejson import JSONDecoder
+import simplejson
 import tough.util as util
-import logging 
+import logging
 from django import forms
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
-import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(getattr(settings, 'LOG_LEVEL', logging.DEBUG))
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password=None):
@@ -49,6 +49,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class NoahUser(AbstractBaseUser):
     """
     Extend NoahUser Model to include newt cookies
@@ -65,15 +66,14 @@ class NoahUser(AbstractBaseUser):
 
     def is_licensed_user(self):
         #check that they are in the appropriate group
-        cookie_str=self.user.cookie
+        cookie_str = self.cookie
         checkurl = '/command/hopper/'
         cmd = '/usr/bin/groups %s' % self.username
         response, content = util.newt_request(checkurl, 'POST', params={'executable': cmd}, cookie_str=cookie_str)
-        if response['status']!='200':
+        result = simplejson.loads(content)
+        if response['status'] != '200':
             raise Exception(content)
-        result =JSONDecoder().decode(content)
-        #replace "vasp" here with the appropriate group name
-        if "vasp" in result['output']:
+        if "osp" in result['output']:
             return True
         else:
             return False
@@ -83,15 +83,15 @@ class NoahUser(AbstractBaseUser):
         """
         Pull down repos for a user
         """
-        cookie_str=self.cookie
+        cookie_str = self.cookie
         url = '/account/user/%s/repos' % self.username
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response['status'] != '200':
             raise Exception(content)
             
-        repo_dict=JSONDecoder().decode(content)
+        repo_dict = simplejson.loads(content)
         
-        repo_list=[ repo['rname'] for repo in repo_dict['items'] if repo['adminunit_type']=='REPO' ]
+        repo_list = [repo['rname'] for repo in repo_dict['items'] if repo['adminunit_type'] == 'REPO']
             
         return repo_list
     
@@ -124,28 +124,27 @@ class NoahUser(AbstractBaseUser):
         #get completed and aborted and sort together by time submitted
         complete = Job.objects.filter(user=self.id).filter(nova_state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
 
-        return {'toberun': toberun, 'running':running, 'complete': complete}   
+        return {'toberun': toberun, 'running':running, 'complete': complete}
 
-        
+
 class Job(models.Model):
     """
     Model for Jobs submitted to NEWT
-        
     """
-    
+
     # Required fields - user, jobdir, machine
     user = models.ForeignKey(NoahUser)
     jobdir = models.CharField(max_length=1024)
     machine = models.CharField(max_length=256)
-    
+
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
-                          ('toberun', 'to be run but not yet queued'),
-                          ('submitted', 'in a queue'),
-                          ('started', 'running on a nersc machine'),
-                          ('aborted', 'started and no longer running but did not run to completion'),
-                          ('completed', 'completed or stopped'),
-                          )
+                         ('toberun', 'to be run but not yet queued'),
+                         ('submitted', 'in a queue'),
+                         ('started', 'running on a nersc machine'),
+                         ('aborted', 'started and no longer running but did not run to completion'),
+                         ('completed', 'completed or stopped'),
+                         )
     nova_state = models.CharField(max_length=1, choices=NOVA_STATE_CHOICES, default='toberun')
 
     # Defaults to tough.pbs
@@ -156,7 +155,7 @@ class Job(models.Model):
     status = models.CharField(max_length=32, blank=True)
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
-    queue =  models.CharField(max_length=256, blank=True)
+    queue = models.CharField(max_length=256, blank=True)
     
     # Useful timestamps
     time_last_updated = models.DateTimeField(null=True, blank=True)
@@ -176,7 +175,7 @@ class Job(models.Model):
             import ipdb; ipdb.set_trace()
             raise Exception(response)
         
-        content=JSONDecoder().decode(content)
+        content=simplejson.loads(content)
         if content['error']!="":
             raise Exception(content['error'])
             
@@ -199,7 +198,7 @@ class Job(models.Model):
         response, content = util.newt_request(url, 'PUT', params=contents, cookie_str=cookie_str)
         if response['status']!='200':
             raise Exception(content)
-        return JSONDecoder().decode(content)
+        return simplejson.loads(content)
  
     def upload_file(self, filename, filepath, *args, **kwargs):
         """
@@ -217,7 +216,7 @@ class Job(models.Model):
         response, content = util.newt_upload_request(url, files, cookie_str=cookie_str) #problem here
         if response['status']!='200':
             raise Exception(response)
-        return JSONDecoder().decode(response)
+        return simplejson.loads(response)
        
     def del_file(self, filename,  *args, **kwargs):
         """
@@ -234,7 +233,7 @@ class Job(models.Model):
         response, content = util.newt_request(url, 'DELETE', cookie_str=cookie_str)
         if response['status']!='200':
             raise Exception(content)
-        return JSONDecoder().decode(content)        
+        return simplejson.loads(content)        
         
         
     def get_file(self, filename, *args, **kwargs):
@@ -298,7 +297,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(response)        
 
-        content=JSONDecoder().decode(content)
+        content=simplejson.loads(content)
         if content['error']!="":
             raise Exception(content['error'])
 
@@ -322,7 +321,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise IOError(content)
             
-        dir_info=JSONDecoder().decode(content)
+        dir_info=simplejson.loads(content)
         
         return dir_info
         
@@ -339,7 +338,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(response)        
 
-        content=JSONDecoder().decode(content)
+        content=simplejson.loads(content)
         if content['error']!="":
             raise Exception(content['error'])
 
@@ -390,7 +389,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(response)        
         
-        content=JSONDecoder().decode(content)
+        content=simplejson.loads(content)
         if content['error']!="":
             # if src dir is empty ignore
             # Make sure we are dealing with a dir cp
@@ -443,7 +442,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(content)
 
-        job_info=JSONDecoder().decode(content)
+        job_info=simplejson.loads(content)
 
         #check for problem with queue submission detected by newt
         if job_info['status']!='OK':
@@ -466,7 +465,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(content)
 
-        output=JSONDecoder().decode(content)
+        output=simplejson.loads(content)
 
         return output
     
@@ -518,7 +517,7 @@ class Job(models.Model):
                 
         
         # Decode JSON
-        job_info=JSONDecoder().decode(content)
+        job_info=simplejson.loads(content)
         # Set queue, jobname, timeuse, status
         self.queue=job_info['queue']
         self.pbsjobid=job_info['jobid']

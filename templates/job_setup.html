@@ -43,16 +43,18 @@ function showRawInput(blockName){
 }
 
 $(document).ready(function(){
-    homedir = "/global/homes/" + "{{username}}".charAt('0') + "/" + "{{username}}";
-    scratchdir = "/global/scratch/sd/" + "{{username}}";
-    if($("#dirset").attr("class")=="active"){
+    homedir = "/global/homes/" + "{{user.username}}".charAt('0') + "/" + "{{user.username}}";
+    scratchdir = "/global/scratch/sd/" + "{{user.username}}";
+    {% if not job_id %}
         $("#dirsetup").removeClass("inputarea").addClass("inputareaactive");
         $(".blockchoice").addClass("disabled");
-    } else {
+    {% else %}
+        {% if new_job %}
+            Alertify.log.success("{{job_name}}"+" created at "+"{{job.jobdir}}");
+        {% endif %}
         $("#compset").removeClass("inputarea").addClass("inputareaactive");
-        Alertify.log.success("{{job_name}}"+" created at "+"{{job_jobdir}}");
         current_doc = "batch";
-    }
+    {% endif %}
     $(".inputarea:not(.inputareaactive)").hide();
     $(".diroptions").click(function(e){
        e.preventDefault();
@@ -62,8 +64,9 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
-   $("form").submit(function(e){
+   $("form:not(#dirinput)").submit(function(e){
         e.preventDefault();
+        Alertify.log.info("Saving " + current_doc + " block");
         $.post($(this).attr("action"), $(this).serialize(), function(data){
             if(data.success){
                 Alertify.log.success("Block successfully saved!");
@@ -72,24 +75,15 @@ $(document).ready(function(){
             }
         });
         return false;
-   })
-   $("#submitdir").click(function(ev){
+   });
+   $("#dirinput").submit(function(e){
         current_doc = "batch";
-        ev.preventDefault();
-        $.ajax({
-            url: $("#dirinput").attr("action"),
-            data: $("#dirinput").serialize(),
-            type: "POST",
-            success: function(data){
-                window.location.href = data['job_url'];
-            }
-        });
         var values = {};
         $.each($('#dirinput').serializeArray(), function(i, field) {
             values[field.name] = field.value;
         });
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        
+        return true;
    });
    $("#sidebar a").click(function(e){
         current_doc = $(this).attr("id");
@@ -179,7 +173,7 @@ function showInputArea(id){
                 </div>
             </div>
             <div>
-                <button class="btn btn-primary" type="button" id='submitdir'>Submit</button>
+                <input class="btn btn-primary" type="submit"/>
             </div>
         </form>
     </div>

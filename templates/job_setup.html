@@ -29,31 +29,11 @@ ul{
 <script type="text/javascript" src="/static/js/setup.js"></script>
 <script type="text/javascript">
 
-var jobfiles;
 var current_doc;
-var jobid;
 var newjob;
 var homedir;
 var scratchdir;
 
-function getjobfiles(){
-    $('#fileloader').show();
-    $.ajax({
-        type: 'GET',
-
-        url: TOUGH_SUBDIR+'/get_tough_files/' + jobid,
-
-        success: function(data){
-            jobfiles = data;
-            $('#fileloader').hide();
-            console.log(jobfiles);
-        },
-        error: function(err){
-            // alert("There was a problem getting the input files.");
-            $('#fileloader').hide();
-        }
-    });
-}
 
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
@@ -76,8 +56,6 @@ $(document).ready(function(){
         $("#compset").removeClass("inputarea").addClass("inputareaactive");
         Alertify.log.success("{{job_name}}"+" created at "+"{{job_jobdir}}");
         current_doc = "batch";
-        jobid = {{job_id|default:None}};
-        getjobfiles();
     }
     $(".inputarea:not(.inputareaactive)").hide();
    $(".diroptions").click(function(e){

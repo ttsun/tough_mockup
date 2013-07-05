@@ -6,7 +6,6 @@ import mimetypes
 import random
 from django.utils import encoding as encoding
 
-
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 

@@ -46,26 +46,7 @@ function form_was_changed(){
 	if($('#gui-text-buttons').hasClass('changed')) return true;
 }
 
-// function update_numproc(){
-// 	//changed to fit Hopper
-// 	document.getElementById('product').innerHTML = document.getElementById('id_numnodes').value * 24
-// 	// document.getElementById('id_ppn').value;
-// }
 
-// function show_div(div_name){
-// 	//hide all the divs for files that aren't being edited, show the div that is being edited
-// 	var maindiv = document.getElementById("main").childNodes;
-// 	l = maindiv.length;
-// 	for (i = 0; i < l; i++) {
-// 		n = maindiv[i];
-// 		if(n.nodeType === 1){
-// 			if (n.id != div_name) 
-// 				n.className = "hidden";
-// 			else 
-// 				n.className = n.className.replace(/\bhidden\b/, '');			
-// 		}
-// 	}
-// }
 
 function show_buttons(div){
 	var content, theP;
@@ -155,7 +136,7 @@ function save_form(file_content){
 		    if ($('#login_form', data).size() > 0) {
 				location.reload();
 			}
-			Alertify.log.success(file_name + " successfully created");
+			Alertify.log.success(file_name + " successfully saved");
 			if (data) {
 				//do nothing
 			}
@@ -274,10 +255,11 @@ function guify_batch(){
 						document.getElementById('id_queue').value = args;
 						break;
 					case 'l':
-						var nodedist = args.match(/nodes=(\d+)/);
+						var nodedist = args.match(/mppwidth=(\d+)/);
 							// :ppn=(\d+):?(\w+)?/);
 						if (nodedist) {
-							document.getElementById('id_numnodes').value = nodedist[1];
+							document.getElementById('id_numnodes').removeAttribute("placeholder");
+							document.getElementById('id_numnodes').value = nodedist[1]/24;
 							// document.getElementById('id_ppn').value = nodedist[2];
 							// if(nodedist[3]) document.getElementById('id_nodemem').value = nodedist[3];
 							break;
@@ -322,7 +304,6 @@ function guify_batch(){
 		}
 		//update the total number of nodes
 		//changed to fit Hopper
-		document.getElementById('product').innerHTML = parseInt(document.getElementById('id_numnodes').value) * 24
 		// parseInt(document.getElementById('id_ppn').value);
 	}
 	else if(lines != ''){

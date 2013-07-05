@@ -1,6 +1,14 @@
-<form id="batch_form" action="" method="post" class = "form-horizontal">
+<form id="batch_form" action="url " method="post" class = "form-horizontal">
     {% csrf_token %}
-    <div class = "control-group">
+    {%for field in job.get_comp_settings_form%}
+        <div class="control-group">
+            <label for="id_{{field.html_name}}" class="control-label">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}                 
+            </div> 
+        </div>
+    {%endfor%}
+    <!--<div class = "control-group">
         <label class = "control-label" for = "id_queue">Queue Type</label>
         <div class = "controls">
             <select id = "id_queue">
@@ -13,7 +21,7 @@
     <div class = "control-group">
         <label class = "control-label" for = "id_numnodes"># Nodes</label>
         <div class = "controls">
-            <input name = "numnodes" id = "id_numnodes" type = "text" placeholder = "Insert number of nodes"/>
+            <input name = "numnodes" id = "id_numnodes" type = "text" value = "" placeholder = "Insert number of nodes"/>
         </div>
     </div>
     <div class = "control-group">
@@ -80,12 +88,12 @@
                 <input name = "notifications_begin" id = "id_notifications_begin" type = "checkbox" value = "">
                     On begin
                 </label>
-            <label name = "notifications_end" id = "id_notifications_end" class = "checkbox">
-                    <input type = "checkbox" value = "">
+            <label class = "checkbox">
+                    <input type = "checkbox" value = "" name = "notifications_end" id = "id_notifications_end" >
                     On end
             </label>
-             <label name = "notifications_abort" id = "id_notifications_abort" class = "checkbox">
-                    <input type = "checkbox" value = "">
+             <label class = "checkbox">
+                    <input type = "checkbox" value = "" name = "notifications_abort" id = "id_notifications_abort">
                     On abort
             </label>
         </div>
@@ -99,7 +107,7 @@
                 {% endfor %}
             </select>
         </div>
-    </div>
+    </div>-->
     <div class="control-group">
         <div class="controls">
             <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />

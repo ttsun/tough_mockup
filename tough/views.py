@@ -167,14 +167,65 @@ def ajax_submit(request, jobid):
     return HttpResponse("okay")
 
 @login_required
-def ajax_save(request, jobid, filename):
+def ajax_save(request, jobid):
+
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
-    filename = request.POST['filename']
-    submitted_text = request.POST['content']
+    blocktype = request.POST['blocktype']
+    if blocktype == "batch":
+        content = ''
+        content += '#PBS -N tough\n'
+        content += '#PBS -q ' + request.POST.get('queue') + '\n'
+        content += '#PBS -l mppwidth=' + request.POST.get('numnodes') * 24 
+        
+        var numprocs= parseInt(request.POST.get('numnodes')) * 24
+
+        var nodemem = request.POST.get('nodemem')
+        
+        if nodemem!='first' :
+            content += ':' + nodemem + '\n'
+        else:
+            content += '\n'
+        
+        if request.POST.get('wallhours')!="" && request.POST.get('wallminutes')!="" :
+            content += '#PBS -l walltime=' + request.POST.get('id_wallhours') + ':' + request.POST.get('id_wallminutes') + ':00\n'
+        
+        # gres_options={'/project': 'project', '/global/project': 'project', '/global/scratch': 'gscratch', '/projectb': 'projectb', '/global/projectb': 'projectb'};
+        # gres_string = '';
+        # for dir in gres_options:
+        #     dir_esc = dir.replace(/\//g, '\\\/')
+        #     gres_pattern = new RegExp('^'+ dir_esc + '\/.+')
+        #     if ($('#jobdir').val().search(gres_pattern) != -1) gres_string = gres_options[dir];
+        # }
+        # if(gres_string != '') content += '#PBS -l gres=' + gres_string + '\n';
+        content += '#PBS -m '
+        var mail = ''
+        if request.POST.get('id_notifications_begin').checked: 
+            mail += 'b'
+        if request.POST.get('id_notifications_end').checked:
+            mail += 'e'
+        if request.POST.get('id_notifications_abort').checked: 
+            mail += 'a'
+        if !mail: 
+            mail = 'n';
+        content += mail + '\n';
+        var repo = request.POST.get('id_repo')
+        if repo && repo!="default": 
+            content += '#PBS -A ' + repo + '\n'
+
+        content += '#PBS -j oe\n'
+        content += '#PBS -d ' + document.getElementById('jobdir').value + '\n'
+        content += '#PBS -V\n\n'
+        content += 'cd ' + document.getElementById('jobdir').value + '\n'
+        content += 'module load tough/noah\n\n' 
+        content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
+        content += 'aprun -n ' + numprocs.__str() + ' ' + "tough"+ '\n'
+        content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
+    else:
+        content = request.POST.get('rawinput')
     #save via newt, then return an okay
     try:
-        j.save_block(filename, submitted_text)
+        j.save_block(filename, content)
     except:
         return HttpResponse("Unable to save the file")
     return HttpResponse("okay")

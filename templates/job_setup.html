@@ -14,6 +14,16 @@ textarea{
     padding:2em;
 }
 
+#id_max_walltime_0, #id_max_walltime_1{
+    width: 65px;
+}
+#id_rawinput{
+    rows:30;
+    cols:80;
+}
+ul{
+    list-style-type: none;
+}
 </style>
 
 <script type="text/javascript" src="/static/js/blocks.js"></script>
@@ -21,17 +31,23 @@ textarea{
 <script type="text/javascript">
 
 var jobfiles;
+var current_doc;
+var jobid;
+var newjob;
+var homedir;
+var scratchdir;
 
 function getjobfiles(){
     $('#fileloader').show();
     $.ajax({
         type: 'GET',
 
-        url: TOUGH_SUBDIR+'/get_tough_files/' + document.getElementById('jobid').value,
+        url: TOUGH_SUBDIR+'/get_tough_files/' + jobid,
 
         success: function(data){
             jobfiles = data;
             $('#fileloader').hide();
+            console.log(jobfiles);
         },
         error: function(err){
             // alert("There was a problem getting the input files.");
@@ -52,30 +68,42 @@ function showRawInput(blockName){
 }
 
 $(document).ready(function(){
-
+    homedir = "/global/homes/" + "{{username}}".charAt('0') + "/" + "{{username}}";
+    scratchdir = "/global/scratch/sd/" + "{{username}}";
+    if($("#dirset").attr("class")=="active"){
+        $("#dirsetup").removeClass("inputarea").addClass("inputareaactive");
+        $(".blockchoice").addClass("disabled");
+    } else {
+        $("#compset").removeClass("inputarea").addClass("inputareaactive");
+        Alertify.log.success("{{job_name}}"+" created at "+"{{job_jobdir}}");
+        current_doc = "batch";
+        jobid = {{job_id|default:None}};
+        getjobfiles();
+    }
+    $(".inputarea:not(.inputareaactive)").hide();
    $(".diroptions").click(function(e){
        e.preventDefault();
-       $("#jobdir").val($(this).attr("data-dir"));
+       if($(this).attr("id") == "homedir"){
+        $("#jobdir").val(homedir);
+       } else {
+        $("#jobdir").val(scratchdir);
+       }
    });
-   $("#compsetselect").click(function(e){
-        // guify_batch();
+   $("#batch").click(function(e){
+        guify_batch();
    });
    $('#savecompset').click(function(e){
+        console.log("saved comp set")
         save_batch();
    });
    $("#submitdir").click(function(ev){
+        current_doc = "batch";
         ev.preventDefault();
         $.ajax({
             url: $("#dirinput").attr("action"),
             data: $("#dirinput").serialize(),
             type: "POST",
             success: function(data){
-                Alertify.log.success(data['job_name']+" created at "+data['job_dir']);
-                $("#reqblocks li").removeClass("disabled");
-                $("#opblocks li").removeClass("disabled");
-                $("#compsetselect").parent().removeClass("disabled").addClass("active");
-                $("a[href=#dirsetup]").parent().removeClass("active").addClass("disabled");
-                showBlock("#compset");
                 window.location.href = data['job_url'];
             }
         });
@@ -84,28 +112,37 @@ $(document).ready(function(){
             values[field.name] = field.value;
         });
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
+        
    });
+   $("#saverawblock").click(function(e){
+        Alertify.log.info("Saving " + current_doc + " block");
+        save_form();
+   })
    $("#sidebar a").click(function(e){
+        if($(this).parent().attr("id") == "batchselect" && $(this).parent("li[class~=disabled]").length == 0){
+            guify_batch();
+        }
+        current_doc = $(this).attr("id")
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
-            showBlock($(this).attr("href"));
+            showInputArea($(this).attr("id"));
+            current_doc = $(this).attr("id");
         }
         return false;
     });
-   $(".block:not(.blockactive)").hide();
-   $(".blockchoice").addClass("disabled");
-   $("#compsetselect").parent().addClass("disabled");
+   
 });
 
 
-function showBlock(id){
-    $(".blockactive").removeClass("blockactive").hide();
+function showInputArea(id){
+    $(".inputareaactive").removeClass("inputareaactive").hide();
     $("#sidebar .active").removeClass("active");
-    if ($("#sidebar [href="+id+"]").parent("li").attr("class") != "disabled"){
-        $("#sidebar [href="+id+"]").parent("li").addClass("active");
+    if ($("#"+id).parent("li").attr("class") != "disabled"){
+        $("#"+id).parent("li").addClass("active");
     }
-    $(id).addClass("blockactive").show();
-    $(".block:not(.blockactive)").hide();
+    $($("#"+id).attr("href")).addClass("inputareaactive").show();
+    console.log($("#"+id).attr("href"));
+    $(".inputarea:not(.inputareaactive)").hide();
 }
 </script>
 {% endblock head %}
@@ -115,14 +152,19 @@ function showBlock(id){
     <div class = "span2 well" id = "sidebar">
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            <li><a href="#dirsetup">Directory Setup</a></li>
-            <li><a href="#compset" id = "compsetselect">Computational Settings</a></li>
+            {% if job_id %}
+            <li id = "dirset" class = "disabled"><a href="#dirsetup">Directory Setup</a></li>
+            <li id = "batchselect" class = "blockchoice active"><a href="#blockinput" id = "batch" >Computational Settings</a></a>
+            {% else %}
+            <li class = "active" id = "dirset"><a href="#dirsetup">Directory Setup</a></li>
+            <li class = "blockchoice disabled" id = "batchselect"><a href="#compset" id = "batch">Computational Settings</a></li>
+            {% endif %}
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
-            <li class = "blockchoice"><a href="#block1">Block 1</a></li>
-            <li class = "blockchoice"><a href="#block2">Block 2</a></li> 
-            <li class = "blockchoice"><a href="#">Block 3</a></li> 
+            <li class = "blockchoice"><a href="#blockinput" id = "ROCKS">ROCKS</a></li>
+            <li class = "blockchoice"><a href="#blockinput" id = "Block2">Block 2</a></li> 
+            <li class = "blockchoice"><a href="#blockinput" id = "Block3">Block 3</a></li> 
             <li class = "blockchoice"><a href="#">Block 4</a></li>
             <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
@@ -135,7 +177,7 @@ function showBlock(id){
             <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
     </div>
-    <div class = "span10 blockactive" id = "dirsetup">
+    <div class = "span10 inputarea" id = "dirsetup">
         <h2>Directory Setup</h2>
          <form action="{% url 'tough.views.create_job' %}" method = "POST" id="dirinput">
             {% csrf_token %}
@@ -159,8 +201,8 @@ function showBlock(id){
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" id="dirSelect">
-                        <li><a class='diroptions' href="#" data-dir="/global/homes/t/tsun">Home Directory</a></li>
-                        <li><a class='diroptions' href="#" data-dir="/global/scratch/sd/tsun">Scratch Directory</a><li>
+                        <li><a class='diroptions' href="#" id = "homedir" >Home Directory</a></li>
+                        <li><a class='diroptions' href="#" id = "scratchdir">Scratch Directory</a><li>
                     </ul>
                 </div>
             </div>
@@ -169,11 +211,11 @@ function showBlock(id){
             </div>
         </form>
     </div>
-    <div class = "span10 block" id = "compset">
+    <div class = "span10 inputarea" id = "compset">
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
     </div>
-    <div class = "span10 block" id = "block1">
+    <div class = "span10 inputarea" id = "blockinput">
         <ul class = "nav nav-tabs">
             <li class = "active"><a href="#guided" data-toggle = "tab">Guided</a></li>
             <li><a href="#raw" data-toggle = "tab">Raw Text</a></li>
@@ -185,10 +227,18 @@ function showBlock(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-
-                <p><textarea name="thetext" rows="30" id="thetext" cols="120"></textarea></p>
-                <button class="btn" type="button" id='saveform'>Save</button>
+                <form id="rawtextform" action="" method="POST">
+                    {% csrf_token %}
+                    {%for field in job.get_raw_input_form%}
+                    <div class = "control-group">
+                        <div class = "control">
+                        {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                <button class="btn" type="button" id='saverawblock'>Save</button>
                 <button class="btn" type="button" id='cancel'>Cancel</button>
+                </form>
             </div>
         </div>
     </div>

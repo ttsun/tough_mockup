@@ -2,7 +2,7 @@
  * @author agreiner
  */
 var current_doc = '';
-
+var csrftoken = getCookie('csrftoken');
 
 function init_input(file_id){
 	if(warn_unsaved_changes() == true) return;
@@ -46,26 +46,7 @@ function form_was_changed(){
 	if($('#gui-text-buttons').hasClass('changed')) return true;
 }
 
-// function update_numproc(){
-// 	//changed to fit Hopper
-// 	document.getElementById('product').innerHTML = document.getElementById('id_numnodes').value * 24
-// 	// document.getElementById('id_ppn').value;
-// }
 
-// function show_div(div_name){
-// 	//hide all the divs for files that aren't being edited, show the div that is being edited
-// 	var maindiv = document.getElementById("main").childNodes;
-// 	l = maindiv.length;
-// 	for (i = 0; i < l; i++) {
-// 		n = maindiv[i];
-// 		if(n.nodeType === 1){
-// 			if (n.id != div_name) 
-// 				n.className = "hidden";
-// 			else 
-// 				n.className = n.className.replace(/\bhidden\b/, '');			
-// 		}
-// 	}
-// }
 
 function show_buttons(div){
 	var content, theP;
@@ -109,35 +90,14 @@ function setup_div(div_name){
 			show_div('default');
 			current_doc = '';
 			break;
-		// case ('rawtough-text'):
-		// 	show_div('text-only');
-		// 	current_doc = 'RAWTOUGH';
-		// 	break;
 		case ('batch-gui'):
 			show_div('batch-gui');
 			current_doc = 'batch';
 			break;
-		// case ('poscar-text'):
-		// 	show_div('text-only');
-		// 	current_doc = file_id;
-		// 	break;
 		default:
 			show_div('text-only');
 			current_doc = div_name;
-			//no file selected yet, show the empty work area
-			// show_div('default');
-			// current_doc = '';
 		}
-		//Annette's version
-	// var div_name_array = div_name.split("-");
-	// var file_id = div_name_array[0];
-	// var div_type = div_name_array[1];
-	// switch (div_type){
-	// 	case ('gui'):
-	// 		show_div(file_id + '-gui');
-	// 		current_doc = file_id;
-	// 		break;
-	// 	case('text'):
 			
 	
 	show_buttons(div_name);
@@ -160,19 +120,23 @@ function cancel_form(){
 }
 
 function save_form(file_content){
+	console.log(current_doc);
 	file_name = current_doc=='batch'? 'tough.pbs': current_doc;
+
+	
 	//remove \r so IE doesn't mess up
 	var post_data = {filename: file_name, content: file_content.replace(/\r/g, '')};
 	jobfiles[current_doc] = post_data.content;
+
 	$.ajax({
 		type: 'POST',
-		url: TOUGH_SUBDIR + '/save/' + document.getElementById('jobid').value,
+		url: TOUGH_SUBDIR + '/save/' + jobid,
 		data: post_data,
 		success: function(data){
 		    if ($('#login_form', data).size() > 0) {
 				location.reload();
 			}
-			setup_div('default');
+			Alertify.log.success(file_name + " successfully saved");
 			if (data) {
 				//do nothing
 			}
@@ -205,15 +169,15 @@ function init_batch(){
 				required: true,
 				digits: true,
 				max: 400
-			},
-			ppn:{
-				required: true,
-				digits: true,
-				max: 8
-			},
-			pvmem:{
-				digits: true,
 			}
+			// ppn:{
+			// 	required: true,
+			// 	digits: true,
+			// 	max: 8
+			// },
+			// pvmem:{
+			// 	digits: true,
+			// }
 		},		
 		debug: true
 	});
@@ -235,12 +199,6 @@ function textify_batch(){
 	} else {
 	    content += '\n';
  	}
-	var pvmem = document.getElementById('id_pvmem').value
-	if(pvmem) {
-	    content += '#PBS -l pvmem=' + pvmem  + '\n';
-	} else { 
-	    content += '\n';
-	}
 	if (($('#id_wallhours').val()!="") && ($('#id_wallminutes').val()!="")) {
 	    content += '#PBS -l walltime=' + document.getElementById('id_wallhours').value + ':' + document.getElementById('id_wallminutes').value + ':00\n';
 	}
@@ -268,12 +226,10 @@ function textify_batch(){
 	content += '#PBS -d ' + document.getElementById('jobdir').value + '\n';
 	content += '#PBS -V\n\n';
 	content += 'cd ' + document.getElementById('jobdir').value + '\n';
-	var executable = document.getElementById('id_tough_executable').value;
-	var version = document.getElementById('id_tough_version').value;
 	content += 'module load tough/noah\n\n' 
 	// + version + '\n\n';
 	content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-	content += 'aprun -n ' + numprocs.toString() + ' ' + executable + '\n';
+	content += 'aprun -n ' + numprocs.toString() + ' ' + "tough"+ '\n';
 	content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n";
 	return content;
 }
@@ -299,10 +255,11 @@ function guify_batch(){
 						document.getElementById('id_queue').value = args;
 						break;
 					case 'l':
-						var nodedist = args.match(/nodes=(\d+)/);
+						var nodedist = args.match(/mppwidth=(\d+)/);
 							// :ppn=(\d+):?(\w+)?/);
 						if (nodedist) {
-							document.getElementById('id_numnodes').value = nodedist[1];
+							document.getElementById('id_numnodes').removeAttribute("placeholder");
+							document.getElementById('id_numnodes').value = nodedist[1]/24;
 							// document.getElementById('id_ppn').value = nodedist[2];
 							// if(nodedist[3]) document.getElementById('id_nodemem').value = nodedist[3];
 							break;
@@ -347,7 +304,6 @@ function guify_batch(){
 		}
 		//update the total number of nodes
 		//changed to fit Hopper
-		document.getElementById('product').innerHTML = parseInt(document.getElementById('id_numnodes').value) * 24
 		// parseInt(document.getElementById('id_ppn').value);
 	}
 	else if(lines != ''){
@@ -367,7 +323,7 @@ function save_batch(){
         $('#id_wallhours').val("0");
     }
 
-	if(!$('#batch_form').valid()) return;
+	// if(!$('#batch_form').isValid()) return;
 	$('#save-loader').show();
 	//central function for saving batch settings from the GUI
 	var content = textify_batch();
@@ -417,3 +373,45 @@ function is_valid_for_type(value, type){
 	}
 }
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+$.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});

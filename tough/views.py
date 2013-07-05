@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser
+from tough.models import Job, NoahUser, Block
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -122,36 +122,39 @@ def setup(request, jobid):
                                'repo_choices': repo_choices, 'errors': errors},
                               context_instance=RequestContext(request))
 
+@login_required
+def job_show(request, jobid):
+    j = get_object_or_404(Job, id=int(jobid))
+    return render_to_response('job_setup.html', 
+                              {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'new_job': False, 'job': j},
+                              context_instance=RequestContext(request))
+
+def job_setup(request):
+    u = NoahUser.objects.get(username=request.user)
+    return render_to_response('job_setup.html', {'username': u.username}, context_instance=RequestContext(request))
 
 @login_required
 def ajax_get_tough_files(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
-    tough_files={
-        "batch": "",
-        "RAWTOUGH": ""
-    }
+    tough_files= {}
+    
     # Get various files
 
     # TODO: if job is new, don't bother
-    for (key, val) in tough_files.iteritems():
+    for block in j.block_set.all():
         try:
-            if key == "batch": tough_files[key] = j.get_file("tough.pbs")
-            else: tough_files[key]=j.get_file(key)
+            key = block.name
+            if key == "batch": tough_files.update({key:j.get_file("tough.pbs")})
+            else: tough_files.update({key:j.get_file(key)})
 
         except IOError:
             tough_files[key] = ""
 
     content = json.dumps(tough_files)
-    #             Annette's version
-    #             job_files[appfile["id"]] = appfile["default"]
-    #         else: job_files[appfile["id"]]=""
-
-    # content = json.dumps(job_files)
     return HttpResponse(content, content_type='application/json')
 
-
 @login_required
-def ajax_save(request, jobid):
+def ajax_submit(request, jobid):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
     filename = request.POST['filename']
@@ -159,6 +162,19 @@ def ajax_save(request, jobid):
     #save via newt, then return an okay
     try:
         j.put_file(filename, submitted_text)
+    except:
+        return HttpResponse("Unable to save the file")
+    return HttpResponse("okay")
+
+@login_required
+def ajax_save(request, jobid, filename):
+    #get the data from the ajax request
+    j = Job.objects.get(id=jobid)
+    filename = request.POST['filename']
+    submitted_text = request.POST['content']
+    #save via newt, then return an okay
+    try:
+        j.save_block(filename, submitted_text)
     except:
         return HttpResponse("Unable to save the file")
     return HttpResponse("okay")
@@ -270,7 +286,7 @@ def create_job(request):
     #create new job in database
     u = NoahUser.objects.get(username=request.user)
     #add a timestamp-based directory name to the path that will become jobdir
-    jobdir = request.POST['jobdir'] + '/NOVA_' + strftime("%Y%b%d-%H%M%S", localtime())
+    jobdir = request.POST['jobdir'] + '/TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
 
     if request.POST['setup_type'] == 'new':
         srcdir = None
@@ -299,6 +315,8 @@ def create_job(request):
         return redirect('tough.views.index')
     else:
         j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
+
+
         #create directory with unique id
         j.create_dir()
 
@@ -324,10 +342,18 @@ def create_job(request):
         #note creation time so that sorting works
         j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
         j.save()
-
+        populate_job(j)
         #create default vasp files
         #render default setup form
-        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.setup', kwargs={"jobid": j.pk})}), content_type="application/json")
+        
+        return HttpResponse(simplejson.dumps({"success": True, "job_dir": jobdir, "job_name": j.jobname, "job_id": j.pk, "job_url": reverse('tough.views.job_show', kwargs={"jobid": j.pk})}), content_type="application/json")
+
+def populate_job(job):
+    batch = Block(name="batch", job=job)
+    batch.save()
+    GENER = Block(name="GENER", job=job)
+    GENER.save()
+    # add more blocks here
 
 @login_required
 def delete_job(request):

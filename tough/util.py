@@ -6,6 +6,7 @@ import mimetypes
 import random
 from django.utils import encoding as encoding
 
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -130,6 +131,9 @@ class NewtCookie:
                 self.__dict__[key]=kvarray[1]
             elif len(kvarray)==1:
                 self.__dict__[key]=True
+
+
+
 
 
          

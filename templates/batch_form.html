@@ -1,8 +1,17 @@
-<form id="batch_form" action="" method="post" class = "form-horizontal">
-    <div class = "control-group">
+<form id="batch_form" action="url " method="post" class = "form-horizontal">
+    {% csrf_token %}
+    {%for field in job.get_comp_settings_form%}
+        <div class="control-group">
+            <label for="id_{{field.html_name}}" class="control-label">{{field.label}}</label>
+            <div class="controls">
+                {{ field }}                 
+            </div> 
+        </div>
+    {%endfor%}
+    <!--<div class = "control-group">
         <label class = "control-label" for = "id_queue">Queue Type</label>
         <div class = "controls">
-            <select>
+            <select id = "id_queue">
                 <option value = "regular" selected = "selected">Regular</option>
                 <option value = "low">Low</option>
                 <option value = "debug">Debug</option>
@@ -10,9 +19,9 @@
         </div>
     </div>
     <div class = "control-group">
-        <label class = "control-label" for = "numnodes"># Nodes</label>
+        <label class = "control-label" for = "id_numnodes"># Nodes</label>
         <div class = "controls">
-            <input type = "text" placeholder = "Insert number of nodes"/>
+            <input name = "numnodes" id = "id_numnodes" type = "text" value = "" placeholder = "Insert number of nodes"/>
         </div>
     </div>
     <div class = "control-group">
@@ -63,18 +72,28 @@
         </div>
     </div>
     <div class = "control-group">
+        <label class = "control-label" for = "id_nodemem">Node Memory</label>
+        <div class = "controls">
+            <select name = "nodemem" id = "id_nodemem">
+                <option value = "first" selected = "selected">First Available</option>
+                <option value = "bigmem">Big</option>
+                <option value = "smallmem">Small</option>
+            </select>
+        </div>
+    </div>
+    <div class = "control-group">
         <label class = "control-label" for = "id_notifications_begin">Email Notifications</label>
         <div class = "controls">
             <label class = "checkbox">
-                <input type = "checkbox" value = "">
+                <input name = "notifications_begin" id = "id_notifications_begin" type = "checkbox" value = "">
                     On begin
                 </label>
             <label class = "checkbox">
-                    <input type = "checkbox" value = "">
+                    <input type = "checkbox" value = "" name = "notifications_end" id = "id_notifications_end" >
                     On end
             </label>
              <label class = "checkbox">
-                    <input type = "checkbox" value = "">
+                    <input type = "checkbox" value = "" name = "notifications_abort" id = "id_notifications_abort">
                     On abort
             </label>
         </div>
@@ -88,7 +107,7 @@
                 {% endfor %}
             </select>
         </div>
-    </div>
+    </div>-->
     <div class="control-group">
         <div class="controls">
             <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />

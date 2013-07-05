@@ -199,34 +199,33 @@ def ajax_save(request, jobid):
         # }
         # if(gres_string != '') content += '#PBS -l gres=' + gres_string + '\n';
         content += '#PBS -m '
-        mail = ''
-        if request.POST.get('id_notifications_begin').checked: 
-            mail += 'b'
-        if request.POST.get('id_notifications_end').checked:
-            mail += 'e'
-        if request.POST.get('id_notifications_abort').checked: 
-            mail += 'a'
-        if not mail: 
-            mail = 'n';
-        content += mail + '\n';
-        repo = request.POST.get('id_repo')
-        if repo and repo!="default": 
-            content += '#PBS -A ' + repo + '\n'
+        # mail = ''
+        # if request.POST.get('id_notifications_begin').checked: 
+        #     mail += 'b'
+        # if request.POST.get('id_notifications_end').checked:
+        #     mail += 'e'
+        # if request.POST.get('id_notifications_abort').checked: 
+        #     mail += 'a'
+        # if not mail: 
+        #     mail = 'n';
+        # content += mail + '\n';
 
         content += '#PBS -j oe\n'
-        content += '#PBS -d ' + document.getElementById('jobdir').value + '\n'
+        content += '#PBS -d ' + request.POST.get('jobdir') + '\n'
         content += '#PBS -V\n\n'
-        content += 'cd ' + document.getElementById('jobdir').value + '\n'
+        content += 'cd ' + request.POST.get('jobdir') + '\n'
         content += 'module load tough/noah\n\n' 
         content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-        content += 'aprun -n ' + numprocs.__str() + ' ' + "tough"+ '\n'
+        content += 'aprun -n ' + str(numprocs) + ' ' + "tough"+ '\n'
         content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
     else:
         content = request.POST.get('rawinput')
     #save via newt, then return an okay
+    raise Exception (j.block_set.all())
     try:
         j.save_block(filename, content)
-    except:
+    except Exception, ex:
+        return Exception(ex)
         return HttpResponse("Unable to save the file")
     return HttpResponse("okay")
 
@@ -394,6 +393,7 @@ def create_job(request):
         j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
         j.save()
         populate_job(j)
+        j.save()
         #create default vasp files
         #render default setup form
         

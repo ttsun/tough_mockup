@@ -90,6 +90,7 @@ $(document).ready(function(){
    });
    $('#savecompset').click(function(e){
         console.log("saved comp set")
+        $("#batchjobdir").val($("#jobdir").val());
         $("#batch_form").submit();
    });
    $("#submitdir").click(function(ev){
@@ -220,8 +221,9 @@ function showInputArea(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <form id="rawtextform" action="url 'tough.views.ajax_save' jobid" method="POST">
+                <form id="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
                     {% csrf_token %}
+                    <input type = "hidden" name = "blockType" />
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">
                         <div class = "control">

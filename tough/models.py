@@ -187,7 +187,7 @@ class Job(models.Model):
         return content
 
     def save_block(self, blockType, contents):
-        b = self.block_set.filter(blockType="blockType")
+        b = self.block_set.filter(blockType=blockType)
         b.content = contents
         b.save()
 

@@ -561,7 +561,7 @@ class Job(models.Model):
     def get_comp_settings_form(self):
         return CompSettingsForm(initial={"queue": "regular",
                                 "num_nodes": 1,
-                                "max_walltime": time(hour=1, minute=30),
+                                "max_walltime": time(hour=0, minute=30),
                                 "email_notifications": ["notifications_begin", "notifications_end", "notifications_abort"]}
                                 )
 

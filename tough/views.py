@@ -181,7 +181,7 @@ def ajax_save(request, jobid):
                 content = ''
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
-                content += '#PBS -l mppwidth=%d' % form.cleaned_data['num_nodes'] * 24
+                content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_nodes'] * 24)
 
                 numprocs = int(form.cleaned_data['num_nodes']) * 24
 
@@ -211,7 +211,8 @@ def ajax_save(request, jobid):
             try:
                 j.save_block(blocktype, content)
                 return HttpResponse(simplejson.dumps({"success": True}))
-            except:
+            except Exception:
+                import ipdb; ipdb.set_trace()
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}))
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}))
 

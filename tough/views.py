@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -168,67 +168,52 @@ def ajax_submit(request, jobid):
 
 @login_required
 def ajax_save(request, jobid):
-
     #get the data from the ajax request
-    j = Job.objects.get(id=jobid)
+    j = get_object_or_404(Job, id=jobid)
     blocktype = request.POST['blockType']
-    if blocktype == "batch":
-        content = ''
-        content += '#PBS -N tough\n'
-        content += '#PBS -q ' + request.POST.get('queue') + '\n'
-        content += '#PBS -l mppwidth=' + request.POST.get('num_nodes') * 24 
-        
-        numprocs= int(request.POST.get('num_nodes')) * 24
-
-        nodemem = request.POST.get('nodemem')
-        
-        if nodemem!='first' :
-            content += ':' + nodemem + '\n'
+    if request.method == 'POST':
+        if blocktype == "batch":
+            form = CompSettingsForm(data=request.POST)
         else:
-            content += '\n'
-        
-        if request.POST.get('max_walltime_0')!="" and request.POST.get('max_walltime_1')!="" :
-            content += '#PBS -l walltime=' + request.POST.get('max_walltime_0') + ':' + request.POST.get('max_walltime_1') + ':00\n'
-        
-        # gres_options={'/project': 'project', '/global/project': 'project', '/global/scratch': 'gscratch', '/projectb': 'projectb', '/global/projectb': 'projectb'};
-        # gres_string = '';
-        # for dir in gres_options:
-        #     dir_esc = dir.replace(/\//g, '\\\/')
-        #     gres_pattern = new RegExp('^'+ dir_esc + '\/.+')
-        #     if ($('#jobdir').val().search(gres_pattern) != -1) gres_string = gres_options[dir];
-        # }
-        # if(gres_string != '') content += '#PBS -l gres=' + gres_string + '\n';
-        content += '#PBS -m '
-        mail = ''
-        if request.POST.get('id_notifications_begin').checked: 
-            mail += 'b'
-        if request.POST.get('id_notifications_end').checked:
-            mail += 'e'
-        if request.POST.get('id_notifications_abort').checked: 
-            mail += 'a'
-        if not mail: 
-            mail = 'n';
-        content += mail + '\n';
-        repo = request.POST.get('id_repo')
-        if repo and repo!="default": 
-            content += '#PBS -A ' + repo + '\n'
+            form = RawInputForm(data=request.POST)
+        if form.is_valid():
+            if blocktype == "batch":
+                content = ''
+                content += '#PBS -N tough\n'
+                content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
+                content += '#PBS -l mppwidth=%d' % form.cleaned_data['num_nodes'] * 24
 
-        content += '#PBS -j oe\n'
-        content += '#PBS -d ' + document.getElementById('jobdir').value + '\n'
-        content += '#PBS -V\n\n'
-        content += 'cd ' + document.getElementById('jobdir').value + '\n'
-        content += 'module load tough/noah\n\n' 
-        content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-        content += 'aprun -n ' + numprocs.__str() + ' ' + "tough"+ '\n'
-        content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
-    else:
-        content = request.POST.get('rawinput')
-    #save via newt, then return an okay
-    try:
-        j.save_block(filename, content)
-    except:
-        return HttpResponse("Unable to save the file")
-    return HttpResponse("okay")
+                numprocs = int(form.cleaned_data['num_nodes']) * 24
+
+                nodemem = form.cleaned_data['nodemem']
+
+                if nodemem != 'first':
+                    content += ':' + nodemem + '\n'
+                else:
+                    content += '\n'
+
+                content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
+                content += '#PBS -m '
+                mail = "".join(form.cleaned_data['email_notifications'])
+                if not mail: 
+                    mail = 'n'
+                content += mail + '\n'                
+                content += '#PBS -j oe\n'
+                content += '#PBS -d ' + j.jobdir + '\n'
+                content += '#PBS -V\n\n'
+                content += 'cd ' + j.jobdir + '\n'
+                content += 'module load tough/noah\n\n' 
+                content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
+                content += "aprun -n %d tough\n" % numprocs
+                content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
+            else:
+                content = form.cleaned_data['rawinput']
+            try:
+                j.save_block(blocktype, content)
+                return HttpResponse(simplejson.dumps({"success": True}))
+            except:
+                return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}))
+    return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}))
 
 """
 @login_required

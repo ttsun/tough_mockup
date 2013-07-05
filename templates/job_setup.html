@@ -204,6 +204,7 @@ function showInputArea(id){
             </div>
         </form>
     </div>
+    {% if job_id %}
     <div class = "span10 inputarea" id = "compset">
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
@@ -220,7 +221,7 @@ function showInputArea(id){
                 </p>
             </div>
             <div class = "tab-pane" id = "raw">
-                <form id="rawtextform" action="url 'tough.views.ajax_save' jobid" method="POST">
+                <form id="rawtextform" action="url 'tough.views.ajax_save' jobid=job_id" method="POST">
                     {% csrf_token %}
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">
@@ -235,5 +236,6 @@ function showInputArea(id){
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}    

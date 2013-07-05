@@ -562,7 +562,7 @@ class Job(models.Model):
         return CompSettingsForm(initial={"queue": "regular",
                                 "num_nodes": 1,
                                 "max_walltime": time(hour=0, minute=30),
-                                "email_notifications": ["notifications_begin", "notifications_end", "notifications_abort"],
+                                "email_notifications": ["b", "e", "a"],
                                 "nodemem": "first"},)
                                 
 
@@ -577,13 +577,14 @@ QUEUE_CHOICES = (('regular', 'Regular'),
                 ('low', 'Low'),
                 ('debug', "Debug"),)
 
-EMAIL_CHOICES = (('notifications_begin', 'On begin'),
-                ('notifications_end', 'On end'),
-                ('notifications_abort', "On abort"),)
+EMAIL_CHOICES = (('b', 'On begin'),
+                ('e', 'On end'),
+                ('a', "On abort"),)
 
 MEM_CHOICES = (('first', 'First Available'),
                 ('big', 'Big'),
                 ('small', 'Small'),)
+
 
 class TimeSelectorWidget(widgets.MultiWidget):
     def __init__(self, attrs=None):
@@ -611,19 +612,37 @@ class TimeSelectorWidget(widgets.MultiWidget):
             widget.value_from_datadict(data, files, name + '_%s' % i)
             for i, widget in enumerate(self.widgets)]
         try:
-            T = time(hour=int(timelist[0]), minute=int(timelist[1]), second=0)
-        except TypeError:
+            T = time(hour=int(timelist[0]), minute=int(timelist[1]))
+        except ValueError:
             return ''
         else:
             return str(T)
 
 
+class TimeSelectorField(forms.Field):
+    def __init__(self, required=True, label="Max Walltime", initial="", widget=TimeSelectorWidget, help_text=""):
+        super(TimeSelectorField, self).__init__(required=required, label=label, initial=initial, widget=widget, help_text=help_text)
+
+    def to_python(self, value):
+        if not value:
+            return []
+        return value.split(":")
+
+    def validate(self, value):
+        for x in value:
+            try:
+                x = int(x)
+            except ValueError:
+                raise ValidationError("Invalid value: %d" % x)
+        return value
+
+
 class CompSettingsForm(forms.Form):
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
     num_nodes = forms.IntegerField()
-    max_walltime = forms.ChoiceField(widget=TimeSelectorWidget)
+    max_walltime = TimeSelectorField()
     nodemem = forms.ChoiceField(choices=MEM_CHOICES)
-    email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple)
+    email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple(), required=False)
 
 
 class RawInputForm(forms.Form):

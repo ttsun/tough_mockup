@@ -657,4 +657,6 @@ class Block(models.Model):
     blockType = models.CharField(max_length=255)
     job = models.ForeignKey(Job)
     content = models.TextField()
+    rawform = RawInputForm()
+    
     # blocktype = models.ForeignKey('BlockType')

@@ -1,6 +1,6 @@
 <form id="compSettingsForm" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST" class = "form-horizontal">
     {% csrf_token %}
-    <input type = "hidden" name = "blockType" value = "batch">
+    <input type = "hidden" name = "blockType" value = "1">
     {%for field in job.get_comp_settings_form%}
         <div class="control-group">
             <label for="id_{{field.html_name}}" class="control-label">{{field.label}}</label>

@@ -168,7 +168,7 @@ def ajax_submit(request, jobid):
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save input file."}), content_type="application/json")
 
     batchname = "tough.pbs"
-    batch_text = j.block_set.get(pk = 1)
+    batch_text = j.block_set.get(blockType__pk=1)
 
     try:
         j.put_file(batchname, batch_text)

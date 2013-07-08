@@ -1,4 +1,4 @@
-<form id="batch_form" action = "{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST" class = "form-horizontal">
+<form id="batch_form" action = "{% url 'tough.views.ajax_save' job_id=job_id %}" method="POST" class = "form-horizontal">
     {% csrf_token %}
     <input type = "hidden" name = "blockType" value = "1">
     {%for field in job.get_comp_settings_form%}
@@ -11,7 +11,7 @@
     {%endfor%}
     <div class="control-group">
         <div class="controls">
-            <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
+            <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
             <input class="btn btn-primary" type="submit" />
             <button class="btn" type="button" id='cancel'>Cancel</button>                
         </div>

@@ -8,7 +8,7 @@
         tbody tr td{
             width:260px;
         }
-        .jobid, .time, .state{
+        .job_id, .time, .state{
             text-align: center !important;
         }
     </style>
@@ -30,15 +30,16 @@
                 {% for job in all_jobs %}
                     <tr>
                         <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
-                        <td class="jobid">{{job.pbsjobid}}</td>
+                        <td class="job_id">{{job.pbsjob_id}}</td>
                         <td class="time">{{job.time_started}}</td>
                         <td class="state">{{job.nova_state}}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn">Copy</button>
-                                <button class="btn">Move</button>
-                                <button class="btn">Delete</button>
-                                <button class="btn">Details</button>
+                                <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp">Copy</a>
+                                <button class="btn mv">Move</button>
+                                <button class="btn del">Delete</button>
+                                <button class="btn details">Details</button>
+                                <span style="display:none" class="job_id">{{job.pk}}</span>
                             </div>
                         </td>
                     </tr>
@@ -47,7 +48,7 @@
         </div>
         <div class = "span2 well">
             <ul class = "nav nav-list">
-                <li><a href="/job/job_setup">Create Job</a></li>
+                <li><a href="{% url 'tough.views.create_job' %}">Create Job</a></li>
                 <li><a href="#">Import Job</a></li>
             </ul>
         </div>

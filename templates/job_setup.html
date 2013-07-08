@@ -1,167 +1,50 @@
-
-{% extends "base.html" %}
+{% extends "base.html" %} 
 
 {% block head %}
-<style type="text/css"> 
-
-textarea{
-    width:auto;
-}
-#dirinput, #compSettingsForm{
-    padding:2em;
-}
-
-#id_max_walltime_0, #id_max_walltime_1{
-    width: 65px;
-}
-[name='rawinput']{
-    width:98%;
-}
-ul{
-    list-style-type: none;
-}
-</style>
 <script type="text/javascript">
-
-var current_doc;
-var newjob;
-var homedir;
-var scratchdir;
-var jobfiles;
-var jobid;
-
-function setupBlocks(blockName){
-    var block = $("#reqblocks").append("<li></li>");
-    $("#reqblocks").children("li").last().attr("id", blockName);
-    $("#reqblocks").children("li").last().attr("class", "blockchoice");
-    $("#reqblocks").children("li").last().html("<a href=\"#\"" + blockName + ">" + blockName + "</a>");
-}
-
-function showRawInput(blockName){
-
-}
-
-function getjobfiles(){
-
-    $.ajax({
-        type:'GET',
-        url: TOUGH_SUBDIR + '/get_tough_files/' + jobid,
-
-        success: function(data){
-            jobfiles = data;
-        },
-        error: function(err){
-            alert("There was a problem getting the input files.");
-            $('#fileloader').hide();
-        },
-    });
-}
-
-$(document).ready(function(){
-    homedir = "/global/homes/" + "{{user.username}}".charAt('0') + "/" + "{{user.username}}";
-    scratchdir = "/global/scratch/sd/" + "{{user.username}}";
-    {% if not job_id %}
-        $("#dirsetup").removeClass("inputarea").addClass("inputareaactive");
-        $(".blockchoice").addClass("disabled");
-    {% else %}
-        {% if new_job %}
-            Alertify.log.success("{{job_name}}"+" created at "+"{{job.jobdir}}");
-        {% endif %}
-        $("#compset").removeClass("inputarea").addClass("inputareaactive");
-        current_doc = "batch";
-    {% endif %}
-    $(".inputarea:not(.inputareaactive)").hide();
-    $(".diroptions").click(function(e){
-       e.preventDefault();
-       if($(this).attr("id") == "homedir"){
-        $("#jobdir").val(homedir);
-       } else {
-        $("#jobdir").val(scratchdir);
-       }
-   });
-    // Listens for forms to be submitted
-    // Makes ajax calls when forms are submitted
-    // Makes an exception for dirinput because dirinput needs to change pages
-   $("form:not(#dirinput)").submit(function(e){
-        e.preventDefault();
-        Alertify.log.info("Saving " + current_doc + " block");
-        $.post($(this).attr("action"), $(this).serialize(), function(data){
-            if(data.success){
-                Alertify.log.success("Block successfully saved!");
-            }else{
-                Alertify.log.error(data.error);
+    $(document).ready(function() {
+        homedir = "/global/homes/" + "{{user.username}}".charAt('0') + "/" + "{{user.username}}";
+        scratchdir = "/global/scratch/sd/" + "{{user.username}}";
+        $(".diroptions").click(function(e) {
+            e.preventDefault();
+            if ($(this).attr("id") == "homedir") {
+                $("#jobdir").val(homedir);
+            } else {
+                $("#jobdir").val(scratchdir);
             }
         });
-        return false;
-   });
-   $("#dirinput").submit(function(e){
-        var values = {};
-        $.each($('#dirinput').serializeArray(), function(i, field) {
-            values[field.name] = field.value;
-        });
-        Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        return true;
-   });
-
-   $("#sidebar a:not(#submit_job)").click(function(e){
-        if($(this).parent("li[class~=disabled]").length == 0){
-            e.preventDefault();
-            $("#sidebar .active").removeClass("active");
-            $(this).parent("li").addClass("active");
-            showInputArea($(this).attr("href"));
-        }
+        $("#dirinput").submit(function(e){
+            var values = {};
+            $.each($('#dirinput').serializeArray(), function(i, field) {
+                values[field.name] = field.value;
+            });
+            Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
+            return true;
+       });
     });
-   
-});
-
-
-function showInputArea(id){
-    $(".inputareaactive").removeClass("inputareaactive").hide();
-    current_doc = $(id).attr("id");
-    $(id).addClass("inputareaactive").show();
-    console.log($(id));
-    $(".inputarea:not(.inputareaactive)").hide();
-}
 </script>
-{% endblock head %}
+{% endblock head %} 
 
-{%block content %}
-<div class = "row-fluid">
-    <div class = "span2 well" id = "sidebar">
-        <ul class = "nav nav-list">
-            <li class = "nav-header">Required Information</li>
-            {% if job_id %}
-            <li id = "dirset" class = "disabled"><a href="#dirsetup">Directory Setup</a></li>
-            <li id = "batchselect" class = "blockchoice active"><a href="#compset" id = "batch" >Computational Settings</a></a>
-            {% else %}
-            <li class = "active" id = "dirset"><a href="#dirsetup">Directory Setup</a></li>
-            <li class = "blockchoice disabled" id = "batchselect"><a href="#compset" id = "batch">Computational Settings</a></li>
-            {% endif %}
+{% block content %}
+<div class="row-fluid">
+    <div class="span2 well" id="sidebar">
+        <ul class="nav nav-list">
+            <li class="nav-header">Job Creation</li>
+            <li class="active"><a href="#">Directory Setup</a>
+            </li>
         </ul>
-        <ul id = "reqblocks" class = "nav nav-list">
-            <li class = "nav-header">Required Blocks</li>
-            {% for block in job.get_req_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
-            {% endfor %}
-        </ul>
-        <ul id = "opblocks" class="nav nav-list">
-            <li class = "nav-header"> Optional Blocks</li>
-            {% for block in job.get_op_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
-            {% endfor %}
-        </ul>
-        {% if job_id %}
-            <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
-        {% endif %}
     </div>
-    <div class = "span10 inputarea" id = "dirsetup">
+    <div class="span10 inputarea" id="dirsetup">
         <h2>Directory Setup</h2>
-         <form action="{% url 'tough.views.create_job' %}" method = "POST" id="dirinput">
+        <form action="{% url 'tough.views.create_job'%}" method="POST" id="dirinput">
             {% csrf_token %}
-            <input type = "hidden" name ="setup_type" id = "setup_type" value = "new" />
+            <input type="hidden" name="setup_type" id="setup_type" value="{{setup_type|default:'new'}}" />
+            {% if job_id %}
+                <input type="hidden" name="job_id" value="{{job_id}}" />
+            {% endif %}
             <div>
-            <label for="jobname">What do you want to name this job?</label>
-            <input type="text" name="jobname" id="jobname" size="50"/>
+                <label for="jobname">What do you want to name this job?</label>
+                <input type="text" name="jobname" id="jobname" size="50" />
             </div>
             <div>
                 <label for="machine">Which machine should this job run on?</label>
@@ -171,35 +54,26 @@ function showInputArea(id){
                 </select>
             </div>
             <div class="input-append">
-                <label for"jobdir">Where would you like to store this job?</label>
+                <label for "jobdir">Where would you like to store this job?</label>
                 <input type="text" name="jobdir" id="jobdir" size="50" value="/global/">
                 <div class="btn-group">
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" id="dirSelect">
-                        <li><a class='diroptions' href="#" id = "homedir" >Home Directory</a></li>
-                        <li><a class='diroptions' href="#" id = "scratchdir">Scratch Directory</a><li>
+                        <li>
+                            <a class='diroptions' href="#" id="homedir">Home Directory</a>
+                        </li>
+                        <li>
+                            <a class='diroptions' href="#" id="scratchdir">Scratch Directory</a>
+                            <li>
                     </ul>
                 </div>
             </div>
             <div>
-                <input class="btn btn-primary" type="submit"/>
+                <input class="btn btn-primary" type="submit" />
             </div>
         </form>
     </div>
-    {% if job_id %}
-    <div class = "span10 inputarea" id = "compset">
-        <h2>Computational Settings</h2>
-        {% include "batch_form.html" %}
-    </div>
-    {% for block in job.get_req_blocks%}
-        {% include "block_input.html" %}
-    {% endfor %}
-    {% for block in job.get_op_blocks%}
-        {% include "block_input.html" %}
-    {% endfor %}
-    {% endif %}
-
 </div>
-{% endblock content %}    
+{% endblock content %}

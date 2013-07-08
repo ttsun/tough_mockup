@@ -154,11 +154,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         {% if job_id %}
-<<<<<<< HEAD
-            <a id = "jobsubmit" href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" class = "btn btn-success btn-large span11">SUBMIT</a>            
-=======
-            <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>            
->>>>>>> 3ecb67aae7d2c35017a13f112ed7e7a2189cc24a
+            <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
 
     </div>

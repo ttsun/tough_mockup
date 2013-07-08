@@ -572,6 +572,12 @@ class Job(models.Model):
     def get_raw_input_form(self):
         return RawInputForm(initial={"forminput": ""})
 
+    def get_req_blocks(self):
+        return self.block_set.filter(blockType__required=1)
+
+    def get_op_blocks(self):
+        return self.block_set.filter(blockType__required=0)
+
 
 QUEUE_CHOICES = (('regular', 'Regular'),
                 ('low', 'Low'),
@@ -651,8 +657,12 @@ class RawInputForm(forms.Form):
 
 class BlockType(models.Model):
     name = models.CharField(max_length=255)
+    tough_name = models.CharField(max_length=255)
     description = models.CharField(max_length=2000)
-    required = models.BooleanField()
+    # 0 - Not Required
+    # 1 - Required
+    # 2 - Batch
+    required = models.IntegerField(default=0)
     default_content = models.TextField(default="")
 
 

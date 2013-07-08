@@ -82,7 +82,10 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
-   $("form:not(#dirinput)").submit(function(e){
+    // Listens for forms to be submitted
+    // Makes ajax calls when forms are submitted
+    // Makes an exception for dirinput because dirinput needs to change pages
+   $("form:not(#dirinput):visible").submit(function(e){
         e.preventDefault();
         Alertify.log.info("Saving " + current_doc + " block");
         $.post($(this).attr("action"), $(this).serialize(), function(data){
@@ -103,6 +106,7 @@ $(document).ready(function(){
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
         return true;
    });
+
    $("#sidebar a").click(function(e){
         current_doc = $(this).attr("id");
         $("#currentblock").val(current_doc);
@@ -145,19 +149,15 @@ function showInputArea(id){
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
-            <li class = "blockchoice"><a href="#blockinput" id = "GENER">GENER</a></li>
-            <li class = "blockchoice"><a href="#blockinput" id = "Block2">Block 2</a></li> 
-            <li class = "blockchoice"><a href="#blockinput" id = "Block3">Block 3</a></li> 
-            <li class = "blockchoice"><a href="#">Block 4</a></li>
-            <li class = "blockchoice"><a href="#">Block 5</a></li>
+            {% for block in job.get_req_blocks %}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+            {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
-            <li class = "blockchoice"><a href="#">Block 1</a></li>
-            <li class = "blockchoice"><a href="#">Block 2</a></li> 
-            <li class = "blockchoice"><a href="#">Block 3</a></li> 
-            <li class = "blockchoice"><a href="#">Block 4</a></li>
-            <li class = "blockchoice"><a href="#">Block 5</a></li>
+            {% for block in job.get_op_blocks %}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+            {% endfor %}
         </ul>
         <button class = "btn btn-success btn-large span11" type="button">SUBMIT</button>
     </div>

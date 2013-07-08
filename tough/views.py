@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -28,6 +28,19 @@ def about(request):
     return render_to_response('about.html', {},
                               context_instance=RequestContext(request))
 
+def submit(request, jobid):
+    j = Job.objects.get(id=jobid)
+    finalinput = ''
+    for block in j.block_set.all():
+        if block.blockType != "MESH" and block.blockType != "batch":
+            finalinput += block.content + '\n'
+    batch = j.block_set.get(blockType="batch")
+    mesh = j.block_set.get(blockType="mesh")
+    j.put_file("input", finalinput)
+    j.put_file("tough.pbs", batch)
+    j.put_file("MESH", mesh)
+    j.submit()
+    return HttpResponse("")
 
 @login_required
 def jobs(request):
@@ -162,48 +175,76 @@ def submit(request, jobid):
 def ajax_submit(request, jobid):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
-    filename = request.POST['filename']
-    submitted_text = request.POST['content']
+    filename = j.jobname
+    submitted_text = combine_inputs(j)
+
     #save via newt, then return an okay
     try:
         j.put_file(filename, submitted_text)
-    except:
-        return HttpResponse("Unable to save the file")
-    return HttpResponse("okay")
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save input file."}), content_type="application/json")
 
+    batchname = "tough.pbs"
+    batch_text = j.block_set.get(blockType__pk=1).content
+    
+    try:
+        j.put_file(batchname, batch_text)
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
+
+    try:
+        j.submit()
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to submit job."}), content_type="application/json")
+
+    return HttpResponse("Submit successful")
+
+def combine_inputs(job):
+    text = ''
+    for block in job.get_req_blocks():
+        text += block.content + "\n"
+    for block in job.get_op_blocks():
+        text += block.content + "\n"
+    return text
 
 @login_required
 def ajax_save(request, jobid):
     #get the data from the ajax request
     j = get_object_or_404(Job, id=jobid)
-    blocktype = request.POST['blockType']
+    blocktype = BlockType.objects.get(pk=request.POST['blockType'])
     if request.method == 'POST':
-        if blocktype == "batch":
+        # If the block is a batch block (pk=1)
+        if blocktype.pk == 1:
             form = CompSettingsForm(data=request.POST)
         else:
             form = RawInputForm(data=request.POST)
         if form.is_valid():
-            if blocktype == "batch":
+            # If the block is a batch block (pk=1)
+            if blocktype.pk == 1:
                 content = ''
+                content += '#! /global/common/hopper/osp/tough/noah/bin\n'
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
+                j.queue = form.cleaned_data['queue']
                 content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_nodes'] * 24)
 
                 numprocs = int(form.cleaned_data['num_nodes']) * 24
-
+                j.numnodes = int(form.cleaned_data['num_nodes'])
                 nodemem = form.cleaned_data['nodemem']
-
+                j.nodemem = nodemem
                 if nodemem != 'first':
                     content += ':' + nodemem + '\n'
                 else:
                     content += '\n'
 
                 content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
+                j.maxwalltime = time(hour = int(form.cleaned_data["max_walltime"][0]), minute = int(form.cleaned_data["max_walltime"][1]))
                 content += '#PBS -m '
+                j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
                 mail = "".join(form.cleaned_data['email_notifications'])
                 if not mail: 
                     mail = 'n'
-                content += mail + '\n'                
+                content += mail + '\n'
                 content += '#PBS -j oe\n'
                 content += '#PBS -d ' + j.jobdir + '\n'
                 content += '#PBS -V\n\n'
@@ -212,6 +253,7 @@ def ajax_save(request, jobid):
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
                 content += "aprun -n %d tough\n" % numprocs
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
+                j.save()
             else:
                 content = form.cleaned_data['rawinput']
             try:
@@ -324,11 +366,10 @@ def ajax_mkdir(request, machine, directory):
     return HttpResponse(content, content_type='application/json')
 
 def populate_job(job):
-    batch = Block(blockType="batch", job=job)
-    batch.save()
-    GENER = Block(blockType="GENER", job=job)
-    GENER.save()
-    # add more blocks here
+    for blocktype in BlockType.objects.all():
+        b = Block(blockType=blocktype, job=job)
+        b.save()
+
 
 @login_required
 def delete_job(request):

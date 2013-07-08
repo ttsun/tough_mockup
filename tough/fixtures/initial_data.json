@@ -1,0 +1,146 @@
+[
+{
+    "pk": 1, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "batch job", 
+        "required": 2, 
+        "default_content": "", 
+        "name": "batch", 
+        "tough_name": "batch",
+        "ordering": 0
+    }
+},
+{
+    "pk": 2, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Optional; list of mass or heat sinks and sources", 
+        "required": 0, 
+        "default_content": "", 
+        "name": "gener", 
+        "tough_name": "gener",
+        "ordering": 0
+    }
+},
+{
+    "pk": 3, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Hydrogeologic parameters for various reservoir domains", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "rocks", 
+        "tough_name": "rocks",
+        "ordering": 0
+    }
+},
+{
+    "pk": 4, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Input the parameters for hydrate properties and their behaviors", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "hydrate", 
+        "tough_name": "hydrate",
+        "ordering": 0
+    }
+},
+{
+    "pk": 5, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "List of the grid blocks", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "eleme", 
+        "tough_name": "eleme",
+        "ordering": 0
+    }
+},
+{
+    "pk": 6, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "List of the flow connections between the individual blocks", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "conne", 
+        "tough_name": "conne",
+        "ordering": 0
+    }
+},
+{
+    "pk": 7, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Computational parameters to be executed", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "param", 
+        "tough_name": "param",
+        "ordering": 0
+    }
+},
+{
+    "pk": 8, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "diffusivities of mass components", 
+        "required": 0, 
+        "default_content": "", 
+        "name": "diffusion", 
+        "tough_name": "diffusu",
+        "ordering": 0
+    }
+},
+{
+    "pk": 9, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "list of initial conditions for specific reservoir domains", 
+        "required": 0, 
+        "default_content": "", 
+        "name": "indom", 
+        "tough_name": "indom",
+        "ordering": 0
+    }
+},
+{
+    "pk": 10, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "list of initial conditions for individual blocks", 
+        "required": 0, 
+        "default_content": "", 
+        "name": "incon", 
+        "tough_name": "incon",
+        "ordering": 0
+    }
+},
+{
+    "pk": 11, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Data record (single line) with simulation title", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "title", 
+        "tough_name": "title",
+        "ordering": 1
+    }
+},
+{
+    "pk": 12, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Dynamic memory allocation", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "memory", 
+        "tough_name": "memory",
+        "ordering": 2
+    }
+}
+]

@@ -1,0 +1,29 @@
+<div class = "span10 inputarea" id = "{{block.blockType.tough_name}}">
+        <ul class = "nav nav-tabs">
+            <li class = "active"><a href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
+            <li><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
+        </ul>
+        <div class = "tab-content">
+            <div class = "tab-pane active" id = "{{block.blockType.tough_name}}-guided">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nisi ligula, varius sit amet convallis eget, ullamcorper vitae lorem. Ut ultricies erat turpis, quis eleifend ante ultrices id. Donec ut est venenatis, viverra enim nec, placerat quam. Duis hendrerit fringilla dolor id fringilla. Nulla facilisi. Proin aliquet nisi ultricies, luctus lacus in, sodales felis. Aenean quis ullamcorper est, ac gravida nunc. Phasellus nunc diam, vehicula quis tortor et, facilisis pellentesque dui. Praesent eleifend lorem nec odio pulvinar commodo. Integer at condimentum justo, ac placerat libero.
+                </p>
+            </div>
+            <div class = "tab-pane" id = "{{block.blockType.tough_name}}-raw">
+                <form class="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
+                    {% csrf_token %}
+                    <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
+                    {%for field in block.get_raw_input_form %}
+                    <div class = "control-group">
+                        <div class = "control">
+                        {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
+                <input class="btn btn-primary" type="submit" id='saverawblock' />
+                <button class="btn" type="button" id='cancel'>Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>

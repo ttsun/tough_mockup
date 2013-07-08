@@ -37,8 +37,6 @@ class NEWTBackend:
                 try:
                     user = NoahUser(username=username)
                     # TODO: remove once other interfaces are ready
-                    user.is_staff = True
-                    user.is_superuser = False
                     user.cookie = response['set-cookie']
                     user.save()
                 except Exception, e:

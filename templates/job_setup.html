@@ -30,6 +30,8 @@ var current_doc;
 var newjob;
 var homedir;
 var scratchdir;
+var jobfiles;
+var jobid;
 
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
@@ -40,6 +42,22 @@ function setupBlocks(blockName){
 
 function showRawInput(blockName){
 
+}
+
+function getjobfiles(){
+
+    $.ajax({
+        type:'GET',
+        url: TOUGH_SUBDIR + '/get_tough_files/' + jobid,
+
+        success: function(data){
+            jobfiles = data;
+        },
+        error: function(err){
+            alert("There was a problem getting the input files.");
+            $('#fileloader').hide();
+        },
+    });
 }
 
 $(document).ready(function(){
@@ -64,6 +82,9 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
+    // Listens for forms to be submitted
+    // Makes ajax calls when forms are submitted
+    // Makes an exception for dirinput because dirinput needs to change pages
    $("form:not(#dirinput)").submit(function(e){
         e.preventDefault();
         Alertify.log.info("Saving " + current_doc + " block");
@@ -77,7 +98,6 @@ $(document).ready(function(){
         return false;
    });
    $("#dirinput").submit(function(e){
-        current_doc = "batch";
         var values = {};
         $.each($('#dirinput').serializeArray(), function(i, field) {
             values[field.name] = field.value;
@@ -85,15 +105,14 @@ $(document).ready(function(){
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
         return true;
    });
-   $("#sidebar a").click(function(e){
-        current_doc = $(this).attr("id");
-        $("#currentblock").val(current_doc);
+
+   $("#sidebar a:not(#submit_job)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
-            showInputArea($(this).attr("id"));
-            current_doc = $(this).attr("id");
+            $("#sidebar .active").removeClass("active");
+            $(this).parent("li").addClass("active");
+            showInputArea($(this).attr("href"));
         }
-        return false;
     });
    
 });
@@ -101,12 +120,9 @@ $(document).ready(function(){
 
 function showInputArea(id){
     $(".inputareaactive").removeClass("inputareaactive").hide();
-    $("#sidebar .active").removeClass("active");
-    if ($("#"+id).parent("li").attr("class") != "disabled"){
-        $("#"+id).parent("li").addClass("active");
-    }
-    $($("#"+id).attr("href")).addClass("inputareaactive").show();
-    console.log($("#"+id).attr("href"));
+    current_doc = $(id).attr("id");
+    $(id).addClass("inputareaactive").show();
+    console.log($(id));
     $(".inputarea:not(.inputareaactive)").hide();
 }
 </script>
@@ -127,21 +143,32 @@ function showInputArea(id){
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
+<<<<<<< HEAD
             <li class = "blockchoice"><a href="#blockinput" id = "GENER">GENER</a></li>
             <li class = "blockchoice"><a href="#blockinput" id = "Block2">Block 2</a></li> 
             <li class = "blockchoice"><a href="#blockinput" id = "Block3">Block 3</a></li> 
             <li class = "blockchoice"><a href="#">Block 4</a></li>
             <li class = "blockchoice"><a href="#">Block 5</a></li>
+=======
+            {% for block in job.get_req_blocks %}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+            {% endfor %}
+>>>>>>> blocktypes
         </ul>
         <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
-            <li class = "blockchoice"><a href="#">Block 1</a></li>
-            <li class = "blockchoice"><a href="#">Block 2</a></li> 
-            <li class = "blockchoice"><a href="#">Block 3</a></li> 
-            <li class = "blockchoice"><a href="#">Block 4</a></li>
-            <li class = "blockchoice"><a href="#">Block 5</a></li>
+            {% for block in job.get_op_blocks %}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+            {% endfor %}
         </ul>
+<<<<<<< HEAD
         <button class = "btn btn-success btn-large span11" type="button">SUBMIT</button>
+=======
+        {% if job_id %}
+            <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
+        {% endif %}
+
+>>>>>>> blocktypes
     </div>
     <div class = "span10 inputarea" id = "dirsetup">
         <h2>Directory Setup</h2>
@@ -182,6 +209,7 @@ function showInputArea(id){
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
     </div>
+<<<<<<< HEAD
     <div class = "span10 inputarea" id = "blockinput">
         <ul class = "nav nav-tabs">
             <li class = "active"><a href="#guided" data-toggle = "tab">Guided</a></li>
@@ -211,6 +239,15 @@ function showInputArea(id){
             </div>
         </div>
     </div>
+=======
+    {% for block in job.get_req_blocks%}
+        {% include "block_input.html" %}
+    {% endfor %}
+    {% for block in job.get_op_blocks%}
+        {% include "block_input.html" %}
+    {% endfor %}
+>>>>>>> blocktypes
     {% endif %}
+
 </div>
 {% endblock content %}    

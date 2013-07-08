@@ -85,7 +85,7 @@ $(document).ready(function(){
     // Listens for forms to be submitted
     // Makes ajax calls when forms are submitted
     // Makes an exception for dirinput because dirinput needs to change pages
-   $("form:not(#dirinput):visible").submit(function(e){
+   $("form:not(#dirinput)").submit(function(e){
         e.preventDefault();
         Alertify.log.info("Saving " + current_doc + " block");
         $.post($(this).attr("action"), $(this).serialize(), function(data){

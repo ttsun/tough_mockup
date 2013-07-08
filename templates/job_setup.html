@@ -127,16 +127,14 @@ function showInputArea(id){
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
             {% for block in job.get_req_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.name}}">{{block.blockType.name|capfirst}}</a></li>
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
             {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
-            <li class = "blockchoice"><a href="#">Block 1</a></li>
-            <li class = "blockchoice"><a href="#">Block 2</a></li> 
-            <li class = "blockchoice"><a href="#">Block 3</a></li> 
-            <li class = "blockchoice"><a href="#">Block 4</a></li>
-            <li class = "blockchoice"><a href="#">Block 5</a></li>
+            {% for block in job.get_op_blocks %}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+            {% endfor %}
         </ul>
     </div>
     <div class = "span10 inputarea" id = "dirsetup">

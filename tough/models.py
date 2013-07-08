@@ -648,17 +648,18 @@ class CompSettingsForm(forms.Form):
 class RawInputForm(forms.Form):
     rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
 
-# class BlockType(models.Model):
-#     blockname = models.CharField(max_length=255)
-#     template = models.CharField(max_length=255)
+
+class BlockType(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=2000)
+    required = models.BooleanField()
+    default_content = models.TextField(default="")
 
 
 class Block(models.Model):
-    blockType = models.CharField(max_length=255)
+    blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
     content = models.TextField()
 
     def get_raw_input_form(self):
         return RawInputForm(initial={"forminput": ""}, data={"forminput": content})
-
-    # blocktype = models.ForeignKey('BlockType')

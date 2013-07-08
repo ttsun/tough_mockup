@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -172,14 +172,14 @@ def ajax_submit(request, jobid):
 def ajax_save(request, jobid):
     #get the data from the ajax request
     j = get_object_or_404(Job, id=jobid)
-    blocktype = request.POST['blockType']
+    blocktype = BlockType.objects.get(pk=request.POST['blockType'])
     if request.method == 'POST':
-        if blocktype == "batch":
+        if blocktype.name == "batch":
             form = CompSettingsForm(data=request.POST)
         else:
             form = RawInputForm(data=request.POST)
         if form.is_valid():
-            if blocktype == "batch":
+            if blocktype.name == "batch":
                 content = ''
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
@@ -321,11 +321,10 @@ def ajax_mkdir(request, machine, directory):
 
 
 def populate_job(job):
-    batch = Block(blockType="batch", job=job)
-    batch.save()
-    GENER = Block(blockType="GENER", job=job)
-    GENER.save()
-    # add more blocks here
+    for blocktype in BlockType.objects.all():
+        b = Block(blockType=blocktype, job=job)
+        b.save()
+
 
 @login_required
 def delete_job(request):

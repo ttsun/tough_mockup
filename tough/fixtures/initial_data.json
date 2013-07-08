@@ -1,0 +1,32 @@
+[
+{
+    "pk": 1, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": true, 
+        "name": "batch", 
+        "description": "batch job"
+    }
+},
+{
+    "pk": 2, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": true, 
+        "name": "gener", 
+        "description": "gener file"
+    }
+},
+{
+    "pk": 3, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": true, 
+        "name": "rocks", 
+        "description": "rocks file"
+    }
+}
+]

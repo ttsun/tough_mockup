@@ -108,16 +108,17 @@ $(document).ready(function(){
    });
 
    $("#sidebar a").click(function(e){
-        current_doc = $(this).attr("id");
-        $("#currentblock").val(current_doc);
-        if($(this).parent("li[class~=disabled]").length == 0){
-            e.preventDefault();
-            $("#sidebar .active").removeClass("active");
-            $(this).parent("li").addClass("active");
-            showInputArea($(this).attr("href"));
+        if($(this).parent("button").length != 1){
+            current_doc = $(this).attr("id");
+            $("#currentblock").val(current_doc);
+            if($(this).parent("li[class~=disabled]").length == 0){
+                e.preventDefault();
+                $("#sidebar .active").removeClass("active");
+                $(this).parent("li").addClass("active");
+                showInputArea($(this).attr("href"));
             
+            }
         }
-        return false;
     });
    
 });
@@ -158,7 +159,10 @@ function showInputArea(id){
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
             {% endfor %}
         </ul>
-        <button class = "btn btn-success btn-large span11" type="button">SUBMIT</button>
+        {% if job_id %}
+            <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" class = "btn btn-success btn-large span11">SUBMIT</a>            
+        {% endif %}
+
     </div>
     <div class = "span10 inputarea" id = "dirsetup">
         <h2>Directory Setup</h2>

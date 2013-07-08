@@ -158,15 +158,37 @@ def ajax_get_tough_files(request, jobid):
 def ajax_submit(request, jobid):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
-    filename = request.POST['filename']
-    submitted_text = request.POST['content']
+    filename = j.jobname
+    submitted_text = combine_inputs(j)
+
     #save via newt, then return an okay
     try:
         j.put_file(filename, submitted_text)
-    except:
-        return HttpResponse("Unable to save the file")
-    return HttpResponse("okay")
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save input file."}), content_type="application/json")
 
+    batchname = "tough.pbs"
+    batch_text = j.block_set.get(pk = 1)
+
+    try:
+        j.put_file(batchname, batch_text)
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
+
+    try:
+        j.submit()
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to submit job."}), content_type="application/json")
+
+    return HttpResponse("Submit successful")
+
+def combine_inputs(job):
+    text = ''
+    for block in job.get_req_blocks():
+        text += block.content + "\n"
+    for block in job.get_op_blocks():
+        text += block.content + "\n"
+    return text
 
 @login_required
 def ajax_save(request, jobid):
@@ -183,6 +205,7 @@ def ajax_save(request, jobid):
             # If the block is a batch block (pk=1)
             if blocktype.pk == 1:
                 content = ''
+                content += '#! /global/common/hopper/osp/tough/noah/bin\n'
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
                 j.queue = form.cleaned_data['queue']

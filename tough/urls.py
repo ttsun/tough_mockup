@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'^job/$', "tough.views.jobs"),
     url(r'^job/get_tough_files/(?P<jobid>\d+)$', 'tough.views.ajax_get_tough_files'),
     url(r'^job/job_setup/$', 'tough.views.create_job'),
-    url(r'^job/job_setup/(?P<jobid>\d+)/?$', 'tough.views.job_edit'),
+    url(r'^job/job_setup/(?P<jobid>\d+)/$', 'tough.views.job_edit'),
     url(r'^job/save/(?P<jobid>\d+)$', 'tough.views.ajax_save'),
     url(r'^job/job_status/$', TemplateView.as_view(template_name="job_status.html")),
 )

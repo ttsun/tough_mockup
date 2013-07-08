@@ -82,7 +82,10 @@ $(document).ready(function(){
         $("#jobdir").val(scratchdir);
        }
    });
-   $("form:not(#dirinput)").submit(function(e){
+    // Listens for forms to be submitted
+    // Makes ajax calls when forms are submitted
+    // Makes an exception for dirinput because dirinput needs to change pages
+   $("form:not(#dirinput):visible").submit(function(e){
         e.preventDefault();
         Alertify.log.info("Saving " + current_doc + " block");
         $.post($(this).attr("action"), $(this).serialize(), function(data){
@@ -103,6 +106,7 @@ $(document).ready(function(){
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
         return true;
    });
+
    $("#sidebar a").click(function(e){
         current_doc = $(this).attr("id");
         $("#currentblock").val(current_doc);

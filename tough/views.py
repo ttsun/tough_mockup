@@ -169,7 +169,7 @@ def ajax_submit(request, jobid):
 
     batchname = "tough.pbs"
     batch_text = j.block_set.get(blockType__pk=1).content
-
+    
     try:
         j.put_file(batchname, batch_text)
     except Exception:

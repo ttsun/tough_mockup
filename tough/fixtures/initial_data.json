@@ -4,8 +4,9 @@
     "model": "tough.blocktype", 
     "fields": {
         "default_content": "", 
-        "required": true, 
+        "required": 2, 
         "name": "batch", 
+        "tough_name": "batch", 
         "description": "batch job"
     }
 },
@@ -14,9 +15,10 @@
     "model": "tough.blocktype", 
     "fields": {
         "default_content": "", 
-        "required": true, 
+        "required": 0, 
         "name": "gener", 
-        "description": "gener file"
+        "tough_name": "gener", 
+        "description": "Optional; list of mass or heat sinks and sources"
     }
 },
 {
@@ -24,8 +26,9 @@
     "model": "tough.blocktype", 
     "fields": {
         "default_content": "", 
-        "required": true, 
+        "required": 1, 
         "name": "rocks", 
+        "tough_name": "rocks", 
         "description": "rocks file"
     }
 }

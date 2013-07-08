@@ -28,13 +28,14 @@ class MyUserManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = self.model(
+        user = NoahUser(
             email=MyUserManager.normalize_email(email),
             date_of_birth=date_of_birth,
+            is_admin=False
         )
 
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
     def create_superuser(self, email, date_of_birth, password):
@@ -47,7 +48,7 @@ class MyUserManager(BaseUserManager):
             date_of_birth=date_of_birth
         )
         user.is_admin = True
-        user.save(using=self._db)
+        user.save()
         return user
 
 
@@ -62,6 +63,7 @@ class NoahUser(AbstractBaseUser):
 
     username = models.CharField(max_length=40, unique=True, db_index=True)
     USERNAME_FIELD = 'username'
+    is_admin = models.BooleanField(default=False)
     # username = models.CharField(max_length = 200)
     cookie = models.TextField(null=True, blank=True)
 
@@ -79,6 +81,19 @@ class NoahUser(AbstractBaseUser):
         else:
             return False
 
+    @property
+    def is_staff(self):
+        return self.is_admin
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
 
     def get_repos(self):
         """
@@ -664,6 +679,9 @@ class BlockType(models.Model):
     # 2 - Batch
     required = models.IntegerField(default=0)
     default_content = models.TextField(default="")
+
+    def __unicode__(self):
+        return "%s: %s" % (self.tough_name.upper(), self.name)
 
 
 class Block(models.Model):

@@ -28,6 +28,19 @@ def about(request):
     return render_to_response('about.html', {},
                               context_instance=RequestContext(request))
 
+def submit(request, jobid):
+    j = Job.objects.get(id=jobid)
+    finalinput = ''
+    for block in j.block_set.all():
+        if block.blockType != "MESH" and block.blockType != "batch":
+            finalinput += block.content + '\n'
+    batch = j.block_set.get(blockType="batch")
+    mesh = j.block_set.get(blockType="mesh")
+    j.put_file("input", finalinput)
+    j.put_file("tough.pbs", batch)
+    j.put_file("MESH", mesh)
+    j.submit()
+    return HttpResponse("")
 
 @login_required
 def jobs(request):

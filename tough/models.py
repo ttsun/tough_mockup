@@ -669,4 +669,7 @@ class BlockType(models.Model):
 class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
-    content = models.TextField(default="")
+    content = models.TextField()
+
+    def get_raw_input_form(self):
+        return RawInputForm(initial={"forminput": ""}, data={"forminput": content})

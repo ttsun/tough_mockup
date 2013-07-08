@@ -154,6 +154,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         {% if job_id %}
+            <a id = "upload_MESH" class = "btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
             <a href = "{% url 'tough.views.ajax_submit' jobid=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
     </div>

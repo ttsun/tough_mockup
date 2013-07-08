@@ -26,5 +26,8 @@ urlpatterns = patterns('',
     url(r'^job/job_setup/(?P<jobid>\d+)/$', 'tough.views.job_edit'),
     url(r'^job/save/(?P<jobid>\d+)/$', 'tough.views.ajax_save'),
     url(r'^job/submit/(?P<jobid>\d+)/$', 'tough.views.ajax_submit'),
+    url(r'^job/status/(?P<jobid>\d+)/$', 'tough.views.job_view'),
+    url(r'^job/status/(?P<jobid>\d+)/download/(?P<filename>.+)/$', 'tough.views.get_file'),
+    # url(r'^job/status/(?P<jobid>\d+)/download/(?P<blockname>.+)/$', 'tough.views.get_block'),
     url(r'^job/job_status/$', TemplateView.as_view(template_name="job_status.html")),
 )

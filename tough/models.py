@@ -212,8 +212,7 @@ class Job(models.Model):
         >>> j.put_file("myfile", "#my contents\nhello world\n")
         
         """
-        if contents == '':
-            del_file(filename)
+
         if 'dir' in kwargs:
             path=kwargs['dir']
         else:
@@ -579,7 +578,16 @@ class Job(models.Model):
                                 "max_walltime": self.maxwalltime,
                                 "email_notifications": self.emailnotifications.split(","),
                                 "nodemem": self.nodemem},)
-                                
+    
+    # def get_block_array(self):
+    #     blockarray = []
+    #     for block in self.get_req_blocks():
+    #         contentsize = os.stat(block.content)
+    #         blockarray.append({"name":block.blockType.name, "size":contentsize.st_size})
+    #     for block in self.get_op_blocks():
+    #         contentsize = os.stat(block.content)
+    #         blockarray.append({"name":block.blockType.name, "size":contentsize.st_size})
+    #     return blockarray
 
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)

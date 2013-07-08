@@ -38,7 +38,7 @@
                                 <button class="btn">Copy</button>
                                 <button class="btn">Move</button>
                                 <button class="btn">Delete</button>
-                                <button class="btn">Details</button>
+                                <a href = "{% url 'tough.views.job_view' jobid=job.pk %}" class="btn">Details</a>
                             </div>
                         </td>
                     </tr>

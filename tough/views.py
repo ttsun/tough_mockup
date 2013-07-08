@@ -153,24 +153,6 @@ def ajax_get_tough_files(request, jobid):
     content = json.dumps(tough_files)
     return HttpResponse(content, content_type='application/json')
 
-
-@login_required
-def submit(request, jobid):
-    j = Job.objects.get(id=jobid)
-    finalinput = ''
-    for block in j.block_set.all():
-        if block.blockType != "MESH" and block.blockType != "batch":
-            finalinput += block.content + '\n'
-    batch = j.block_set.get(blockType="batch")
-    mesh = j.block_set.get(blockType="mesh")
-    j.put_file("input", finalinput)
-    j.put_file("tough.pbs", batch)
-    j.put_file("MESH", mesh)
-    j.submit()
-    return HttpResponse("")
-
-    
-
 @login_required
 def ajax_submit(request, jobid):
     #get the data from the ajax request
@@ -191,13 +173,16 @@ def ajax_submit(request, jobid):
         j.put_file(batchname, batch_text)
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
-
+    try:
+        j.put_file(j.jobname + "_output", "")
+    except Exception:
+        return HttpResponse(simplejson.dumps({"success":False, "error": "Unable to create output file."}), content_type="application/json")
     try:
         j.submit()
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to submit job."}), content_type="application/json")
 
-    return HttpResponse("Submit successful")
+    return redirect('tough.views.job_view', jobid)
 
 def combine_inputs(job):
     text = ''
@@ -206,6 +191,22 @@ def combine_inputs(job):
     for block in job.get_op_blocks():
         text += block.content + "\n"
     return text
+
+@login_required
+def job_view(request, jobid):
+    j = get_object_or_404(Job, id=int(jobid))
+    return render_to_response('job_view.html', 
+                                {"jobname":j.jobname, "jobid":j.pk, "jobdir":j.jobdir, "job":j},
+                                context_instance=RequestContext(request))
+
+# @login_required
+# def get_block(request, jobid, blockname):
+#     j = get_object_or_404(Job, id=int(jobid))
+#     b = j.block_set.get(blockType__name = blockname)
+#     content = b.content
+#     response = HttpResponse(content, content_type="text/plain")
+#     response['Content-Disposition'] = 'attachment; filename=' + filename
+#     return response
 
 @login_required
 def ajax_save(request, jobid):
@@ -239,6 +240,7 @@ def ajax_save(request, jobid):
 
                 content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
                 j.maxwalltime = time(hour = int(form.cleaned_data["max_walltime"][0]), minute = int(form.cleaned_data["max_walltime"][1]))
+                content += '-o tough_output'
                 content += '#PBS -m '
                 j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
                 mail = "".join(form.cleaned_data['email_notifications'])
@@ -250,8 +252,10 @@ def ajax_save(request, jobid):
                 content += '#PBS -V\n\n'
                 content += 'cd ' + j.jobdir + '\n'
                 content += 'module load tough/noah\n\n' 
+                content += ''
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d tough\n" % numprocs
+                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug %s \n" %(numprocs, j.jobname)
+                # tough\n" % numprocs
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             else:
@@ -316,9 +320,9 @@ def get_file(request, jobid, filename):
         content = j.get_file(filename)
     except IOError, ex:
         return HttpResponseBadRequest("Could not read file: %s" % str(ex))
-
-    return HttpResponse(content, content_type="text/plain")
-
+    response = HttpResponse(content, content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
 
 @login_required
 def view_job(request, jobid, do_run=False, *args, **kwargs):

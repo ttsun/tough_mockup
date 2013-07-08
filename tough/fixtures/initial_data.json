@@ -31,5 +31,82 @@
         "tough_name": "rocks", 
         "description": "rocks file"
     }
+},
+{
+    "pk": 4, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 1, 
+        "name": "hydrate", 
+        "tough_name": "hydrate", 
+        "description": "Input the parameters for hydrate properties and their behaviors"
+    }
+},
+{
+    "pk": 5, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 1, 
+        "name": "eleme", 
+        "tough_name": "eleme", 
+        "description": "List of the grid blocks"
+    }
+},
+{
+    "pk": 6, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 1, 
+        "name": "conne", 
+        "tough_name": "conne", 
+        "description": "List of the flow connections between the individual blocks"
+    }
+},
+{
+    "pk": 7, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 1, 
+        "name": "param", 
+        "tough_name": "param", 
+        "description": "Computational parameters to be executed"
+    }
+},
+{
+    "pk": 8, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 0, 
+        "name": "diffusion", 
+        "tough_name": "diffusion", 
+        "description": "diffusivities of mass components"
+    }
+},
+{
+    "pk": 9, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 0, 
+        "name": "indom", 
+        "tough_name": "indom", 
+        "description": "list of initial conditions for specific reservoir domains"
+    }
+},
+{
+    "pk": 10, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "default_content": "", 
+        "required": 0, 
+        "name": "incon", 
+        "tough_name": "incon", 
+        "description": "list of initial conditions for individual blocks"
+    }
 }
 ]

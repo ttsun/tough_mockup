@@ -175,7 +175,7 @@ class Job(models.Model):
     status = models.CharField(max_length=32, blank=True)
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
-    queue = models.CharField(max_length=256, blank=True)
+    
     
     # Useful timestamps
     time_last_updated = models.DateTimeField(null=True, blank=True)
@@ -183,7 +183,12 @@ class Job(models.Model):
     time_started = models.DateTimeField(null=True, blank=True)    
     time_completed = models.DateTimeField(null=True, blank=True)
 
-    
+    queue = models.CharField(max_length=256, default = "regular")
+    numnodes = models.IntegerField(max_length=256, default = 1)
+    maxwalltime = models.TimeField(default = time(hour = 0, minute = 15))
+    nodemem = models.CharField(max_length=256, default = "first")
+    emailnotifications = models.CharField(max_length = 256, default = "")
+
 
     
     def create_dir(self):
@@ -574,18 +579,15 @@ class Job(models.Model):
         return self
 
     def get_comp_settings_form(self):
-        return CompSettingsForm(initial={"queue": "regular",
-                                "num_nodes": 1,
-                                "max_walltime": time(hour=0, minute=30),
-                                "email_notifications": ["b", "e", "a"],
-                                "nodemem": "first"},)
+        return CompSettingsForm(initial={"queue": self.queue, 
+                                "num_nodes": self.numnodes,
+                                "max_walltime": self.maxwalltime,
+                                "email_notifications": self.emailnotifications.split(","),
+                                "nodemem": self.nodemem},)
                                 
 
     def __unicode__(self):
         return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjobid)
-
-    def get_raw_input_form(self):
-        return RawInputForm(initial={"forminput": ""})
 
     def get_req_blocks(self):
         return self.block_set.filter(blockType__required=1)

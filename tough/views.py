@@ -185,23 +185,26 @@ def ajax_save(request, jobid):
                 content = ''
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
+                j.queue = form.cleaned_data['queue']
                 content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_nodes'] * 24)
 
                 numprocs = int(form.cleaned_data['num_nodes']) * 24
-
+                j.numnodes = int(form.cleaned_data['num_nodes'])
                 nodemem = form.cleaned_data['nodemem']
-
+                j.nodemem = nodemem
                 if nodemem != 'first':
                     content += ':' + nodemem + '\n'
                 else:
                     content += '\n'
 
                 content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
+                j.maxwalltime = time(hour = int(form.cleaned_data["max_walltime"][0]), minute = int(form.cleaned_data["max_walltime"][1]))
                 content += '#PBS -m '
+                j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
                 mail = "".join(form.cleaned_data['email_notifications'])
                 if not mail: 
                     mail = 'n'
-                content += mail + '\n'                
+                content += mail + '\n'
                 content += '#PBS -j oe\n'
                 content += '#PBS -d ' + j.jobdir + '\n'
                 content += '#PBS -V\n\n'
@@ -210,6 +213,7 @@ def ajax_save(request, jobid):
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
                 content += "aprun -n %d tough\n" % numprocs
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
+                j.save()
             else:
                 content = form.cleaned_data['rawinput']
             try:

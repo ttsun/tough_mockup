@@ -662,4 +662,4 @@ class Block(models.Model):
     content = models.TextField()
 
     def get_raw_input_form(self):
-        return RawInputForm(initial={"forminput": ""}, data={"forminput": content})
+        return RawInputForm(initial={"forminput": ""})

@@ -7,7 +7,8 @@
         "required": 2, 
         "default_content": "", 
         "name": "batch", 
-        "tough_name": "batch"
+        "tough_name": "batch",
+        "ordering": 0
     }
 },
 {
@@ -18,7 +19,8 @@
         "required": 0, 
         "default_content": "", 
         "name": "gener", 
-        "tough_name": "gener"
+        "tough_name": "gener",
+        "ordering": 0
     }
 },
 {
@@ -29,7 +31,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "rocks", 
-        "tough_name": "rocks"
+        "tough_name": "rocks",
+        "ordering": 0
     }
 },
 {
@@ -40,7 +43,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "hydrate", 
-        "tough_name": "hydrate"
+        "tough_name": "hydrate",
+        "ordering": 0
     }
 },
 {
@@ -51,7 +55,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "eleme", 
-        "tough_name": "eleme"
+        "tough_name": "eleme",
+        "ordering": 0
     }
 },
 {
@@ -62,7 +67,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "conne", 
-        "tough_name": "conne"
+        "tough_name": "conne",
+        "ordering": 0
     }
 },
 {
@@ -73,7 +79,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "param", 
-        "tough_name": "param"
+        "tough_name": "param",
+        "ordering": 0
     }
 },
 {
@@ -84,7 +91,8 @@
         "required": 0, 
         "default_content": "", 
         "name": "diffusion", 
-        "tough_name": "diffusu"
+        "tough_name": "diffusu",
+        "ordering": 0
     }
 },
 {
@@ -95,7 +103,8 @@
         "required": 0, 
         "default_content": "", 
         "name": "indom", 
-        "tough_name": "indom"
+        "tough_name": "indom",
+        "ordering": 0
     }
 },
 {
@@ -106,7 +115,8 @@
         "required": 0, 
         "default_content": "", 
         "name": "incon", 
-        "tough_name": "incon"
+        "tough_name": "incon",
+        "ordering": 0
     }
 },
 {
@@ -117,7 +127,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "title", 
-        "tough_name": "title"
+        "tough_name": "title",
+        "ordering": 1
     }
 },
 {
@@ -128,7 +139,8 @@
         "required": 1, 
         "default_content": "", 
         "name": "memory", 
-        "tough_name": "memory"
+        "tough_name": "memory",
+        "ordering": 2
     }
 }
 ]

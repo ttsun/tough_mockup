@@ -98,7 +98,6 @@ $(document).ready(function(){
         return false;
    });
    $("#dirinput").submit(function(e){
-        current_doc = "batch";
         var values = {};
         $.each($('#dirinput').serializeArray(), function(i, field) {
             values[field.name] = field.value;
@@ -108,8 +107,6 @@ $(document).ready(function(){
    });
 
    $("#sidebar a").click(function(e){
-        current_doc = $(this).attr("id");
-        $("#currentblock").val(current_doc);
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             $("#sidebar .active").removeClass("active");
@@ -125,7 +122,7 @@ $(document).ready(function(){
 
 function showInputArea(id){
     $(".inputareaactive").removeClass("inputareaactive").hide();
-    current_doc = $(this).find("input[type=hidden]").val();
+    current_doc = $(id).attr("id");
     $(id).addClass("inputareaactive").show();
     console.log($(id));
     $(".inputarea:not(.inputareaactive)").hide();

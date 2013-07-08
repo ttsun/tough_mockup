@@ -174,12 +174,14 @@ def ajax_save(request, jobid):
     j = get_object_or_404(Job, id=jobid)
     blocktype = BlockType.objects.get(pk=request.POST['blockType'])
     if request.method == 'POST':
-        if blocktype.name == "batch":
+        # If the block is a batch block (pk=1)
+        if blocktype.pk == 1:
             form = CompSettingsForm(data=request.POST)
         else:
             form = RawInputForm(data=request.POST)
         if form.is_valid():
-            if blocktype.name == "batch":
+            # If the block is a batch block (pk=1)
+            if blocktype.pk == 1:
                 content = ''
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'

@@ -440,7 +440,6 @@ class Job(models.Model):
         
         Get the contents of the file (output of /bin/date -u  +'%a %b %d %H:%M:%S %Z %Y') and parse as a timestamp
         """
-
         try:
             content=self.get_file(filename, *args, **kwargs)
         except IOError, ex:

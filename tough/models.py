@@ -440,7 +440,6 @@ class Job(models.Model):
         
         Get the contents of the file (output of /bin/date -u  +'%a %b %d %H:%M:%S %Z %Y') and parse as a timestamp
         """
-
         try:
             content=self.get_file(filename, *args, **kwargs)
         except IOError, ex:
@@ -681,6 +680,10 @@ class BlockType(models.Model):
     # 2 - Batch
     required = models.IntegerField(default=0)
     default_content = models.TextField(default="", blank=True)
+    ordering = models.IntegerField()
+
+    class Meta:
+        ordering = ['ordering', 'id']
 
     def __unicode__(self):
         return "%s: %s" % (self.tough_name.upper(), self.name)
@@ -690,6 +693,9 @@ class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
     content = models.TextField()
+
+    class Meta:
+        ordering = ['blockType__ordering', 'blockType__id']
 
     def get_raw_input_form(self):
         return RawInputForm(data={"rawinput": self.content})

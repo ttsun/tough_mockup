@@ -657,6 +657,8 @@ class Block(models.Model):
     blockType = models.CharField(max_length=255)
     job = models.ForeignKey(Job)
     content = models.TextField()
-    rawform = RawInputForm()
-    
+
+    def get_raw_input_form(self):
+        return RawInputForm(initial={"forminput": ""}, data={"forminput": content})
+
     # blocktype = models.ForeignKey('BlockType')

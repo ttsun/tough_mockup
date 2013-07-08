@@ -30,6 +30,8 @@ var current_doc;
 var newjob;
 var homedir;
 var scratchdir;
+var jobfiles;
+var jobid;
 
 function setupBlocks(blockName){
     var block = $("#reqblocks").append("<li></li>");
@@ -40,6 +42,22 @@ function setupBlocks(blockName){
 
 function showRawInput(blockName){
 
+}
+
+function getjobfiles(){
+
+    $.ajax({
+        type:'GET',
+        url: TOUGH_SUBDIR + '/get_tough_files/' + jobid,
+
+        success: function(data){
+            jobfiles = data;
+        },
+        error: function(err){
+            alert("There was a problem getting the input files.");
+            $('#fileloader').hide();
+        },
+    });
 }
 
 $(document).ready(function(){
@@ -86,7 +104,8 @@ $(document).ready(function(){
         return true;
    });
    $("#sidebar a").click(function(e){
-        current_doc = $(this).attr("id")
+        current_doc = $(this).attr("id");
+        $("#currentblock").val(current_doc);
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             showInputArea($(this).attr("id"));
@@ -126,7 +145,7 @@ function showInputArea(id){
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
-            <li class = "blockchoice"><a href="#blockinput" id = "ROCKS">ROCKS</a></li>
+            <li class = "blockchoice"><a href="#blockinput" id = "GENER">GENER</a></li>
             <li class = "blockchoice"><a href="#blockinput" id = "Block2">Block 2</a></li> 
             <li class = "blockchoice"><a href="#blockinput" id = "Block3">Block 3</a></li> 
             <li class = "blockchoice"><a href="#">Block 4</a></li>
@@ -140,6 +159,7 @@ function showInputArea(id){
             <li class = "blockchoice"><a href="#">Block 4</a></li>
             <li class = "blockchoice"><a href="#">Block 5</a></li>
         </ul>
+        <button class = "btn btn-success btn-large span11" type="button">SUBMIT</button>
     </div>
     <div class = "span10 inputarea" id = "dirsetup">
         <h2>Directory Setup</h2>
@@ -194,6 +214,7 @@ function showInputArea(id){
             <div class = "tab-pane" id = "raw">
                 <form class="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
                     {% csrf_token %}
+                    <input id = "currentblock" type = "hidden" name = blockType />
                     {%for field in job.get_raw_input_form%}
                     <div class = "control-group">
                         <div class = "control">
@@ -201,7 +222,8 @@ function showInputArea(id){
                         </div>
                     </div>
                     {% endfor %}
-                <input class="btn" type="submit" id='saverawblock' />
+                <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
+                <input class="btn btn-primary" type="submit" id='saverawblock' />
                 <button class="btn" type="button" id='cancel'>Cancel</button>
                 </form>
             </div>

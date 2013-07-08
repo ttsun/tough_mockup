@@ -680,7 +680,7 @@ class BlockType(models.Model):
     # 1 - Required
     # 2 - Batch
     required = models.IntegerField(default=0)
-    default_content = models.TextField(default="")
+    default_content = models.TextField(default="", blank=True)
 
     def __unicode__(self):
         return "%s: %s" % (self.tough_name.upper(), self.name)

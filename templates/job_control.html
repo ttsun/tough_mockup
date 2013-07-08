@@ -12,6 +12,36 @@
             text-align: center !important;
         }
     </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".del").click(function(e){
+                e.preventDefault();
+                var url = $(this).attr("href");
+                Alertify.dialog.confirm("Are you sure you want to delete this job? This operation is irreversable", 
+                    function(){
+                        Alertify.dialog.confirm("Do you want to delete the associated job files?", 
+                            function(){
+                                console.log(url);
+                                $.post(url, {"files": true}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }, 
+                            function(){
+                                $.post(url, {"files": false}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }
+                        );
+                    }, 
+                    function(){
+                        return false;
+                    }
+                );
+            });
+        });
+    </script>
 {% endblock head %}
 
 {% block content %}
@@ -36,8 +66,8 @@
                         <td>
                             <div class="btn-group">
                                 <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp">Copy</a>
-                                <button class="btn mv">Move</button>
-                                <button class="btn del">Delete</button>
+                                <a href="#" class="btn mv">Move</a>
+                                <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
                                 <button class="btn details">Details</button>
                                 <span style="display:none" class="job_id">{{job.pk}}</span>
                             </div>

@@ -374,13 +374,12 @@ def populate_job(job):
 
 
 @login_required
-def delete_job(request):
-    job_id=int(request.POST['del_job_id'])
-    j=Job.objects.get(id=job_id)
-    if request.POST['del_type'] == 'nova_and_files':
+def delete_job(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
+    if request.POST.get("files", False):
         j.del_dir()
     j.delete()
-    return redirect('tough.views.index')
+    return HttpResponse(simplejson.dumps({"success": True}))
     
 @login_required
 def rename_job(request):

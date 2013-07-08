@@ -3,110 +3,132 @@
     "pk": 1, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "batch job", 
         "required": 2, 
+        "default_content": "", 
         "name": "batch", 
-        "tough_name": "batch", 
-        "description": "batch job"
+        "tough_name": "batch"
     }
 },
 {
     "pk": 2, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "Optional; list of mass or heat sinks and sources", 
         "required": 0, 
+        "default_content": "", 
         "name": "gener", 
-        "tough_name": "gener", 
-        "description": "Optional; list of mass or heat sinks and sources"
+        "tough_name": "gener"
     }
 },
 {
     "pk": 3, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "Hydrogeologic parameters for various reservoir domains", 
         "required": 1, 
+        "default_content": "", 
         "name": "rocks", 
-        "tough_name": "rocks", 
-        "description": "rocks file"
+        "tough_name": "rocks"
     }
 },
 {
     "pk": 4, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "Input the parameters for hydrate properties and their behaviors", 
         "required": 1, 
+        "default_content": "", 
         "name": "hydrate", 
-        "tough_name": "hydrate", 
-        "description": "Input the parameters for hydrate properties and their behaviors"
+        "tough_name": "hydrate"
     }
 },
 {
     "pk": 5, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "List of the grid blocks", 
         "required": 1, 
+        "default_content": "", 
         "name": "eleme", 
-        "tough_name": "eleme", 
-        "description": "List of the grid blocks"
+        "tough_name": "eleme"
     }
 },
 {
     "pk": 6, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "List of the flow connections between the individual blocks", 
         "required": 1, 
+        "default_content": "", 
         "name": "conne", 
-        "tough_name": "conne", 
-        "description": "List of the flow connections between the individual blocks"
+        "tough_name": "conne"
     }
 },
 {
     "pk": 7, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "Computational parameters to be executed", 
         "required": 1, 
+        "default_content": "", 
         "name": "param", 
-        "tough_name": "param", 
-        "description": "Computational parameters to be executed"
+        "tough_name": "param"
     }
 },
 {
     "pk": 8, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "diffusivities of mass components", 
         "required": 0, 
+        "default_content": "", 
         "name": "diffusion", 
-        "tough_name": "diffusion", 
-        "description": "diffusivities of mass components"
+        "tough_name": "diffusu"
     }
 },
 {
     "pk": 9, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "list of initial conditions for specific reservoir domains", 
         "required": 0, 
+        "default_content": "", 
         "name": "indom", 
-        "tough_name": "indom", 
-        "description": "list of initial conditions for specific reservoir domains"
+        "tough_name": "indom"
     }
 },
 {
     "pk": 10, 
     "model": "tough.blocktype", 
     "fields": {
-        "default_content": "", 
+        "description": "list of initial conditions for individual blocks", 
         "required": 0, 
+        "default_content": "", 
         "name": "incon", 
-        "tough_name": "incon", 
-        "description": "list of initial conditions for individual blocks"
+        "tough_name": "incon"
+    }
+},
+{
+    "pk": 11, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Data record (single line) with simulation title", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "title", 
+        "tough_name": "title"
+    }
+},
+{
+    "pk": 12, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Dynamic memory allocation", 
+        "required": 1, 
+        "default_content": "", 
+        "name": "memory", 
+        "tough_name": "memory"
     }
 }
 ]

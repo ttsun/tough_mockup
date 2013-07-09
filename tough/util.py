@@ -37,44 +37,45 @@ def newt_request(url, req_method, params=None, cookie_str=None):
     return (response, content)
 
 
-def random_string (length):
-    return ''.join (random.choice (string.letters) for ii in range (length + 1))
+def random_string(length):
+    return ''.join(random.choice(string.letters) for ii in range(length + 1))
 
-def encode_multipart_data (files, data=None):
-    boundary = random_string (30)
 
-    def get_content_type (filename):
-        return mimetypes.guess_type (filename)[0] or 'application/octet-stream'
+def encode_multipart_data(files, data=None):
+    boundary = random_string(30)
 
-    def encode_field (field_name):
+    def get_content_type(filename):
+        return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+    def encode_field(field_name):
         return ('--' + boundary,
                 'Content-Disposition: form-data; name="%s"' % field_name,
-                '', str (data [field_name]))
+                '', str(data[field_name]))
 
-    def encode_file (field_name):
-        filename = encoding.iri_to_uri(files [field_name])
+    def encode_file(field_name):
+        filename = encoding.iri_to_uri(files[field_name])
         return ('--' + boundary,
                 'Content-Disposition: form-data; name="%s"; filename="%s"' % (field_name, filename),
                 'Content-Type: %s' % get_content_type(filename),
-                '', open (filename, 'rb').read ())
+                '', open(filename, 'rb').read())
 
     lines = []
     if data != None:
         for name in data:
-            lines.extend (encode_field (name))
+            lines.extend(encode_field (name))
     for name in files:
-        lines.extend (encode_file (name))
-    lines.extend (('--%s--' % boundary, ''))
+        lines.extend(encode_file (name))
+    lines.extend(('--%s--' % boundary, ''))
     body = '\r\n'.join (lines)
 
     headers = {'content-type': 'multipart/form-data; boundary=' + boundary,
-               'content-length': str (len (body))}
+               'content-length': str(len(body))}
 
     return body, headers
 
 def newt_upload_request(url, files, params=None, cookie_str=None):
     body, headers = encode_multipart_data(files, params)
-    newt_base_url=getattr(settings, 'NEWT_BASE_URL')
+    newt_base_url = getattr(settings, 'NEWT_BASE_URL')
     req_method = "POST"
 
     full_url = newt_base_url+url
@@ -84,11 +85,11 @@ def newt_upload_request(url, files, params=None, cookie_str=None):
     if cookie_str:
         headers.update({'Cookie': cookie_str})
 
-    logger.debug("NEWT: %s %s"%(req_method,full_url))
+    logger.debug("NEWT: %s %s" % (req_method, full_url))
     response, content = conn.request(full_url, req_method, body=body, headers=headers)
 
-    logger.debug("NEWT response: %s"%response.status)
-    
+    logger.debug("NEWT response: %s" % response.status)
+
     # TODO: Do we JSON decode content
     return (response, content)
 
@@ -130,11 +131,3 @@ class NewtCookie:
                 self.__dict__[key]=kvarray[1]
             elif len(kvarray)==1:
                 self.__dict__[key]=True
-
-
-
-
-
-         
-         
-         

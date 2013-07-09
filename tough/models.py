@@ -28,11 +28,10 @@ class MyUserManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = NoahUser(
-            email=MyUserManager.normalize_email(email),
-            date_of_birth=date_of_birth,
-            is_admin=False
-        )
+        user = NoahUser(email=MyUserManager.normalize_email(email),
+                        date_of_birth=date_of_birth,
+                        is_admin=False
+                        )
 
         user.set_password(password)
         user.save()
@@ -44,9 +43,9 @@ class MyUserManager(BaseUserManager):
         birth and password.
         """
         user = self.create_user(email,
-            password=password,
-            date_of_birth=date_of_birth
-        )
+                                password=password,
+                                date_of_birth=date_of_birth
+                                )
         user.is_admin = True
         user.save()
         return user
@@ -54,17 +53,12 @@ class MyUserManager(BaseUserManager):
 
 class NoahUser(AbstractBaseUser):
     """
-    Extend NoahUser Model to include newt cookies
-    """    
-    # class Meta:
-    #     proxy = True
-
-    # TODO: Move this out of model and just pass back to user
+    Extend Django User Model to include newt cookies
+    """
 
     username = models.CharField(max_length=40, unique=True, db_index=True)
     USERNAME_FIELD = 'username'
     is_admin = models.BooleanField(default=False)
-    # username = models.CharField(max_length = 200)
     cookie = models.TextField(null=True, blank=True)
 
     def is_licensed_user(self):
@@ -86,30 +80,10 @@ class NoahUser(AbstractBaseUser):
         return self.is_admin
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
         return True
-
-    def get_repos(self):
-        """
-        Pull down repos for a user
-        """
-        cookie_str = self.cookie
-        url = '/account/user/%s/repos' % self.username
-        response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if response['status'] != '200':
-            raise Exception(content)
-            
-        repo_dict = simplejson.loads(content)
-        
-        repo_list = [repo['rname'] for repo in repo_dict['items'] if repo['adminunit_type'] == 'REPO']
-            
-        return repo_list
     
     def get_all_jobs(self):
         """

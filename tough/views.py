@@ -226,7 +226,7 @@ def job_view(request, job_id):
 
 
 @login_required
-def ajax_save(request, jobid):
+def ajax_save(request, job_id):
     #get the data from the ajax request
     j = get_object_or_404(Job, id=job_id)
     blocktype = BlockType.objects.get(pk=request.POST['blockType'])

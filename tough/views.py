@@ -15,9 +15,7 @@ import os
 from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
-from django.conf import settings
 import simplejson
-from django.core.urlresolvers import reverse
 
 
 def home(request):
@@ -27,6 +25,7 @@ def home(request):
 def about(request):
     return render_to_response('about.html', {},
                               context_instance=RequestContext(request))
+
 
 def submit(request, job_id):
     j = Job.objects.get(id=job_id)
@@ -42,6 +41,7 @@ def submit(request, job_id):
     j.submit()
     return HttpResponse("")
 
+
 @login_required
 def jobs(request):
     u = NoahUser.objects.get(username=request.user)
@@ -51,7 +51,7 @@ def jobs(request):
     dirlist = [('scratch', 'My scratch directory'), ('home', 'My home directory'), ('project', 'Project'), ('root', '/')]
 
     return render_to_response('job_control.html',
-                              {'dirlist':dirlist, 'all_jobs': jobs, 'username': username},
+                              {'dirlist': dirlist, 'all_jobs': jobs, 'username': username},
                               context_instance=RequestContext(request))
 
 
@@ -91,7 +91,6 @@ def create_job(request, job_id=None, type="new"):
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
 
-
             #create directory with unique id
             j.create_dir()
 
@@ -128,7 +127,7 @@ def create_job(request, job_id=None, type="new"):
             job = get_object_or_404(Job, pk=job_id)
         else:
             job = None
-        return render_to_response('job_setup.html', {"job": job, "setup_type": type},context_instance=RequestContext(request))
+        return render_to_response('job_setup.html', {"job": job, "setup_type": type}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -154,16 +153,18 @@ def mesh_upload(request, job_id):
 @login_required
 def ajax_get_tough_files(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
-    tough_files= {}
-    
+    tough_files = {}
+
     # Get various files
 
     # TODO: if job is new, don't bother
     for block in j.block_set.all():
         try:
             key = block.blockType
-            if key == "batch": tough_files.update({key:j.get_file("tough.pbs")})
-            else: tough_files.update({key:j.get_file(key)})
+            if key == "batch":
+                tough_files.update({key: j.get_file("tough.pbs")})
+            else:
+                tough_files.update({key: j.get_file(key)})
 
         except IOError:
             tough_files[key] = ""
@@ -175,8 +176,9 @@ def ajax_get_tough_files(request, job_id):
 @login_required
 def upload_MESH(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
-    return render_to_response('mesh_upload.html', {"job_id":j.pk, "jobname":j.jobname}, context_instance=RequestContext(request))
-    
+    return render_to_response('mesh_upload.html', {"job_id": j.pk, "jobname": j.jobname}, context_instance=RequestContext(request))
+
+
 @login_required
 def ajax_submit(request, job_id):
     #get the data from the ajax request
@@ -192,7 +194,7 @@ def ajax_submit(request, job_id):
 
     batchname = "tough.pbs"
     batch_text = j.block_set.get(blockType__pk=1).content
-    
+
     try:
         j.put_file(batchname, batch_text)
     except Exception:
@@ -200,13 +202,14 @@ def ajax_submit(request, job_id):
     try:
         j.put_file("OUTPUT", "")
     except Exception:
-        return HttpResponse(simplejson.dumps({"success":False, "error": "Unable to create output file."}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to create output file."}), content_type="application/json")
     try:
         j.submit()
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to submit job."}), content_type="application/json")
 
     return redirect('tough.views.job_view', job_id)
+
 
 def combine_inputs(job):
     text = ''
@@ -216,12 +219,13 @@ def combine_inputs(job):
         text += block.content + "\n"
     return text
 
+
 @login_required
 def job_view(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
-    return render_to_response('job_view.html', 
-                                {"jobname":j.jobname, "job_id":j.pk, "jobdir":j.jobdir, "job":j},
-                                context_instance=RequestContext(request))
+    return render_to_response('job_view.html',
+                              {"jobname": j.jobname, "job_id": j.pk, "jobdir": j.jobdir, "job": j},
+                              context_instance=RequestContext(request))
 
 # @login_required
 # def get_block(request, jobid, blockname):
@@ -231,6 +235,7 @@ def job_view(request, job_id):
 #     response = HttpResponse(content, content_type="text/plain")
 #     response['Content-Disposition'] = 'attachment; filename=' + filename
 #     return response
+
 
 @login_required
 def ajax_save(request, jobid):
@@ -263,22 +268,22 @@ def ajax_save(request, jobid):
                     content += '\n'
 
                 content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
-                j.maxwalltime = time(hour = int(form.cleaned_data["max_walltime"][0]), minute = int(form.cleaned_data["max_walltime"][1]))
+                j.maxwalltime = time(hour=int(form.cleaned_data["max_walltime"][0]), minute=int(form.cleaned_data["max_walltime"][1]))
                 content += '-o tough_output'
                 content += '#PBS -m '
                 j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
                 mail = "".join(form.cleaned_data['email_notifications'])
-                if not mail: 
+                if not mail:
                     mail = 'n'
                 content += mail + '\n'
                 content += '#PBS -j oe\n'
                 content += '#PBS -d ' + j.jobdir + '\n'
                 content += '#PBS -V\n\n'
                 content += 'cd ' + j.jobdir + '\n'
-                content += 'module load tough/noah\n\n' 
+                content += 'module load tough/noah\n\n'
                 content += ''
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug \n" %numprocs
+                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug \n" % numprocs
                 # tough\n" % numprocs
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
@@ -290,6 +295,7 @@ def ajax_save(request, jobid):
             except Exception:
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
+
 
 """
 @login_required
@@ -303,7 +309,7 @@ def ajax_upload(request, job_id):
     try:
         thepath = thefile.temporary_file_path
         response, content = util.newt_request('/command/carver', 'POST', params={'executable': 'cp ' + thepath + " " + j.jobdir + "/" + filename}, cookie_str=cookie_str)
-        if thefile.multiple_chunks(): 
+        if thefile.multiple_chunks():
             return HttpResponse("okay")
         else:
             filecontent = thefile.read()
@@ -313,6 +319,7 @@ def ajax_upload(request, job_id):
     except:
         return HttpResponse("Unable to save the file")
 """
+
 
 @login_required
 def stopjob(request, job_id):
@@ -337,6 +344,7 @@ def stopjob(request, job_id):
             return HttpResponse("Unable to save the file")
     return HttpResponse("okay")
 
+
 @login_required
 def get_file(request, job_id, filename):
     j = Job.objects.get(id=job_id)
@@ -348,35 +356,18 @@ def get_file(request, job_id, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
-@login_required
-def view_job(request, job_id, do_run=False, *args, **kwargs):
-    #do_run indicates whether or not to submit the job via an ajax call from the returned web page
-    j = Job.objects.get(id=job_id)
-    try:
-        dir_info = j.get_dir(j.jobdir)
-    except IOError, ex:
-        return HttpResponseBadRequest("File Not Found: %s" % str(ex))
 
-    # sort by filename
-    dir_info = sorted(dir_info, key=itemgetter('name'))
-
-    state_map = {'toberun': 'Editing', 'submitted': 'Queued', 'started': 'Running', 'aborted': 'Aborted', 'completed': 'Completed'}
-
-    return render_to_response('main/job_view.html',
-                              {'job_name': j.jobname, 'job_id': job_id, 'job_jobdir': j.jobdir, 'dir_info': dir_info, 'pbs_id': j.pbsjob_id, 'machine': j.machine, 'nova_state': j.nova_state, 'readable_state': state_map[j.nova_state], 'time_use': j.timeuse, 'do_run': do_run},
-                              context_instance=RequestContext(request))
-    
 @login_required
 def ajax_getdir(request, machine, directory):
     u = NoahUser.objects.get(username=request.user)
     try:
         dir_info = Job(user=u, machine=machine).get_dir(dir=directory)
     except IOError, ex:
-        return HttpResponseBadRequest("File Not Found: %s"%str(ex))
+        return HttpResponseBadRequest("File Not Found: %s" % str(ex))
 
-    dir_info = sorted(dir_info,key=itemgetter('name'))
+    dir_info = sorted(dir_info, key=itemgetter('name'))
     content = JSONEncoder().encode(dir_info)
-    content_type='application/json'
+    content_type = 'application/json'
     return HttpResponse(content, content_type=content_type)
 
 
@@ -392,6 +383,7 @@ def ajax_mkdir(request, machine, directory):
         raise Exception(contentjson['error'])
 
     return HttpResponse(content, content_type='application/json')
+
 
 def populate_job(job):
     for blocktype in BlockType.objects.all():
@@ -409,15 +401,16 @@ def delete_job(request, job_id):
         return HttpResponse(simplejson.dumps({"success": True}))
     else:
         return redirect("tough.views.jobs")
-    
+
+
 @login_required
 def rename_job(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
     j.jobname = request.POST['new_name']
     j.save()
     return redirect('tough.views.view_job', job_id=j.id)
-    
-    
+
+
 @login_required
 def ajax_get_zip(request, job_id):
     j=Job.objects.get(id=job_id)
@@ -425,18 +418,20 @@ def ajax_get_zip(request, job_id):
     directory = j.jobdir
     slash = directory.rfind("/")
     zipfilename = directory[slash+1:] + ".zip"
-        
+
     response = HttpResponse(zip, content_type='application/x-zip-compressed')
     response['Content-Disposition'] = 'attachment; filename=' + zipfilename
     return response
+
 
 @login_required
 def run_job(request, job_id):
     return view_job(request, job_id, True)
 
+
 @login_required
 def ajax_run_job(request, job_id):
-    j=Job.objects.get(id=job_id)
+    j = Job.objects.get(id=job_id)
     # Run the job
     if j.nova_state == 'toberun':
         # import pdb;pdb.set_trace()
@@ -445,7 +440,7 @@ def ajax_run_job(request, job_id):
             content = 'okay'
             return HttpResponse(content, content_type='text/plain')
         except Exception, ex:
-            errors=str(ex)
+            errors = str(ex)
             raise Exception(errors)
 
     else:
@@ -458,10 +453,9 @@ def ajax_run_job(request, job_id):
 @login_required
 def check_license(request):
     u = NoahUser.objects.get(username = request.user)
-    username = u.username    
+    username = u.username
     licensed_user = u.is_licensed_user()
-    return render_to_response('main/license.html', 
-                              {'username': username, 'licensed_user': licensed_user}, 
+    return render_to_response('main/license.html,
+                              {'username': username, 'licensed_user': licensed_user},
                               context_instance=RequestContext(request))
 """
-

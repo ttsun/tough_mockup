@@ -1,5 +1,6 @@
 from django.conf import settings
 import httplib2
+import requests
 import urllib, logging
 import string
 import mimetypes
@@ -72,6 +73,13 @@ def encode_multipart_data(files, data=None):
                'content-length': str(len(body))}
 
     return body, headers
+
+def upload_request(url, files, cookie_str=None):
+    newt_base_url=getattr(settings, 'NEWT_BASE_URL')
+    cookies = NewtCookie(cookie_str).__dict__
+    import ipdb; ipdb.set_trace()
+    request = requests.post(url = newt_base_url + url, files = files)
+    return request
 
 def newt_upload_request(url, files, params=None, cookie_str=None):
     body, headers = encode_multipart_data(files, params)

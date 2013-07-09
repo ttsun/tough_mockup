@@ -16,7 +16,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Optional; list of mass or heat sinks and sources", 
-        "ordering": 4, 
+        "ordering": 5, 
         "required": 0, 
         "tough_name": "gener", 
         "default_content": "", 
@@ -52,7 +52,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "List of the grid blocks", 
-        "ordering": 10, 
+        "ordering": 3, 
         "required": 1, 
         "tough_name": "eleme", 
         "default_content": "", 
@@ -64,7 +64,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "List of the flow connections between the individual blocks", 
-        "ordering": 11, 
+        "ordering": 4, 
         "required": 1, 
         "tough_name": "conne", 
         "default_content": "", 
@@ -76,7 +76,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Computational parameters to be executed", 
-        "ordering": 9, 
+        "ordering": 3, 
         "required": 1, 
         "tough_name": "param", 
         "default_content": "", 
@@ -88,7 +88,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "diffusivities of mass components", 
-        "ordering": 8, 
+        "ordering": 5, 
         "required": 0, 
         "tough_name": "diffusu", 
         "default_content": "", 
@@ -100,7 +100,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "list of initial conditions for specific reservoir domains", 
-        "ordering": 7, 
+        "ordering": 5, 
         "required": 0, 
         "tough_name": "indom", 
         "default_content": "", 
@@ -112,7 +112,7 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "list of initial conditions for individual blocks", 
-        "ordering": 6, 
+        "ordering": 5, 
         "required": 0, 
         "tough_name": "incon", 
         "default_content": "", 
@@ -141,6 +141,150 @@
         "tough_name": "memory", 
         "default_content": "", 
         "name": "memory"
+    }
+},
+{
+    "pk": 13, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "End of code and initiates simulation", 
+        "ordering": 10, 
+        "required": 3, 
+        "tough_name": "endcy", 
+        "default_content": "", 
+        "name": "endcy"
+    }
+},
+{
+    "pk": 14, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "End of code and skips simulation", 
+        "ordering": 10, 
+        "required": 3, 
+        "tough_name": "endfi", 
+        "default_content": "", 
+        "name": "endfi"
+    }
+},
+{
+    "pk": 15, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Optional;Parameters for relative permeability and capillary pressure (reservoir)", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "RCAP/WETTA", 
+        "default_content": "", 
+        "name": "wettability"
+    }
+},
+{
+    "pk": 16, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional;Provides time-variable conditions at specific boundaries ( of the simulation)", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "boundaries", 
+        "default_content": "", 
+        "name": "boundaries"
+    }
+},
+{
+    "pk": 17, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional;Specifies parameters used by linear equation solvers ", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "solvr", 
+        "default_content": "", 
+        "name": "solver"
+    }
+},
+{
+    "pk": 18, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional;Specification of times for generating printout (output?)", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "times", 
+        "default_content": "", 
+        "name": "times"
+    }
+},
+{
+    "pk": 19, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional; specifies grid blocks for desired time series data", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "elem_time_series", 
+        "default_content": "", 
+        "name": "elem_time_series"
+    }
+},
+{
+    "pk": 20, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional;specifies connections for desired time series data", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "conx_time_series", 
+        "default_content": "", 
+        "name": "Connection Time Series"
+    }
+},
+{
+    "pk": 21, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional;specifies sinks and sources for desired time series data", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "ss_time_series", 
+        "default_content": "", 
+        "name": "sinks and sources time series data"
+    }
+},
+{
+    "pk": 22, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional; specifies grid subdomains for desired time series data", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "subdomains", 
+        "default_content": "", 
+        "name": "subdomains"
+    }
+},
+{
+    "pk": 23, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional; suppresses printout of version numbers and dates", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "nover", 
+        "default_content": "", 
+        "name": "nover"
+    }
+},
+{
+    "pk": 24, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "optional; one data record for more flexible initialization ", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "start/rando", 
+        "default_content": "", 
+        "name": "start or random"
     }
 }
 ]

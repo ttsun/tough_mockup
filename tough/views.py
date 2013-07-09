@@ -153,11 +153,17 @@ def ajax_get_tough_files(request, jobid):
     content = json.dumps(tough_files)
     return HttpResponse(content, content_type='application/json')
 
+
+@login_required
+def upload_MESH(request, jobid):
+    j = get_object_or_404(Job, id=int(jobid))
+    return render_to_response('mesh_upload.html', {"job_id":j.pk, "jobname":j.jobname}, context_instance=RequestContext(request))
+    
 @login_required
 def ajax_submit(request, jobid):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
-    filename = j.jobname
+    filename = "INFILE"
     submitted_text = combine_inputs(j)
 
     #save via newt, then return an okay
@@ -174,7 +180,7 @@ def ajax_submit(request, jobid):
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
     try:
-        j.put_file(j.jobname + "_output", "")
+        j.put_file("OUTPUT", "")
     except Exception:
         return HttpResponse(simplejson.dumps({"success":False, "error": "Unable to create output file."}), content_type="application/json")
     try:
@@ -254,7 +260,7 @@ def ajax_save(request, jobid):
                 content += 'module load tough/noah\n\n' 
                 content += ''
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug %s \n" %(numprocs, j.jobname)
+                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug \n" %numprocs
                 # tough\n" % numprocs
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()

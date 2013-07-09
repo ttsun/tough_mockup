@@ -578,6 +578,9 @@ class Job(models.Model):
                                 "max_walltime": self.maxwalltime,
                                 "email_notifications": self.emailnotifications.split(","),
                                 "nodemem": self.nodemem},)
+
+    def get_mesh_upload_form(self):
+        return MeshUploadForm()
     
     # def get_block_array(self):
     #     blockarray = []
@@ -673,6 +676,9 @@ class CompSettingsForm(forms.Form):
 
 class RawInputForm(forms.Form):
     rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
+
+class MeshUploadForm(forms.Form):
+    mesh = forms.FileField(widget=forms.FileInput)
 
 
 class BlockType(models.Model):

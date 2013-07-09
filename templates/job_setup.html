@@ -1,51 +1,24 @@
-{% extends "base.html" %} 
-
-{% block head %}
-<script type="text/javascript">
-    $(document).ready(function() {
-        homedir = "/global/homes/" + "{{user.username}}".charAt('0') + "/" + "{{user.username}}";
-        scratchdir = "/global/scratch/sd/" + "{{user.username}}";
-        $(".diroptions").click(function(e) {
-            e.preventDefault();
-            if ($(this).attr("id") == "homedir") {
-                $("#jobdir").val(homedir);
-            } else {
-                $("#jobdir").val(scratchdir);
-            }
-        });
-        $("#dirinput").submit(function(e){
-            var values = {};
-            $.each($('#dirinput').serializeArray(), function(i, field) {
-                values[field.name] = field.value;
-            });
-            Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-            return true;
-       });
-    });
-</script>
-{% endblock head %} 
-
-{% block content %}
 <div class="row-fluid">
-    <div class="span2 well" id="sidebar">
-        <ul class="nav nav-list">
-            <li class="nav-header">Job Creation</li>
-            <li class="active"><a href="#">Directory Setup</a>
-            </li>
-        </ul>
-    </div>
-    <div class="span10 inputarea" id="dirsetup">
-        <h2>Directory Setup</h2>
+    <div class="span12 inputarea" id="dirsetup">
+        {% if setup_type == "new" %}
+            <h2>New Job</h2>
+        {% elif setup_type == "move" %}
+            <h2>Move Job</h2>
+        {% elif setup_type == "copy" %}
+            <h2>Copy Job</h2>
+        {% endif %}
         <form action="{% url 'tough.views.create_job'%}" method="POST" id="dirinput">
             {% csrf_token %}
             <input type="hidden" name="setup_type" id="setup_type" value="{{setup_type|default:'new'}}" />
-            {% if job_id %}
-                <input type="hidden" name="job_id" value="{{job_id}}" />
+            {% if job %}
+                <input type="hidden" name="job_id" value="{{job.pk}}" />
             {% endif %}
-            <div>
-                <label for="jobname">What do you want to name this job?</label>
-                <input type="text" name="jobname" id="jobname" size="50" />
-            </div>
+            
+            {% if setup_type != "move" %}                
+                <div>
+                    <label for="jobname">What do you want to name this new job?</label>
+                    <input type="text" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
+                </div>
             <div>
                 <label for="machine">Which machine should this job run on?</label>
                 <select name="machine" id="machine">
@@ -53,9 +26,18 @@
                     <option value="carver">carver</option>
                 </select>
             </div>
+            {% else %}
+                <strong>Current Directory:</strong> <pre>{{job.jobdir}}</pre>
+                <input type="hidden" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
+                <input type="hidden" name="machine" id="machine" value="{{job.machine}}">
+            {% endif %}
             <div class="input-append">
-                <label for "jobdir">Where would you like to store this job?</label>
-                <input type="text" name="jobdir" id="jobdir" size="50" value="/global/">
+                {% if setup_type == "new" %}
+                    <label for "jobdir">Where would you like to create this job?</label>
+                {% else %}
+                    <label for "jobdir">Where would you like to {{setup_type}} this job?</label>
+                {% endif %}
+                <input type="text" name="jobdir" id="jobdir" size="100" value="/global/">
                 <div class="btn-group">
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
@@ -76,4 +58,23 @@
         </form>
     </div>
 </div>
-{% endblock content %}
+<script type="text/javascript">
+    homedir = "/global/homes/" + "{{user.username}}".charAt('0') + "/" + "{{user.username}}";
+    scratchdir = "/global/scratch/sd/" + "{{user.username}}";
+    $(".diroptions").click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("id") == "homedir") {
+            $("#jobdir").val(homedir);
+        } else {
+            $("#jobdir").val(scratchdir);
+        }
+    });
+    $("#dirinput").submit(function(e){
+        var values = {};
+        $.each($('#dirinput').serializeArray(), function(i, field) {
+            values[field.name] = field.value;
+        });
+        Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
+        return true;
+   });
+</script>

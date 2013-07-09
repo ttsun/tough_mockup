@@ -87,7 +87,7 @@ def create_job(request, job_id=None, type="new"):
             basename = os.path.basename(j.jobdir.rstrip('/'))
             j.jobdir = os.path.join(jobdir, basename)
             j.save()
-            return redirect('tough.views.index')
+            return redirect('tough.views.jobs')
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
 
@@ -124,7 +124,11 @@ def create_job(request, job_id=None, type="new"):
                 return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/?new=1" % j.pk}), content_type="application/json")
             return redirect("/job/job_setup/%d/?new=1" % j.pk)
     else:
-        return render_to_response('job_setup.html', {"job_id": job_id, "setup_type": type},context_instance=RequestContext(request))
+        if job_id:
+            job = get_object_or_404(Job, pk=job_id)
+        else:
+            job = None
+        return render_to_response('job_setup.html', {"job": job, "setup_type": type},context_instance=RequestContext(request))
 
 
 @login_required
@@ -379,12 +383,14 @@ def delete_job(request, job_id):
     if request.POST.get("files", False):
         j.del_dir()
     j.delete()
-    return HttpResponse(simplejson.dumps({"success": True}))
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True}))
+    else:
+        return redirect("tough.views.jobs")
     
 @login_required
-def rename_job(request):
-    job_id = int(request.POST['rename_job_id'])
-    j = Job.objects.get(id=job_id)
+def rename_job(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
     j.jobname = request.POST['new_name']
     j.save()
     return redirect('tough.views.view_job', job_id=j.id)

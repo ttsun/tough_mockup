@@ -353,26 +353,22 @@ class Job(models.Model):
         
     def move_dir(self, tgtdir, *args, **kwargs):
         if 'srcdir' in kwargs:
-            srcdir=kwargs['srcdir']
+            srcdir = kwargs['srcdir']
         else:
-            srcdir=self.jobdir
-            
-        cookie_str=self.user.cookie
+            srcdir = self.jobdir
+
+        cookie_str = self.user.cookie
         url = '/command/%s/' % (self.machine)
 
-        response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
-        if response['status']!='200':
-            raise Exception(response)        
+        response, content = util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
+        if response['status'] != '200':
+            raise Exception(response)
 
         content=simplejson.loads(content)
-        if content['error']!="":
+        if content['error'] != "":
             raise Exception(content['error'])
 
         return content
-        
-            
-
-        
         
     def is_empty(self, srcdir):
         """

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block head %}
+
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+    <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
     <style type="text/css">
         thead tr th{
             text-align: center !important;
@@ -28,7 +31,7 @@
                                 });
                             }, 
                             function(){
-                                $.post(url, {"files": false}, function(data){
+                                $.post(url, function(data){
                                     window.location.reload();
                                     return false;
                                 });
@@ -39,6 +42,18 @@
                         return false;
                     }
                 );
+            });
+            $("#formBox").dialog({
+                autoOpen: false,
+                width:400,
+                position: {my:"top", at:"center", of:$(".container")},
+            });
+            $(".popup").click(function(e){
+                e.preventDefault();
+                $("#formBox").load($(this).attr("href"), function(){
+                    $("#formBox").dialog("open");                    
+                });
+                return false;
             });
         });
     </script>
@@ -65,11 +80,10 @@
                         <td class="state">{{job.nova_state}}</td>
                         <td>
                             <div class="btn-group">
-                                <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp">Copy</a>
-                                <a href="#" class="btn mv">Move</a>
+                                <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
+                                <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
                                 <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
                                 <button class="btn details">Details</button>
-                                <span style="display:none" class="job_id">{{job.pk}}</span>
                             </div>
                         </td>
                     </tr>
@@ -78,9 +92,11 @@
         </div>
         <div class = "span2 well">
             <ul class = "nav nav-list">
-                <li><a href="{% url 'tough.views.create_job' %}">Create Job</a></li>
+                <li><a href="{% url 'tough.views.create_job' %}" class="popup">Create Job</a></li>
                 <li><a href="#">Import Job</a></li>
             </ul>
         </div>
     </div>
+<div id="formBox">
+</div>
 {% endblock content %}

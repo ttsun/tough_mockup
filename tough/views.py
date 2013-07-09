@@ -168,7 +168,7 @@ def upload_MESH(request, jobid):
 @login_required
 def ajax_submit(request, job_id):
     #get the data from the ajax request
-    j = Job.objects.get(id=jobid)
+    j = Job.objects.get(id=job_id)
     filename = "INFILE"
     submitted_text = combine_inputs(j)
 
@@ -194,7 +194,7 @@ def ajax_submit(request, job_id):
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to submit job."}), content_type="application/json")
 
-    return redirect('tough.views.job_view', jobid)
+    return redirect('tough.views.job_view', job_id)
 
 def combine_inputs(job):
     text = ''
@@ -205,10 +205,10 @@ def combine_inputs(job):
     return text
 
 @login_required
-def job_view(request, jobid):
-    j = get_object_or_404(Job, id=int(jobid))
+def job_view(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
     return render_to_response('job_view.html', 
-                                {"jobname":j.jobname, "jobid":j.pk, "jobdir":j.jobdir, "job":j},
+                                {"jobname":j.jobname, "job_id":j.pk, "jobdir":j.jobdir, "job":j},
                                 context_instance=RequestContext(request))
 
 # @login_required

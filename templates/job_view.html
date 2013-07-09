@@ -16,11 +16,11 @@
 			</tr>
 		</thead>
 		<tr>
-			<td><a href = "{% url 'tough.views.get_file' jobid=jobid filename='OUTPUT' %}">{{jobname}} Output</a></td>
+			<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename='OUTPUT' %}">{{jobname}} Output</a></td>
 			<td>Downloadable file</td>
 		</tr>
 		<tr>
-			<td><a href = "{% url 'tough.views.get_file' jobid=jobid filename='INFILE' %}">{{jobname}} Input</a></td>
+			<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename='INFILE' %}">{{jobname}} Input</a></td>
 			<td>Downloadable file</td>
 		</tr>
 		<tr>

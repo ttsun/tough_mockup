@@ -1,0 +1,32 @@
+{% extends "base.html"%}
+
+{% block content %}
+<div class = "span 10" style="margin-left:20px">
+	<h2>{{jobname}}</h2>
+	<h2>Job Information</h2>
+	<p><b>System: </b>Hopper</p>
+	<p><b>Job Directory: </b>{{jobdir}}</p>
+	<p><b>Job Status: </b>{{job.nova_state}}</p>
+	<h2>Files</h2>
+	<table class = "table table-striped">
+		<thead>
+			<tr>
+				<th>File Name</th>
+				<th>Size</th>
+			</tr>
+		</thead>
+		<tr>
+			<td><a href = "{% url 'tough.views.get_file' jobid=jobid filename='OUTPUT' %}">{{jobname}} Output</a></td>
+			<td>Downloadable file</td>
+		</tr>
+		<tr>
+			<td><a href = "{% url 'tough.views.get_file' jobid=jobid filename='INFILE' %}">{{jobname}} Input</a></td>
+			<td>Downloadable file</td>
+		</tr>
+		<tr>
+			<td><a>MESH File</a></td>
+			<td>Downloadable file</td>
+		</tr>
+	</table>
+</div>
+{% endblock %}

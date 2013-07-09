@@ -4,11 +4,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "batch job", 
+        "ordering": 0, 
         "required": 2, 
+        "tough_name": "batch", 
         "default_content": "", 
-        "name": "batch", 
-        "tough_name": "batch",
-        "ordering": 0
+        "name": "batch"
     }
 },
 {
@@ -16,11 +16,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Optional; list of mass or heat sinks and sources", 
+        "ordering": 4, 
         "required": 0, 
+        "tough_name": "gener", 
         "default_content": "", 
-        "name": "gener", 
-        "tough_name": "gener",
-        "ordering": 0
+        "name": "gener"
     }
 },
 {
@@ -28,11 +28,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Hydrogeologic parameters for various reservoir domains", 
+        "ordering": 5, 
         "required": 1, 
+        "tough_name": "rocks", 
         "default_content": "", 
-        "name": "rocks", 
-        "tough_name": "rocks",
-        "ordering": 0
+        "name": "rocks"
     }
 },
 {
@@ -40,11 +40,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Input the parameters for hydrate properties and their behaviors", 
+        "ordering": 3, 
         "required": 1, 
+        "tough_name": "hydrate", 
         "default_content": "", 
-        "name": "hydrate", 
-        "tough_name": "hydrate",
-        "ordering": 0
+        "name": "hydrate"
     }
 },
 {
@@ -52,11 +52,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "List of the grid blocks", 
+        "ordering": 10, 
         "required": 1, 
+        "tough_name": "eleme", 
         "default_content": "", 
-        "name": "eleme", 
-        "tough_name": "eleme",
-        "ordering": 0
+        "name": "eleme"
     }
 },
 {
@@ -64,11 +64,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "List of the flow connections between the individual blocks", 
+        "ordering": 11, 
         "required": 1, 
+        "tough_name": "conne", 
         "default_content": "", 
-        "name": "conne", 
-        "tough_name": "conne",
-        "ordering": 0
+        "name": "conne"
     }
 },
 {
@@ -76,11 +76,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Computational parameters to be executed", 
+        "ordering": 9, 
         "required": 1, 
+        "tough_name": "param", 
         "default_content": "", 
-        "name": "param", 
-        "tough_name": "param",
-        "ordering": 0
+        "name": "param"
     }
 },
 {
@@ -88,11 +88,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "diffusivities of mass components", 
+        "ordering": 8, 
         "required": 0, 
+        "tough_name": "diffusu", 
         "default_content": "", 
-        "name": "diffusion", 
-        "tough_name": "diffusu",
-        "ordering": 0
+        "name": "diffusion"
     }
 },
 {
@@ -100,11 +100,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "list of initial conditions for specific reservoir domains", 
+        "ordering": 7, 
         "required": 0, 
+        "tough_name": "indom", 
         "default_content": "", 
-        "name": "indom", 
-        "tough_name": "indom",
-        "ordering": 0
+        "name": "indom"
     }
 },
 {
@@ -112,11 +112,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "list of initial conditions for individual blocks", 
+        "ordering": 6, 
         "required": 0, 
+        "tough_name": "incon", 
         "default_content": "", 
-        "name": "incon", 
-        "tough_name": "incon",
-        "ordering": 0
+        "name": "incon"
     }
 },
 {
@@ -124,11 +124,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Data record (single line) with simulation title", 
+        "ordering": 1, 
         "required": 1, 
+        "tough_name": "title", 
         "default_content": "", 
-        "name": "title", 
-        "tough_name": "title",
-        "ordering": 1
+        "name": "title"
     }
 },
 {
@@ -136,11 +136,11 @@
     "model": "tough.blocktype", 
     "fields": {
         "description": "Dynamic memory allocation", 
+        "ordering": 2, 
         "required": 1, 
+        "tough_name": "memory", 
         "default_content": "", 
-        "name": "memory", 
-        "tough_name": "memory",
-        "ordering": 2
+        "name": "memory"
     }
 }
 ]

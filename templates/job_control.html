@@ -66,6 +66,7 @@
                 <thead>
                     <tr>
                         <th>Job Name</th>
+                        <th>Processors</th>
                         <th>PBS Job ID</th>
                         <th>Time Queued</th>
                         <th>Status</th>
@@ -75,6 +76,7 @@
                 {% for job in all_jobs %}
                     <tr>
                         <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                        <td class="numprocs">{{job.numprocs}}</td>
                         <td class="job_id">{{job.pbsjob_id}}</td>
                         <td class="time">{{job.time_started}}</td>
                         <td class="state">{{job.nova_state}}</td>

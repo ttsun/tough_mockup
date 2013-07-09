@@ -183,7 +183,7 @@ def upload_MESH(request, jobid):
 def ajax_submit(request, job_id):
     #get the data from the ajax request
     j = Job.objects.get(id=job_id)
-    filename = "INFILE"
+    filename = j.jobname
     submitted_text = combine_inputs(j)
 
     #save via newt, then return an okay
@@ -256,10 +256,9 @@ def ajax_save(request, jobid):
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
                 j.queue = form.cleaned_data['queue']
-                content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_nodes'] * 24)
+                content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_procs'])
 
-                numprocs = int(form.cleaned_data['num_nodes']) * 24
-                j.numnodes = int(form.cleaned_data['num_nodes'])
+                j.numprocs = int(form.cleaned_data['num_procs'])
                 nodemem = form.cleaned_data['nodemem']
                 j.nodemem = nodemem
                 if nodemem != 'first':
@@ -283,8 +282,7 @@ def ajax_save(request, jobid):
                 content += 'module load tough/noah\n\n'
                 content += ''
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper/osp/tough/noah/bin/tough2-mp-eco2n.debug \n" % numprocs
-                # tough\n" % numprocs
+                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(numprocs, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             else:

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block head %}
+
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+    <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
     <style type="text/css">
         thead tr th{
             text-align: center !important;
@@ -8,15 +11,57 @@
         tbody tr td{
             width:260px;
         }
-        .jobid, .time, .state{
+        .job_id, .time, .state{
             text-align: center !important;
         }
     </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".del").click(function(e){
+                e.preventDefault();
+                var url = $(this).attr("href");
+                Alertify.dialog.confirm("Are you sure you want to delete this job? This operation is irreversable", 
+                    function(){
+                        Alertify.dialog.confirm("Do you want to delete the associated job files?", 
+                            function(){
+                                console.log(url);
+                                $.post(url, {"files": true}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }, 
+                            function(){
+                                $.post(url, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }
+                        );
+                    }, 
+                    function(){
+                        return false;
+                    }
+                );
+            });
+            $("#formBox").dialog({
+                autoOpen: false,
+                width:400,
+                position: {my:"top", at:"center", of:$(".container")},
+            });
+            $(".popup").click(function(e){
+                e.preventDefault();
+                $("#formBox").load($(this).attr("href"), function(){
+                    $("#formBox").dialog("open");                    
+                });
+                return false;
+            });
+        });
+    </script>
 {% endblock head %}
 
 {% block content %}
     <div class = "row-fluid">
-        <div class = "span8">
+        <div class = "span10">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -30,14 +75,14 @@
                 {% for job in all_jobs %}
                     <tr>
                         <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
-                        <td class="jobid">{{job.pbsjobid}}</td>
+                        <td class="job_id">{{job.pbsjob_id}}</td>
                         <td class="time">{{job.time_started}}</td>
                         <td class="state">{{job.nova_state}}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn">Copy</button>
-                                <button class="btn">Move</button>
-                                <button class="btn">Delete</button>
+                                <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
+                                <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
+                                <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
                                 <a href = "{% url 'tough.views.job_view' jobid=job.pk %}" class="btn">Details</a>
                             </div>
                         </td>
@@ -47,9 +92,11 @@
         </div>
         <div class = "span2 well">
             <ul class = "nav nav-list">
-                <li><a href="/job/job_setup">Create Job</a></li>
+                <li><a href="{% url 'tough.views.create_job' %}" class="popup">Create Job</a></li>
                 <li><a href="#">Import Job</a></li>
             </ul>
         </div>
     </div>
+<div id="formBox">
+</div>
 {% endblock content %}

@@ -28,8 +28,8 @@ def about(request):
     return render_to_response('about.html', {},
                               context_instance=RequestContext(request))
 
-def submit(request, jobid):
-    j = Job.objects.get(id=jobid)
+def submit(request, job_id):
+    j = Job.objects.get(id=job_id)
     finalinput = ''
     for block in j.block_set.all():
         if block.blockType != "MESH" and block.blockType != "batch":
@@ -56,7 +56,7 @@ def jobs(request):
 
 
 @login_required
-def create_job(request):
+def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
         #create new job in database
         u = NoahUser.objects.get(username=request.user)
@@ -70,7 +70,7 @@ def create_job(request):
             srcdir = request.POST['srcdir']
             oldjob = None
         elif request.POST['setup_type'] == 'copy':
-            oldjob = Job.objects.get(id=request.POST['jobid'])
+            oldjob = Job.objects.get(id=request.POST['job_id'])
             srcdir = oldjob.jobdir
         elif request.POST['setup_type'] == 'move':
             # Redefine jobdir back to user supplied value - we don't want to create a brand new dir for a move
@@ -81,13 +81,13 @@ def create_job(request):
             return HttpResponseBadRequest("Invalid Setup Type")
 
         if request.POST['setup_type'] == 'move':
-            j = Job.objects.get(id=request.POST['jobid'])
+            j = Job.objects.get(id=request.POST['job_id'])
             j.move_dir(jobdir)
             # Get the NOVA_ directory name without the path
             basename = os.path.basename(j.jobdir.rstrip('/'))
             j.jobdir = os.path.join(jobdir, basename)
             j.save()
-            return redirect('tough.views.index')
+            return redirect('tough.views.jobs')
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
 
@@ -120,22 +120,28 @@ def create_job(request):
             populate_job(j)
             #create default vasp files
             #render default setup form
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/?new=1" % j.pk}), content_type="application/json")
             return redirect("/job/job_setup/%d/?new=1" % j.pk)
     else:
-        return render_to_response('job_setup.html', context_instance=RequestContext(request))
+        if job_id:
+            job = get_object_or_404(Job, pk=job_id)
+        else:
+            job = None
+        return render_to_response('job_setup.html', {"job": job, "setup_type": type},context_instance=RequestContext(request))
 
 
 @login_required
-def job_edit(request, jobid):
-    j = get_object_or_404(Job, id=int(jobid))
-    return render_to_response('job_setup.html',
-                              {'job_name': j.jobname, 'job_id': jobid, 'new_job': bool(request.GET.get("new", False)), 'job': j},
+def job_edit(request, job_id):
+    j = get_object_or_404(Job, id=int(job_id))
+    return render_to_response('job_edit.html',
+                              {'job_name': j.jobname, 'job_id': job_id, 'new_job': bool(request.GET.get("new", False)), 'job': j},
                               context_instance=RequestContext(request))
 
 
 @login_required
-def ajax_get_tough_files(request, jobid):
-    j = get_object_or_404(Job, id=int(jobid))
+def ajax_get_tough_files(request, job_id):
+    j = get_object_or_404(Job, id=int(job_id))
     tough_files= {}
     
     # Get various files
@@ -160,7 +166,7 @@ def upload_MESH(request, jobid):
     return render_to_response('mesh_upload.html', {"job_id":j.pk, "jobname":j.jobname}, context_instance=RequestContext(request))
     
 @login_required
-def ajax_submit(request, jobid):
+def ajax_submit(request, job_id):
     #get the data from the ajax request
     j = Job.objects.get(id=jobid)
     filename = "INFILE"
@@ -217,7 +223,7 @@ def job_view(request, jobid):
 @login_required
 def ajax_save(request, jobid):
     #get the data from the ajax request
-    j = get_object_or_404(Job, id=jobid)
+    j = get_object_or_404(Job, id=job_id)
     blocktype = BlockType.objects.get(pk=request.POST['blockType'])
     if request.method == 'POST':
         # If the block is a batch block (pk=1)
@@ -275,9 +281,9 @@ def ajax_save(request, jobid):
 
 """
 @login_required
-def ajax_upload(request, jobid):
+def ajax_upload(request, job_id):
     #get the file from the ajax request
-    j=Job.objects.get(id=jobid)
+    j=Job.objects.get(id=job_id)
     print(request.FILES)
     thefile = request.FILES['file']
     filename = thefile.name
@@ -297,9 +303,9 @@ def ajax_upload(request, jobid):
 """
 
 @login_required
-def stopjob(request, jobid):
+def stopjob(request, job_id):
     #get the data from the ajax request
-    j = Job.objects.get(id=jobid)
+    j = Job.objects.get(id=job_id)
     filename = 'STOPCAR'
 
     kill = request.POST['kill']
@@ -320,8 +326,8 @@ def stopjob(request, jobid):
     return HttpResponse("okay")
 
 @login_required
-def get_file(request, jobid, filename):
-    j = Job.objects.get(id=jobid)
+def get_file(request, job_id, filename):
+    j = Job.objects.get(id=job_id)
     try:
         content = j.get_file(filename)
     except IOError, ex:
@@ -331,9 +337,9 @@ def get_file(request, jobid, filename):
     return response
 
 @login_required
-def view_job(request, jobid, do_run=False, *args, **kwargs):
+def view_job(request, job_id, do_run=False, *args, **kwargs):
     #do_run indicates whether or not to submit the job via an ajax call from the returned web page
-    j = Job.objects.get(id=jobid)
+    j = Job.objects.get(id=job_id)
     try:
         dir_info = j.get_dir(j.jobdir)
     except IOError, ex:
@@ -345,7 +351,7 @@ def view_job(request, jobid, do_run=False, *args, **kwargs):
     state_map = {'toberun': 'Editing', 'submitted': 'Queued', 'started': 'Running', 'aborted': 'Aborted', 'completed': 'Completed'}
 
     return render_to_response('main/job_view.html',
-                              {'job_name': j.jobname, 'job_id': jobid, 'job_jobdir': j.jobdir, 'dir_info': dir_info, 'pbs_id': j.pbsjobid, 'machine': j.machine, 'nova_state': j.nova_state, 'readable_state': state_map[j.nova_state], 'time_use': j.timeuse, 'do_run': do_run},
+                              {'job_name': j.jobname, 'job_id': job_id, 'job_jobdir': j.jobdir, 'dir_info': dir_info, 'pbs_id': j.pbsjob_id, 'machine': j.machine, 'nova_state': j.nova_state, 'readable_state': state_map[j.nova_state], 'time_use': j.timeuse, 'do_run': do_run},
                               context_instance=RequestContext(request))
     
 @login_required
@@ -382,26 +388,27 @@ def populate_job(job):
 
 
 @login_required
-def delete_job(request):
-    jobid=int(request.POST['del_jobid'])
-    j=Job.objects.get(id=jobid)
-    if request.POST['del_type'] == 'nova_and_files':
+def delete_job(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
+    if request.POST.get("files", False):
         j.del_dir()
     j.delete()
-    return redirect('tough.views.index')
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True}))
+    else:
+        return redirect("tough.views.jobs")
     
 @login_required
-def rename_job(request):
-    jobid = int(request.POST['rename_jobid'])
-    j = Job.objects.get(id=jobid)
+def rename_job(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
     j.jobname = request.POST['new_name']
     j.save()
-    return redirect('tough.views.view_job', jobid=j.id)
+    return redirect('tough.views.view_job', job_id=j.id)
     
     
 @login_required
-def ajax_get_zip(request, jobid):
-    j=Job.objects.get(id=jobid)
+def ajax_get_zip(request, job_id):
+    j=Job.objects.get(id=job_id)
     zip = j.get_zip()
     directory = j.jobdir
     slash = directory.rfind("/")
@@ -412,12 +419,12 @@ def ajax_get_zip(request, jobid):
     return response
 
 @login_required
-def run_job(request, jobid):
-    return view_job(request, jobid, True)
+def run_job(request, job_id):
+    return view_job(request, job_id, True)
 
 @login_required
-def ajax_run_job(request, jobid):
-    j=Job.objects.get(id=jobid)
+def ajax_run_job(request, job_id):
+    j=Job.objects.get(id=job_id)
     # Run the job
     if j.nova_state == 'toberun':
         # import pdb;pdb.set_trace()

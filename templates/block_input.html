@@ -10,7 +10,7 @@
                 </p>
             </div>
             <div class = "tab-pane" id = "{{block.blockType.tough_name}}-raw">
-                <form class="rawtextform" action="{% url 'tough.views.ajax_save' jobid=job_id %}" method="POST">
+                <form class="rawtextform" action="{% url 'tough.views.ajax_save' job_id=job_id %}" method="POST">
                     {% csrf_token %}
                     <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
                     {%for field in block.get_raw_input_form %}
@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     {% endfor %}
-                <input type="hidden" id="jobid" name="jobid" value="{{ job_id }}" />
+                <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
                 <input class="btn btn-primary" type="submit" id='saverawblock' />
                 <button class="btn" type="button" id='cancel'>Cancel</button>
                 </form>

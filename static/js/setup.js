@@ -97,7 +97,7 @@ function save_form(file_content){
 
 	$.ajax({
 		type: 'POST',
-		url: TOUGH_SUBDIR + '/save/' + jobid,
+		url: TOUGH_SUBDIR + '/save/' + job_id,
 		data: post_data,
 		success: function(data){
 		    if ($('#login_form', data).size() > 0) {

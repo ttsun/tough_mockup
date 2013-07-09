@@ -138,6 +138,18 @@ def job_edit(request, job_id):
                               {'job_name': j.jobname, 'job_id': job_id, 'new_job': bool(request.GET.get("new", False)), 'job': j},
                               context_instance=RequestContext(request))
 
+@login_required
+def mesh_upload_view(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
+    return render_to_response('mesh_upload.html',
+                                {'job_name': j.jobname, 'job_id':job_id, 'job': j}, 
+                                context_instance=RequestContext(request))
+
+@login_required
+def mesh_upload(request, job_id):
+    j = get_object_or_404(Job, pk=job_id)
+    j.upload_mesh("mesh", request.FILES['mesh'])
+    return HttpResponse("file uploaded")
 
 @login_required
 def ajax_get_tough_files(request, job_id):

@@ -1,7 +1,8 @@
-
 {% extends "base.html" %}
 
 {% block head %}
+ <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+<script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
 <style type="text/css"> 
 
 textarea{
@@ -86,7 +87,7 @@ $(document).ready(function(){
    });   
 
 
-   $("#sidebar a:not(#submit_job)").click(function(e){
+   $("#sidebar a:not(#submit_job, #upload_MESH)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             $("#sidebar .active").removeClass("active");
@@ -94,21 +95,33 @@ $(document).ready(function(){
             showInputArea($(this).attr("href"));
         }
     });
-   $("#upload_MESH").click(function(e){
+   $("#uploadformbox").dialog({
+        autoOpen: false,
+        width:400,
+        position: {my:"top", at:"center", of:$(".container")},
+    });
+    $(".popup").click(function(e){
         e.preventDefault();
-        showInputArea($(this).attr("href"));
-   });
-   
+        $("#uploadformbox").load($(this).attr("href"), function(){
+            $("#uploadformbox").dialog("open");                    
+        });
+        return false;
+    });
 });
+   // $("#upload_MESH").click(function(e){
+   //      e.preventDefault();
+   //      showInputArea($(this).attr("href"));
+   // });
+
+   function showInputArea(id){
+        $(".inputareaactive").removeClass("inputareaactive").hide();
+        current_doc = $(id).attr("id");
+        $(id).addClass("inputareaactive").show();
+        console.log($(id));
+        $(".inputarea:not(.inputareaactive)").hide();
+    }
 
 
-function showInputArea(id){
-    $(".inputareaactive").removeClass("inputareaactive").hide();
-    current_doc = $(id).attr("id");
-    $(id).addClass("inputareaactive").show();
-    console.log($(id));
-    $(".inputarea:not(.inputareaactive)").hide();
-}
 </script>
 {% endblock head %}
 
@@ -138,7 +151,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         {% if job_id %}
-            <a href = "#meshform" id = "upload_MESH" class = "btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
+            <a href = "{% url 'tough.views.mesh_upload_view' job_id=job_id %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
             <a href = "{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
     </div>
@@ -147,13 +160,7 @@ function showInputArea(id){
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
     </div>
-    <div class = "span10 inputarea" id = "meshform">
-        <form action = "" method = "POST">
-        {%for field in job.get_mesh_upload_form %}
-                {{ field }}                 
-        {%endfor%}
-        </form>
-    </div>
+    
     {% for block in job.get_req_blocks%}
         {% include "block_input.html" %}
     {% endfor %}
@@ -162,5 +169,7 @@ function showInputArea(id){
     {% endfor %}
     {% endif %}
 
+</div>
+<div id = "uploadformbox">
 </div>
 {% endblock content %}    

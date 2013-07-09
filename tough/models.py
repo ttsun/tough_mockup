@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.conf import settings
 import httplib2
+import requests
 import os
 from datetime import *
 from dateutil import parser
@@ -243,6 +244,16 @@ class Job(models.Model):
             raise Exception(response)
         return simplejson.loads(response)
        
+    def upload_mesh(self, filename, uploaded_file):
+        path = self.jobdir
+        cookie_str=self.user.cookie
+        files = {"file": ('mesh', open(uploaded_file.name, 'rb'))}
+        url = '/file/%s%s/%s' % (self.machine, path, filename)
+        response, content = util.upload_request(url = url, files = files, cookie_str=cookie_str) #problem here
+        if response['status']!='200':
+            raise Exception(response)
+        return simplejson.loads(response)
+
     def del_file(self, filename,  *args, **kwargs):
         """
         >>> j.del_file("myfile")
@@ -674,7 +685,7 @@ class RawInputForm(forms.Form):
     rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
 
 class MeshUploadForm(forms.Form):
-    mesh = forms.FileField(widget=forms.FileInput)
+    mesh = forms.FileField()
 
 
 class BlockType(models.Model):

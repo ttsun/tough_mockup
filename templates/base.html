@@ -66,17 +66,21 @@
 		<div class="navbar-inner">
 			<a href="/about" class="brand">TOUGH</a>
 			<ul class="nav">
+				{% if user.is_authenticated %}
 				<li><a href="/job">Manage Jobs</a></li>
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Recent Jobs <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="#">Job 1</a></li>
-						<li><a href="#">Job 2</a></li>
-						<li><a href="#">Job 3</a></li>
-						<li><a href="#">Job 4</a></li>
-						<li><a href="#">Job 5</a></li>
+						{% for job in user.get_recent_jobs %}
+						{% if job.nova_state == "toberun" %}
+						<li><a href="{% url 'tough.views.job_edit' job.pk%}">{{job.jobname}}</a></li>
+						{% else %}
+						<li><a href="{% url 'tough.views.job_view' job.pk%}">{{job.jobname}}</a></li>
+						{% endif %}
+						{% endfor %}
 					</ul>
 				</li>
+				{% endif %}
 				<li><a href="http://esd.lbl.gov/files/research/projects/tough/documentation/TplusH_Manual_v1.pdf" target="_blank">TOUGH Manual</a></li>
 				<li><a href="/about/">About Project</a></li>
 				<li><a href="#">Report an error</a></li>

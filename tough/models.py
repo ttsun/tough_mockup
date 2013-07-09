@@ -143,6 +143,10 @@ class NoahUser(AbstractBaseUser):
 
         return {'toberun': toberun, 'running':running, 'complete': complete}
 
+    def get_recent_jobs(self):
+        jobs_list = Job.objects.filter(user=self.id).order_by('-time_last_updated')[:5]
+        return jobs_list
+
 
 class Job(models.Model):
     """

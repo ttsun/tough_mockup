@@ -59,16 +59,11 @@ function getjobfiles(){
 }
 
 $(document).ready(function(){
-    {% if not job_id %}
-        $("#dirsetup").removeClass("inputarea").addClass("inputareaactive");
-        $(".blockchoice").addClass("disabled");
-    {% else %}
         {% if new_job %}
             Alertify.log.success("{{job_name}}"+" created at "+"{{job.jobdir}}");
         {% endif %}
-        $("#compset").removeClass("inputarea").addClass("inputareaactive");
-        current_doc = "batch";
-    {% endif %}
+    $("#compset").removeClass("inputarea").addClass("inputareaactive");
+    current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();
     // Listens for forms to be submitted
     // Makes ajax calls when forms are submitted
@@ -128,15 +123,16 @@ $(document).ready(function(){
 {%block content %}
 <div class = "row-fluid">
     <div class = "span2 well" id = "sidebar">
+        {% if job_id %}
+        <ul id="jobdetails" class = "nav nav-list">
+            <li class = "nav-header">Job Details</li>
+                <li><b>Machine:</b> {{job.machine}}</li>
+                <li><b>Job name:</b> {{job_name}}</li>
+        </ul>
+        {% endif %}
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
-            {% if job_id %}
-            <li id = "dirset" class = "disabled"><a href="#dirsetup">Directory Setup</a></li>
             <li id = "batchselect" class = "blockchoice active"><a href="#compset" id = "batch" >Computational Settings</a></a>
-            {% else %}
-            <li class = "active" id = "dirset"><a href="#dirsetup">Directory Setup</a></li>
-            <li class = "blockchoice disabled" id = "batchselect"><a href="#compset" id = "batch">Computational Settings</a></li>
-            {% endif %}
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
@@ -152,6 +148,7 @@ $(document).ready(function(){
         </ul>
         {% if job_id %}
             <a href = "{% url 'tough.views.mesh_upload_view' job_id=job_id %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
+            <a href = "" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin-bottom:10px; margin-left:10px">Upload an Input File</a>
             <a href = "{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
     </div>

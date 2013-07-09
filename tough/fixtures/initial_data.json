@@ -282,7 +282,7 @@
         "description": "optional; one data record for more flexible initialization ", 
         "ordering": 5, 
         "required": 0, 
-        "tough_name": "start/rando", 
+        "tough_name": "startrando", 
         "default_content": "", 
         "name": "start or random"
     }

@@ -117,6 +117,10 @@ class NoahUser(AbstractBaseUser):
 
         return {'toberun': toberun, 'running':running, 'complete': complete}
 
+    def get_recent_jobs(self):
+        jobs_list = Job.objects.filter(user=self.id).order_by('-time_last_updated')[:5]
+        return jobs_list
+
 
 class Job(models.Model):
     """
@@ -155,7 +159,7 @@ class Job(models.Model):
     time_completed = models.DateTimeField(null=True, blank=True)
 
     queue = models.CharField(max_length=256, default = "regular")
-    numnodes = models.IntegerField(max_length=256, default = 1)
+    numprocs = models.IntegerField(default = 24)
     maxwalltime = models.TimeField(default = time(hour = 0, minute = 15))
     nodemem = models.CharField(max_length=256, default = "first")
     emailnotifications = models.CharField(max_length = 256, default = "")
@@ -537,7 +541,7 @@ class Job(models.Model):
 
     def get_comp_settings_form(self):
         return CompSettingsForm(initial={"queue": self.queue, 
-                                "num_nodes": self.numnodes,
+                                "num_procs": self.numprocs,
                                 "max_walltime": self.maxwalltime,
                                 "email_notifications": self.emailnotifications.split(","),
                                 "nodemem": self.nodemem},)
@@ -631,7 +635,7 @@ class TimeSelectorField(forms.Field):
 
 class CompSettingsForm(forms.Form):
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
-    num_nodes = forms.IntegerField()
+    num_procs = forms.IntegerField()
     max_walltime = TimeSelectorField()
     nodemem = forms.ChoiceField(choices=MEM_CHOICES)
     email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple(), required=False)

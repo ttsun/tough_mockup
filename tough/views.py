@@ -238,7 +238,7 @@ def job_view(request, job_id):
 
 
 @login_required
-def ajax_save(request, jobid):
+def ajax_save(request, job_id):
     #get the data from the ajax request
     j = get_object_or_404(Job, id=job_id)
     blocktype = BlockType.objects.get(pk=request.POST['blockType'])
@@ -282,7 +282,7 @@ def ajax_save(request, jobid):
                 content += 'module load tough/noah\n\n'
                 content += ''
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(numprocs, j.jobname)
+                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             else:

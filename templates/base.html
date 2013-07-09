@@ -70,7 +70,7 @@
 				<li><a href="/job">Manage Jobs</a></li>
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Recent Jobs <b class="caret"></b></a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" style="height:135px">
 						{% for job in user.get_recent_jobs %}
 						{% if job.nova_state == "toberun" %}
 						<li><a href="{% url 'tough.views.job_edit' job.pk%}">{{job.jobname}}</a></li>

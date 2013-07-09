@@ -6,6 +6,7 @@ import string
 import mimetypes
 import random
 from django.utils import encoding as encoding
+from django.core.files import File
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -74,12 +75,20 @@ def encode_multipart_data(files, data=None):
 
     return body, headers
 
-def upload_request(url, files, cookie_str=None):
+def upload_request(url, uploaded_file, cookie_str=None):
     newt_base_url=getattr(settings, 'NEWT_BASE_URL')
-    cookies = NewtCookie(cookie_str).__dict__
-    import ipdb; ipdb.set_trace()
-    request = requests.post(url = newt_base_url + url, files = files)
-    return request
+    newtcookie = NewtCookie(cookie_str).__dict__
+    cookies = {
+        "newt_sessionid": newtcookie['newt_sessionid'].__str__(),
+        "expires": newtcookie['expires'].__str__(),
+        "domain": newtcookie['domain'].__str__(),
+        "max_age": newtcookie['max_age'].__str__(),
+        "path": newtcookie['path'].__str__(),
+        "secure": newtcookie['secure'].__str__()
+    }
+    full_url = newt_base_url+url+"/"
+    response = requests.post(full_url, cookies=cookies, files={"file": (uploaded_file.name, open(uploaded_file.temporary_file_path(), 'rb'))})
+    return response
 
 def newt_upload_request(url, files, params=None, cookie_str=None):
     body, headers = encode_multipart_data(files, params)

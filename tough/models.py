@@ -200,33 +200,15 @@ class Job(models.Model):
             raise Exception(content)
         return simplejson.loads(content)
  
-    def upload_file(self, filename, filepath, *args, **kwargs):
-        """
-        >>> j.upload_file("myfile", "/path/to/myfile")
-        
-        """
-        if 'dir' in kwargs:
-            path=kwargs['dir']
-        else:
-            path=self.jobdir
-            
-        cookie_str=self.user.cookie
-        url = '/file/%s%s/%s' % (self.machine, path, filename)
-        files={'file': filepath}
-        response, content = util.newt_upload_request(url, files, cookie_str=cookie_str) #problem here
-        if response['status']!='200':
-            raise Exception(response)
-        return simplejson.loads(response)
        
-    def upload_mesh(self, filename, uploaded_file):
+    def upload_mesh(self, uploaded_file):
         path = self.jobdir
         cookie_str=self.user.cookie
-        files = {"file": ('mesh', open(uploaded_file.name, 'rb'))}
-        url = '/file/%s%s/%s' % (self.machine, path, filename)
-        response, content = util.upload_request(url = url, files = files, cookie_str=cookie_str) #problem here
-        if response['status']!='200':
+        url = '/file/%s%s/' % (self.machine, path)
+        response = util.upload_request(url=url, uploaded_file=uploaded_file, cookie_str=cookie_str) #problem here
+        if response.status_code!=200:
             raise Exception(response)
-        return simplejson.loads(response)
+        return response
 
     def del_file(self, filename,  *args, **kwargs):
         """

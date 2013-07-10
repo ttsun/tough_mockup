@@ -296,7 +296,6 @@ def ajax_save(request, job_id):
                 return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
             except Exception:
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
-    import ipdb; ipdb.set_trace()
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
 

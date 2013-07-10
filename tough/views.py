@@ -147,8 +147,10 @@ def mesh_upload_view(request, job_id):
 @login_required
 def mesh_upload(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
-    j.upload_mesh("mesh", request.FILES['mesh'])
-    return HttpResponse("file uploaded")
+    response = j.upload_mesh(request.FILES['mesh'])
+    if request.is_ajax():
+        return HttpResponse(response.json(), content_type="application/json")
+    return redirect("tough.views.job_edit", j.pk)
 
 @login_required
 def ajax_get_tough_files(request, job_id):

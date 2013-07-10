@@ -140,13 +140,13 @@ $(document).ready(function(){
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
             {% for block in job.get_req_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}{% if block.content != None %}<i class="icon-ok"></i>{% endif %}</a></li>
             {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
             {% for block in job.get_op_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}</a></li>
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}{% if block.content.length != None %}<i class="icon-ok"></i>{% endif %}</a></li>
             {% endfor %}
         </ul>
         {% if job_id %}

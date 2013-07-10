@@ -669,7 +669,7 @@ class BlockType(models.Model):
 class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
-    content = models.TextField()
+    content = models.TextField(blank=True)
 
     class Meta:
         ordering = ['blockType__ordering', 'blockType__id']

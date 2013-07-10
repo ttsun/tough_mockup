@@ -18,7 +18,7 @@ from django.utils.timezone import utc
 import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-
+from django.utils.html import escape
 
 def home(request):
     return render_to_response("home.html", {},

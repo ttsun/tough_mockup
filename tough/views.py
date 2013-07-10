@@ -301,7 +301,7 @@ def ajax_save(request, job_id):
 
 def create_project(request):
     if request.method == "POST":
-        form = ProjectForm(data=request.post, user=request.user)
+        form = ProjectForm(data=request.POST, user=request.user)
         if form.is_valid():
             form.save()
     else:

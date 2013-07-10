@@ -14,7 +14,7 @@
             var content = document.getElementById("jobname").value;
             for(var z = 0; z < content.length; z++){
                 if(specialChars.indexOf(content.charAt(z)) != -1){
-                    alert("Special characters are not allowed.");
+                    $("#errormsg").css("display","block");
                     document.getElementById("jobname").value = "";
                     return false;
                 }
@@ -22,6 +22,12 @@
             return true;
         }
     </script>
+    <style type="text/css">
+        #errormsg{
+            color:red;
+            display:none;
+        }
+    </style>
 </head>
 
 <div class="row-fluid">
@@ -43,6 +49,7 @@
             {% if setup_type != "move" %}                
                 <div>
                     <label for="jobname">What do you want to name this new job?</label>
+                    <p id = "errormsg">No special characters allowed. </p>
                     <input type="text" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
                 </div>
             <div>

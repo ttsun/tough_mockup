@@ -642,7 +642,7 @@ class CompSettingsForm(forms.Form):
 
 
 class RawInputForm(forms.Form):
-    rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
+    rawinput = forms.CharField(required=False, widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
 
 class FileUploadForm(forms.Form):
     files = forms.FileField()

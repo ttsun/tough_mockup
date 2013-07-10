@@ -65,6 +65,9 @@ $(document).ready(function(){
         {% if new_job %}
             Alertify.log.success("{{job_name}}"+" created at "+"{{job.jobdir}}");
         {% endif %}
+        {% if new_upload %}
+            Alertify.log.success("Input file successfully uploaded and parsed!");
+        {% endif %}
     $("#compset").removeClass("inputarea").addClass("inputareaactive");
     current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();
@@ -134,6 +137,7 @@ $(document).ready(function(){
         <ul id="jobdetails" class = "nav nav-list">
             <li class = "nav-header">Job Details</li>
                 <li><b>Machine:</b> {{job.machine|capfirst}}</li>
+                <li><b>Project:</b> {{job.project.name|capfirst}}</li>
                 <li><b>Job Name:</b> {{job_name|capfirst}}</li>
         </ul>
         {% endif %}
@@ -157,6 +161,7 @@ $(document).ready(function(){
         </ul>
         {% if job_id %}
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
+            <p><b>Date last uploaded:</b> {{mesh.last_uploaded}}</p>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='infile' %}" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin-bottom:10px; margin-left:10px">Upload an Input File</a>
             <a href = "{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}

@@ -12,9 +12,10 @@ import tough.util as util
 import logging
 from django import forms
 from django.forms import ModelForm
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.timezone import utc
 from django.forms import widgets
+import re
 
 logger = logging.getLogger(__name__)
 logger.setLevel(getattr(settings, 'LOG_LEVEL', logging.DEBUG))
@@ -238,9 +239,62 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
+        if (filename == 'mesh'):
+            b = self.block_set.get(blockType__name = 'mesh')
+            b.last_uploaded = datetime.utcnow()
+            b.save()
+
         if response.status_code!=200:
             raise Exception(response)
         return response
+
+
+    def parse_input_file(self, file_name):
+        file_from = self.get_file(filename=file_name)
+        lines = file_from.split("\n")
+        block = ""
+        blocktitleregex = '(?<=>>>)\w+'
+        # (?=[A-Z]).
+        blockendregex = '(?<=<<<)\w+'
+        blocking = False
+        blocktype = ""
+        for line in lines:
+            # line = lines[i]
+            if (re.search(blocktitleregex, line) != None):
+                if(blocking == True):
+                    return "blockception"
+                blocktype = re.search(blocktitleregex, line).group(0).lower()
+                blocking = True
+            if (blocking == True):      
+                block += line + '\n'
+            if(re.search(blockendregex, line) != None):
+                if(blocking == False):
+                    return "too many closes"
+                try:
+                    b = self.block_set.get(blockType__name=blocktype)
+                    b.content = block
+                    b.save()
+                except ObjectDoesNotExist:
+                    pass
+                blocking = False
+                block = ""
+        return "parsed"
+        # start_line_beg = 0
+        # start_line_end = 0
+        # end_line_beg = 0
+        # end_line_end = 0
+        # file_length = len(file_from) - 3
+        # while (end_line_end < file_length):
+        #     start_line_beg = file_from.find(">>>", 0)
+        #     start_line_end = file_from.find("\n", start_line_beg)
+        #     end_line_beg = file_from.find("<<<", start_line_end)
+        #     end_line_end = file_from.find("\n", end_line_beg)
+        #     block = file_from[start_line_beg:end_line_end]
+        #     blocktype = re.search(blocktitleregex, file_from[start_line_beg:start_line_end]).group(0).lower()
+        #     if (self.block_set.get(blockType__name=blocktype)):
+        #         self.block_set.get(blockType__name=blocktype).content=block
+        # return 
+
 
     def del_file(self, filename,  *args, **kwargs):
         """
@@ -698,6 +752,7 @@ class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
     content = models.TextField(blank=True)
+    last_uploaded = models.DateTimeField(null = True, default = None)
 
     class Meta:
         ordering = ['blockType__ordering', 'blockType__id']

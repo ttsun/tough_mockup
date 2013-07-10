@@ -286,5 +286,17 @@
         "default_content": "", 
         "name": "start or random"
     }
+},
+{
+    "pk": 24, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "mesh file", 
+        "ordering": 5, 
+        "required": 2, 
+        "tough_name": "mesh", 
+        "default_content": "", 
+        "name": "mesh"
+    }
 }
 ]

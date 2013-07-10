@@ -76,15 +76,18 @@
             });
             $("#projectbar a").click(function(e){
                 e.preventDefault();
-                $("#projectbar .active").removeClass("active");
-                $(this).parent("li").addClass("active");
-                var curr = $(this).attr("href");
-                if(curr != "#show"){
-                    $(".project:not('"+curr+"')").hide()
-                    $(curr).show(500);
-                } else{
-                    $(".project").show(500);
+                if($(this).parent(".disabled").length == 0){
+                    $("#projectbar .active").removeClass("active");
+                    $(this).parent("li").addClass("active");
+                    var curr = $(this).attr("href");
+                    if(curr != "#show"){
+                        $(".project:not('"+curr+"')").hide()
+                        $(curr).show(500);
+                    } else{
+                        $(".project").show(500);
+                    }
                 }
+                return false;
             });
         });
     </script>
@@ -104,9 +107,16 @@
                 {% for project in user.get_projects %}
                     <li><a href="#project-{{project.pk}}">{{project.name}}</a></li>
                 {% endfor %}
-                <li class="nav-header"></li>
-                <li><a href="#project-ungrouped">Ungrouped</a></li>
-                <li><a href="#show">Show All</a></li>
+                {% if not user.get_projects %}
+                    <li class="disabled"><a>No Projects</a></li>
+                {% endif %}
+                <li class="divider"></li>
+                {% if user.get_orphan_jobs %}
+                    <li><a href="#project-ungrouped">Ungrouped</a></li>                    
+                {% endif %}
+                {% if user.get_projects %}
+                    <li><a href="#show">Show All</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class = "span10">

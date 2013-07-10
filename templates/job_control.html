@@ -70,10 +70,9 @@
             </ul>
             <ul class="nav nav-list">
                 <li class="nav-header">Projects</li>
-                <li><a href="#">Project 1</a></li>
-                <li><a href="#">Project 2</a></li>
-                <li><a href="#">Really TOUGH Project</a></li>
-                <li><a href="#">Tough TOUGH Project</a></li>
+                {% for project in user.get_projects %}
+                    <li><a href="#">{{project.name}}</a></li>
+                {% endfor %}
             </ul>
         </div>
         <div class = "span10">

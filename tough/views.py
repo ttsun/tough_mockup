@@ -303,7 +303,13 @@ def create_project(request):
     if request.method == "POST":
         form = ProjectForm(data=request.POST, user=request.user)
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False)
+            project.creator = request.user
+            project.save()
+            for job in form.cleaned_data['jobs']:
+                job.project = project
+                job.save()
+            return redirect("tough.views.jobs")
     else:
         form = ProjectForm(user=request.user)
     return render_to_response("project_creation.html", {"form": form}, context_instance=RequestContext(request))

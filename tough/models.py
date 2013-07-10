@@ -115,11 +115,35 @@ class NoahUser(AbstractBaseUser):
         #get completed and aborted and sort together by time submitted
         complete = Job.objects.filter(user=self.id).filter(nova_state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
 
-        return {'toberun': toberun, 'running':running, 'complete': complete}
+        return {'toberun': toberun, 'running': running, 'complete': complete}
 
     def get_recent_jobs(self):
         jobs_list = Job.objects.filter(user=self.id).order_by('-time_last_updated')[:5]
         return jobs_list
+
+    def get_projects(self):
+        return self.project_set.all() | Project.objects.filter(creator=self)
+
+
+
+# Provides a level of organization for users with jobs
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    creator = models.ForeignKey(NoahUser, related_name='+')
+    users = models.ManyToManyField(NoahUser, blank=True)
+
+
+class ProjectForm(forms.ModelForm):
+    jobs = forms.ModelMultipleChoiceField(queryset=None, required=False)
+
+    class Meta:
+        model = Project
+        fields = ('name', 'description')
+
+    def __init__(self, user, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['jobs'].queryset = user.job_set.filter(project=None)
 
 
 class Job(models.Model):
@@ -150,6 +174,8 @@ class Job(models.Model):
     status = models.CharField(max_length=32, blank=True)
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
+
+    project = models.ForeignKey(Project, null=True, blank=True)
     
     
     # Useful timestamps
@@ -567,26 +593,6 @@ class Job(models.Model):
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)
-
-
-# Provides a level of organization for users with jobs
-class Project(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    jobs = models.ManyToManyField(Job)
-    users = models.ManyToManyField(NoahUser)
-
-
-class ProjectForm(forms.ModelForm):
-
-    class Meta:
-        model = Project
-        fields = ('name', 'description', 'jobs')
-
-    def __init__(self, user, *args, **kwargs):
-        super(ProjectForm, self).__init__(*args, **kwargs)
-        job_choices = user.job_set.all()
-        self.fields['jobs'].queryset = job_choices
 
 
 QUEUE_CHOICES = (('regular', 'Regular'),

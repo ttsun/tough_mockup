@@ -29,6 +29,14 @@
 		    return cookieValue;
 		}
 
+		function validateSpecialChars(str){
+            var regex = /[^a-zA-Z0-9\_\-\)\(]/g;
+            if(str.length == 0 || str.search(regex) != -1){
+                return false;
+            }
+            return true;
+        }
+
 		function csrfSafeMethod(method) {
 		    // these HTTP methods do not require CSRF protection
 		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));

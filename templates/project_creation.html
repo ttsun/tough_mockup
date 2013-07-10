@@ -5,11 +5,28 @@
     .form-horizontal .controls{
         margin-left:130px;
     }
+    #errormsg{
+        display: none;
+    }
 </style>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#project_form").submit(function(){
+            if(validateSpecialChars($("#id_name").val())){
+                return true;
+            }else{
+                $("#errormsg").text("Please enter a valid project name.");
+                $("#errormsg").show();
+                return false;
+            }
+        });
+    });
+</script>
 <div class = "row-fluid">
     <div class = "span12">
         <h2>Create New Project</h2>
-        <form method = "POST" action = "{% url 'tough.views.create_project'%}" class="form-horizontal">
+        <form method = "POST" action = "{% url 'tough.views.create_project'%}" class="form-horizontal" id="project_form">
+            <p class="error" id="errormsg"></p>
             {% csrf_token %}
             {% for field in form %}
                 <div class="control-group">

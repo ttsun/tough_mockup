@@ -1,18 +1,6 @@
 <head>
-    <script type="text/javascript">
-        function validateSpecialChars(){
-            var regex = /[^a-zA-Z0-9\_\-\)\(]/g;
-            if($("#jobname").val().search(regex) != -1){
-                $("#errormsg").text("No special characters allowed."); 
-                $("#errormsg").css("display","block");
-                return false;
-            }
-            return true;
-        }
-    </script>
     <style type="text/css">
         #errormsg{
-            color:red;
             display:none;
         }
     </style>
@@ -28,6 +16,7 @@
             <h2>Copy Job</h2>
         {% endif %}
         <form action="{% url 'tough.views.create_job'%}" method="POST" id="dirinput">
+            <p id = "errormsg" class="error"></p>
             {% csrf_token %}
             <input type="hidden" name="setup_type" id="setup_type" value="{{setup_type|default:'new'}}" />
             {% if job %}
@@ -37,7 +26,6 @@
             {% if setup_type != "move" %}                
                 <div>
                     <label for="jobname">What do you want to name this new job?</label>
-                    <p id = "errormsg"></p>
                     <input type="text" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
                 </div>
             <div>
@@ -100,7 +88,7 @@
         }
     });
     $("#dirinput").submit(function(e){
-        if(validateSpecialChars()){
+        if(validateSpecialChars($("#jobname").val())){
             var values = {};
             $.each($('#dirinput').serializeArray(), function(i, field) {
                 values[field.name] = field.value;
@@ -108,6 +96,8 @@
             Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
             return true;
         }else{
+            $("#errormsg").text("Please enter a valid job name.");
+            $("#errormsg").show();
             return false;
         }
    });

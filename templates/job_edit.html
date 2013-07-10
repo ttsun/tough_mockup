@@ -74,9 +74,13 @@ $(document).ready(function(){
    $("form").submit(function(e){
         e.preventDefault();
         Alertify.log.info("Saving " + current_doc + " block");
+        var href = $(this).parent().parent().parent(".inputarea").attr("id");
         $.post($(this).attr("action"), $(this).serialize(), function(data){
             if(data.success){
                 Alertify.log.success("Block successfully saved!");
+                if($("[href='#"+href+"']").children('i').length == 0){
+                    $("[href='#"+href+"']").append("<i class='icon-ok'></i>");
+                }
             }else{
                 Alertify.log.error(data.error);
             }
@@ -129,8 +133,8 @@ $(document).ready(function(){
         {% if job_id %}
         <ul id="jobdetails" class = "nav nav-list">
             <li class = "nav-header">Job Details</li>
-                <li><b>Machine:</b> {{job.machine}}</li>
-                <li><b>Job name:</b> {{job_name}}</li>
+                <li><b>Machine:</b> {{job.machine|capfirst}}</li>
+                <li><b>Job Name:</b> {{job_name|capfirst}}</li>
         </ul>
         {% endif %}
         <ul class = "nav nav-list">
@@ -140,13 +144,15 @@ $(document).ready(function(){
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
             {% for block in job.get_req_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}{% if block.content != None %}<i class="icon-ok"></i>{% endif %}</a></li>
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
+                    {% if not block.is_empty %} <i class="icon-ok"></i>{% endif %}</a></li>
             {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
             <li class = "nav-header"> Optional Blocks</li>
             {% for block in job.get_op_blocks %}
-                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}{% if block.content.length != None %}<i class="icon-ok"></i>{% endif %}</a></li>
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
+                    {% if not block.is_empty %}<i class="icon-ok"></i>{% endif %}</a></li>
             {% endfor %}
         </ul>
         {% if job_id %}

@@ -676,3 +676,6 @@ class Block(models.Model):
 
     def get_raw_input_form(self):
         return RawInputForm(data={"rawinput": self.content})
+
+    def is_empty(self):
+        return len(self.content) <= 0

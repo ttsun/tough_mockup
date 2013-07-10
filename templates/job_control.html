@@ -63,9 +63,17 @@
     <div class = "row-fluid">
         <div class = "span2 well">
             <ul class = "nav nav-list">
-                <li><a href="{% url 'tough.views.create_project' %}" class = "popup">Create Project</a></li>
+                <li class="nav-header">Options</li>
                 <li><a href="{% url 'tough.views.create_job' %}" class="popup">Create Job</a></li>
                 <li><a href="#">Import Job</a></li>
+                <li><a href="{% url 'tough.views.create_project' %}" class = "popup">Create Project</a></li>
+            </ul>
+            <ul class="nav nav-list">
+                <li class="nav-header">Projects</li>
+                <li><a href="#">Project 1</a></li>
+                <li><a href="#">Project 2</a></li>
+                <li><a href="#">Really TOUGH Project</a></li>
+                <li><a href="#">Tough TOUGH Project</a></li>
             </ul>
         </div>
         <div class = "span10">

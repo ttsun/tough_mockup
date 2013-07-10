@@ -129,8 +129,8 @@ $(document).ready(function(){
         {% if job_id %}
         <ul id="jobdetails" class = "nav nav-list">
             <li class = "nav-header">Job Details</li>
-                <li><b>Machine:</b> {{job.machine}}</li>
-                <li><b>Job name:</b> {{job_name}}</li>
+                <li><b>Machine:</b> {{job.machine|capfirst}}</li>
+                <li><b>Job Name:</b> {{job_name|capfirst}}</li>
         </ul>
         {% endif %}
         <ul class = "nav nav-list">

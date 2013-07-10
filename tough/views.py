@@ -61,7 +61,7 @@ def create_job(request, job_id=None, type="new"):
         #create new job in database
         u = NoahUser.objects.get(username=request.user)
         #add a timestamp-based directory name to the path that will become jobdir
-        jobdir = request.POST['jobdir'] + '/TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
+        jobdir = request.POST['jobdir'] + '/' + request.POST['jobname'] + '_TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
 
         if request.POST['setup_type'] == 'new':
             srcdir = None

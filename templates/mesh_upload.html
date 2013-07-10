@@ -15,7 +15,7 @@ $("#submitmesh").click(function(e){
 <div class="row-fluid">    
     <div class = "span12" id = "meshform">
         <h2>Upload Mesh File</h2>
-        <form action = "https://newt.nersc.gov/newt/file/{{machine}}/" method = "POST" id = "meshuploadform" enctype = "multipart/form-data">
+        <form action = "{% url 'tough.views.mesh_upload' job_id=job_id %}" method = "POST" id = "meshuploadform" enctype = "multipart/form-data">
             {% csrf_token %}
             {%for field in job.get_mesh_upload_form %}
             <div class="control-group">

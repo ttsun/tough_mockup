@@ -37,7 +37,7 @@
                 {% else %}
                     <label for "jobdir">Where would you like to {{setup_type}} this job?</label>
                 {% endif %}
-                <input type="text" name="jobdir" id="jobdir" size="100" value="/global/">
+                <input type="text" name="jobdir" id="jobdir" size="100" value="">
                 <div class="btn-group">
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
@@ -77,4 +77,7 @@
         Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
         return true;
    });
+    $(document).ready(function(){
+        $("#jobdir").val(homedir)
+    })
 </script>

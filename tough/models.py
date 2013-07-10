@@ -577,10 +577,10 @@ class Project(models.Model):
     users = models.ManyToManyField(NoahUser)
 
 
-class ProjectForm(models.ModelForm):
+class ProjectForm(forms.ModelForm):
 
     class Meta:
-        model=Project
+        model = Project
         fields = ('name', 'description')
 
     def __init__(self, user, *args, **kwargs):

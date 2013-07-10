@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -297,6 +297,16 @@ def ajax_save(request, job_id):
             except Exception:
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
+
+
+def create_project(request):
+    if request.method == "POST":
+        form = ProjectForm(data=request.post, user=request.user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ProjectForm(user=request.user)
+    return render_to_response("project_creation.html", {"form": form}, context_instance=RequestContext(request))
 
 
 """

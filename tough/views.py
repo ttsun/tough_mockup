@@ -131,7 +131,9 @@ def create_job(request, job_id=None, type="new"):
 
 
 @login_required
-def job_edit(request, job_id):
+def job_edit(request, job_id, **kwargs):
+    if (parsemessage):
+
     j = get_object_or_404(Job, id=int(job_id))
     return render_to_response('job_edit.html',
                               {'job_name': j.jobname, 'job_id': job_id, 'new_job': bool(request.GET.get("new", False)), 'job': j},
@@ -148,9 +150,18 @@ def file_upload_view(request, job_id, file_type):
 def file_upload(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
     response = j.upload_files(request.FILES['files'], filename = file_type)
+    if(file_type != "mesh"):
+        parsemessage = j.parse_input_file(file_type)
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")
-    return redirect("tough.views.job_edit", j.pk)
+    return redirect("tough.views.job_edit", j.pk, parsemessage = parsemessage)
+
+@login_required
+
+
+
+
+
 
 @login_required
 def ajax_get_tough_files(request, job_id):

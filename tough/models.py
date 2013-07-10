@@ -577,6 +577,17 @@ class Project(models.Model):
     users = models.ManyToManyField(NoahUser)
 
 
+class ProjectForm(models.ModelForm):
+
+    class Meta:
+        model=Project
+        fields = ('name', 'description')
+
+    def __init__(self, user, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        job_choices = user.job_set.all()
+        self.fields['jobs'].queryset = job_choices
+
 
 QUEUE_CHOICES = (('regular', 'Regular'),
                 ('low', 'Low'),

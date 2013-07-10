@@ -1,0 +1,29 @@
+<style type="text/css" media="screen">
+    .form-horizontal .control-label{
+        width:120px;
+    }
+    .form-horizontal .controls{
+        margin-left:130px;
+    }
+</style>
+<div class = "row-fluid">
+    <div class = "span12">
+        <h2>Create New Project</h2>
+        <form method = "POST" action = "{% url 'tough.views.create_project'%}" class="form-horizontal">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="control-group">
+                <label for="id_{{field.html_name}}" class="control-label">{{field.label}}</label>
+                <div class="controls">
+                    {{ field }}                 
+                </div> 
+            </div>
+            {% endfor %}
+            <div class = "control-group">
+                <div class = "controls">
+                    <input class="btn btn-primary" type = "submit">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

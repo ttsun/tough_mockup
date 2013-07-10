@@ -17,3 +17,6 @@
     margin-top:20px;
     padding:10px 0;
 }
+.nav-list li{
+	word-wrap: break-word;
+}

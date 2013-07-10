@@ -86,6 +86,9 @@ class NoahUser(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def get_orphan_jobs(self):
+        return self.job_set.filter(project=None)
     
     def get_all_jobs(self):
         """
@@ -95,7 +98,7 @@ class NoahUser(AbstractBaseUser):
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
         #get the updated list 
-        all_jobs = Job.objects.filter(user=self.id).order_by('-time_last_updated')
+        all_jobs = self.job_set.all().order_by("project__name", "-time_last_updated", "-id")
         return all_jobs
         
     def get_jobs(self):
@@ -116,11 +119,35 @@ class NoahUser(AbstractBaseUser):
         #get completed and aborted and sort together by time submitted
         complete = Job.objects.filter(user=self.id).filter(nova_state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
 
-        return {'toberun': toberun, 'running':running, 'complete': complete}
+        return {'toberun': toberun, 'running': running, 'complete': complete}
 
     def get_recent_jobs(self):
         jobs_list = Job.objects.filter(user=self.id).order_by('-time_last_updated')[:5]
         return jobs_list
+
+    def get_projects(self):
+        return self.project_set.all() | Project.objects.filter(creator=self)
+
+
+
+# Provides a level of organization for users with jobs
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    creator = models.ForeignKey(NoahUser, related_name='+')
+    users = models.ManyToManyField(NoahUser, blank=True)
+
+
+class ProjectForm(forms.ModelForm):
+    jobs = forms.ModelMultipleChoiceField(queryset=None, required=False)
+
+    class Meta:
+        model = Project
+        fields = ('name', 'description')
+
+    def __init__(self, user, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['jobs'].queryset = user.job_set.filter(project=None)
 
 
 class Job(models.Model):
@@ -151,8 +178,10 @@ class Job(models.Model):
     status = models.CharField(max_length=32, blank=True)
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
-    
-    
+
+    project = models.ForeignKey(Project, null=True, blank=True)
+   
+
     # Useful timestamps
     time_last_updated = models.DateTimeField(null=True, blank=True)
     time_submitted = models.DateTimeField(null=True, blank=True)
@@ -164,7 +193,6 @@ class Job(models.Model):
     maxwalltime = models.TimeField(default = time(hour = 0, minute = 15))
     nodemem = models.CharField(max_length=256, default = "first")
     emailnotifications = models.CharField(max_length = 256, default = "")
-
 
     
     def create_dir(self):

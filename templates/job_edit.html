@@ -157,7 +157,7 @@ $(document).ready(function(){
         </ul>
         {% if job_id %}
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload a MESH File</a>
-            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type=job.jobname %}" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin-bottom:10px; margin-left:10px">Upload an Input File</a>
+            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='infile' %}" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin-bottom:10px; margin-left:10px">Upload an Input File</a>
             <a href = "{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
     </div>

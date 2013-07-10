@@ -4,30 +4,33 @@
 }
 </style>
 <script type = "text/javascript">
-$('#fileuploadform').submit(function(e){
-    e.preventDefault();
-    var formData = new FormData($('#fileuploadform')[0]);
-    $.ajax({
-        url: $("#fileuploadform").attr("action"),  //server script to process data
-        type: 'POST',
-        //Ajax events
-        beforeSend: function(){
-            Alertify.log.info("Uploading and parsing file...");
-        },
-        success: function(response){
-            if(response.success){
-                window.location.href = response.redirect;
-            }else{
-                Alertify.log.error("Something went wrong when parsing. Please try again.");
-            }
-        },
-        // Form data
-        data: formData,
-        //Options to tell JQuery not to process data or worry about content-type
-        cache: false,
-        contentType: false,
-        processData: false
-    });
+$(document).ready(function(){
+
+    $('#fileuploadform').submit(function(e){
+        e.preventDefault();
+        var formData = new FormData($('#fileuploadform')[0]);
+        $.ajax({
+            url: $("#fileuploadform").attr("action"),  //server script to process data
+            type: 'POST',
+            //Ajax events
+            beforeSend: function(){
+                Alertify.log.info("Uploading and parsing file...");
+            },
+            success: function(response){
+                if(response.success){
+                    window.location.href = response.redirect;
+                }else{
+                    Alertify.log.error("Something went wrong when parsing. Please try again.");
+                }
+            },
+            // Form data
+            data: formData,
+            //Options to tell JQuery not to process data or worry about content-type
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });    
 });
 
 </script>
@@ -45,7 +48,7 @@ $('#fileuploadform').submit(function(e){
             </div>                 
             {%endfor%}
             <input type="submit" class = "btn btn-large btn-primary" value="Upload" />
-            <a href = "" id = "cancelfile" class = "btn btn-large">Cancel</a>
+            <button class = "closedialog btn btn-large">Cancel</button>
         </form>
     </div>
 </div>

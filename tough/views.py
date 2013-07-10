@@ -313,7 +313,7 @@ def ajax_save(request, job_id, input_type):
                 j.save_block(blocktype, content)
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
                 j.save()
-                return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
+                return HttpResponse(simplejson.dumps({"success": True, "content": content}), content_type="application/json")
             except Exception:
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")

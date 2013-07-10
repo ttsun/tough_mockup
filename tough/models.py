@@ -12,7 +12,7 @@ import tough.util as util
 import logging
 from django import forms
 from django.forms import ModelForm
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.timezone import utc
 from django.forms import widgets
 import re
@@ -243,13 +243,17 @@ class Job(models.Model):
             b = self.block_set.get(blockType__name = 'mesh')
             b.last_uploaded = datetime.utcnow()
             b.save()
+<<<<<<< HEAD
+=======
+
+>>>>>>> f8715922012c0e21a0720b1db5a9ca3ac25c2a2c
         if response.status_code!=200:
             raise Exception(response)
         return response
 
 
     def parse_input_file(self, file_name):
-        file_from = self.get_file(filename = file_name)
+        file_from = self.get_file(filename=file_name)
         lines = file_from.split("\n")
         block = ""
         blocktitleregex = '(?<=>>>)\w+'
@@ -270,10 +274,13 @@ class Job(models.Model):
             if(re.search(blockendregex, line) != None):
                 if(blocking == False):
                     return "too many closes"
-                b = self.block_set.get(blockType__name = blocktype)
-                b.content=block
-                b.save()
-                blockschanged.append(blocktype)
+                try:
+                    b = self.block_set.get(blockType__name=blocktype)
+                    b.content = block
+                    b.save()
+                    blockschanged.append(blocktype)
+                except ObjectDoesNotExist:
+                    pass
                 blocking = False
                 block = ""
         return blockschanged

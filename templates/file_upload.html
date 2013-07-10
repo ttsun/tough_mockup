@@ -4,12 +4,31 @@
 }
 </style>
 <script type = "text/javascript">
-$("#submitfile").click(function(e){
-	e.preventDefault();
-	$("#fileuploadform").submit();
-})
-// $("#meshuploadform").submit(function(e){
-// })
+$('#fileuploadform').submit(function(e){
+    e.preventDefault();
+    var formData = new FormData($('#fileuploadform')[0]);
+    $.ajax({
+        url: $("#fileuploadform").attr("action"),  //server script to process data
+        type: 'POST',
+        //Ajax events
+        beforeSend: function(){
+            Alertify.log.info("Uploading and parsing file...");
+        },
+        success: function(response){
+            if(response.success){
+                window.location.href = response.redirect;
+            }else{
+                Alertify.log.error("Something went wrong when parsing. Please try again.");
+            }
+        },
+        // Form data
+        data: formData,
+        //Options to tell JQuery not to process data or worry about content-type
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+});
 
 </script>
 <div class="row-fluid">    
@@ -25,7 +44,7 @@ $("#submitfile").click(function(e){
                 </div>
             </div>                 
             {%endfor%}
-            <a href = "" id ="submitfile" class = "btn btn-large btn-primary">Upload</a>
+            <input type="submit" class = "btn btn-large btn-primary" value="Upload" />
             <a href = "" id = "cancelfile" class = "btn btn-large">Cancel</a>
         </form>
     </div>

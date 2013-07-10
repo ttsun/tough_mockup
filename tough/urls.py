@@ -32,7 +32,7 @@ urlpatterns = patterns('',
     url(r'^job/(?P<type>move)/(?P<job_id>\d+)/$', 'tough.views.create_job'),
     url(r'^job/del/(?P<job_id>\d+)/$', 'tough.views.delete_job'),
     url(r'^job/job_setup/(?P<job_id>\d+)/$', 'tough.views.job_edit'),
-    url(r'^job/save/(?P<job_id>\d+)/$', 'tough.views.ajax_save'),
+    url(r'^job/save/(?P<job_id>\d+)/(?P<input_type>\w+)/$', 'tough.views.ajax_save'),
     url(r'^job/submit/(?P<job_id>\d+)/$', 'tough.views.ajax_submit'),
     url(r'^project/new/$', 'tough.views.create_project'),
 )

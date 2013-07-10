@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project, ImportBlockForm
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -249,7 +249,7 @@ def job_view(request, job_id):
 
 
 @login_required
-def ajax_save(request, job_id):
+def ajax_save(request, job_id, input_type):
     #get the data from the ajax request
     j = get_object_or_404(Job, id=job_id)
     blocktype = BlockType.objects.get(pk=request.POST['blockType'])
@@ -258,7 +258,13 @@ def ajax_save(request, job_id):
         if blocktype.pk == 1:
             form = CompSettingsForm(data=request.POST)
         else:
-            form = RawInputForm(data=request.POST)
+            if input_type == "raw":
+                form = RawInputForm(data=request.POST)
+            elif input_type == "import":
+                form = ImportBlockForm(data=request.POST, user = j.user, job_id = job_id)
+            else:
+                form = RawInputForm(data=request.POST)
+
         if form.is_valid():
             # If the block is a batch block (pk=1)
             if blocktype.pk == 1:
@@ -296,8 +302,10 @@ def ajax_save(request, job_id):
                 content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
-            else:
+            elif input_type == 'raw':
                 content = form.cleaned_data['rawinput']
+            else:
+                content = form.cleaned_data['jobchoice'].block_set.get(blockType=blocktype).content
             try:
                 j.save_block(blocktype, content)
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)

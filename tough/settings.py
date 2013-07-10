@@ -106,6 +106,7 @@ TEMPLATE_LOADERS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.messages.context_processors.messages',
     'login.context_processors.TOUGH_SUBDIRs',
     'tough.context_processors.TOUGH_SUBDIRs',
     'django.contrib.auth.context_processors.auth',

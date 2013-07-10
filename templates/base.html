@@ -55,6 +55,17 @@
 		    	}
 		    }
 		});
+		$(document).ready(function(){
+			{% for message in messages %}
+		        {% if message.tags == "success" %}
+		            Alertify.log.success("{{message}}");
+		        {% elif message.tags == "error" %}
+		            Alertify.log.error("{{message}}");
+		        {% else %}
+		            Alertify.log.info("{{message}}");
+		        {% endif %}
+		    {% endfor %}
+		});
 	</script>
 
 	{% block head %}

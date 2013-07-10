@@ -61,6 +61,13 @@
 
 {% block content %}
     <div class = "row-fluid">
+        <div class = "span2 well">
+            <ul class = "nav nav-list">
+                <li><a href="{% url 'tough.views.create_project' %}" class = "popup">Create Project</a></li>
+                <li><a href="{% url 'tough.views.create_job' %}" class="popup">Create Job</a></li>
+                <li><a href="#">Import Job</a></li>
+            </ul>
+        </div>
         <div class = "span10">
             <table class="table table-striped table-hover">
                 <thead>
@@ -92,12 +99,7 @@
                 {% endfor %}
             </table>
         </div>
-        <div class = "span2 well">
-            <ul class = "nav nav-list">
-                <li><a href="{% url 'tough.views.create_job' %}" class="popup">Create Job</a></li>
-                <li><a href="#">Import Job</a></li>
-            </ul>
-        </div>
+        
     </div>
 <div id="formBox">
 </div>

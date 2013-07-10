@@ -239,6 +239,12 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
+        if (filename == 'mesh'):
+            b = self.block_set.get(blockType__name = 'mesh')
+            b.last_uploaded = datetime.utcnow()
+            b.save()
+
+        import ipdb; ipdb.set_trace()
         if response.status_code!=200:
             raise Exception(response)
         return response
@@ -747,6 +753,7 @@ class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
     job = models.ForeignKey(Job)
     content = models.TextField(blank=True)
+    last_uploaded = models.DateTimeField(null = True, default = None)
 
     class Meta:
         ordering = ['blockType__ordering', 'blockType__id']

@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -93,6 +93,9 @@ def create_job(request, job_id=None, type="new"):
 
             #create directory with unique id
             j.create_dir()
+
+            if request.POST.get("project", False):
+                j.project = Project.objects.get(pk=request.POST.get("project"))
 
             # Copy over the files to the new dir, if this is an import or copy
             if srcdir:

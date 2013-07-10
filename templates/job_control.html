@@ -7,12 +7,21 @@
     <style type="text/css">
         thead tr th{
             text-align: center !important;
+            background-color: #CCCCCC !important;
         }
         tbody tr td{
             width:260px;
         }
+        table{
+            border-spacing: 0 !important;
+        }
         .job_id, .time, .state, .numprocs, .jobname{
             text-align: center !important;
+        }
+        tr.project-name th{
+            font-size:0.9em;
+            padding:0 1em !important;
+            background-color: #EEEEEE !important;
         }
     </style>
     <script type="text/javascript">
@@ -76,7 +85,7 @@
             </ul>
         </div>
         <div class = "span10">
-            <table class="table table-striped table-hover">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Job Name</th>
@@ -87,7 +96,34 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                {% for job in all_jobs %}
+                {% for project in user.get_projects %}
+                    {% if project.job_set.all %}
+                        <tr class="project-name">
+                            <th colspan="6">{{project.name}}</th>
+                        </tr>                        
+                    {% endif %}
+                    {% for job in project.job_set.all %}
+                        <tr>
+                            <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                            <td class="numprocs">{{job.numprocs}}</td>
+                            <td class="job_id">{{job.pbsjob_id}}</td>
+                            <td class="time">{{job.time_started}}</td>
+                            <td class="state">{{job.nova_state}}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
+                                    <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
+                                    <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
+                                    <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                <tr class="project-name">
+                    <th colspan="6">Ungrouped</th>
+                </tr>
+                {% for job in user.get_orphan_jobs %}
                     <tr>
                         <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
                         <td class="numprocs">{{job.numprocs}}</td>

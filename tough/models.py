@@ -85,6 +85,9 @@ class NoahUser(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def get_orphan_jobs(self):
+        return self.job_set.filter(project=None)
     
     def get_all_jobs(self):
         """
@@ -94,7 +97,7 @@ class NoahUser(AbstractBaseUser):
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
         #get the updated list 
-        all_jobs = Job.objects.filter(user=self.id).order_by('-time_last_updated')
+        all_jobs = self.job_set.all().order_by("project__name", "-time_last_updated", "-id")
         return all_jobs
         
     def get_jobs(self):
@@ -176,8 +179,8 @@ class Job(models.Model):
     timeuse = models.CharField(max_length=256, blank=True)
 
     project = models.ForeignKey(Project, null=True, blank=True)
-    
-    
+   
+
     # Useful timestamps
     time_last_updated = models.DateTimeField(null=True, blank=True)
     time_submitted = models.DateTimeField(null=True, blank=True)
@@ -189,7 +192,6 @@ class Job(models.Model):
     maxwalltime = models.TimeField(default = time(hour = 0, minute = 15))
     nodemem = models.CharField(max_length=256, default = "first")
     emailnotifications = models.CharField(max_length = 256, default = "")
-
 
     
     def create_dir(self):

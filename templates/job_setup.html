@@ -26,6 +26,15 @@
                     <option value="carver">carver</option>
                 </select>
             </div>
+            <div>
+                <label for="project">Add job to existing project?</label>
+                <select name="project">
+                    <option value=""> --- </option>
+                    {% for project in user.get_projects %}
+                        <option value="{{project.pk}}">{{project.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             {% else %}
                 <strong>Current Directory:</strong> <pre>{{job.jobdir}}</pre>
                 <input type="hidden" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>

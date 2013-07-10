@@ -469,6 +469,9 @@ def ajax_run_job(request, job_id):
         content = 'job already submitted'
         return HttpResponse(content, content_type='text/plain')
 
+def report_error(request):
+    return render_to_response("report.html")
+
 """
 #for checking user licenses by NERSC group
 >>>>>>> remotes/jren13/noa-james2/noa

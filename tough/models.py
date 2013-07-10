@@ -243,10 +243,6 @@ class Job(models.Model):
             b = self.block_set.get(blockType__name = 'mesh')
             b.last_uploaded = datetime.utcnow()
             b.save()
-<<<<<<< HEAD
-=======
-
->>>>>>> f8715922012c0e21a0720b1db5a9ca3ac25c2a2c
         if response.status_code!=200:
             raise Exception(response)
         return response

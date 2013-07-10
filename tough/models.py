@@ -12,7 +12,7 @@ import tough.util as util
 import logging
 from django import forms
 from django.forms import ModelForm
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.timezone import utc
 from django.forms import widgets
 import re
@@ -245,7 +245,7 @@ class Job(models.Model):
 
 
     def parse_input_file(self, file_name):
-        file_from = self.get_file(filename = file_name)
+        file_from = self.get_file(filename=file_name)
         lines = file_from.split("\n")
         block = ""
         blocktitleregex = '(?<=>>>)\w+'
@@ -265,9 +265,12 @@ class Job(models.Model):
             if(re.search(blockendregex, line) != None):
                 if(blocking == False):
                     return "too many closes"
-                b = self.block_set.get(blockType__name = blocktype)
-                b.content=block
-                b.save()
+                try:
+                    b = self.block_set.get(blockType__name=blocktype)
+                    b.content = block
+                    b.save()
+                except ObjectDoesNotExist:
+                    pass
                 blocking = False
                 block = ""
         return "parsed"

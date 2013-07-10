@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{%block head%}
+    <style type="text/css">
+        h1{
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        img{
+            width:750px;
+        }
+        #blarg{
+            text-align:right;
+        }
+        ul{
+            list-style-type: none;
+            padding:0;
+            margin:0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class = "row-fluid">
+        <div class = "span12">   
+            <h1> Project too TOUGH?</h1>
+        </div>
+    </div>
+    <div class = "row-fluid">
+        <div class = "span4">
+            <h4> Contacts for TOUGH+ Problems:</h4>
+            <ul>
+                <li>George Moridis, GJMoridis@lbl.gov </li>
+                <li>Matt Reagan, MTReagan@lbl.gov</li>
+            </ul>
+            <h4> Mailing Address</h4>
+            <address>
+                TOUGH Developer Team </br>
+                c/o (Name of Contact) </br>
+                Earth Sciences Division </br> 
+                One Cyclotron Road, MS 74-0120 </br>
+                Berkeley, CA 94720 </br>
+            </address>
+        </div>
+        <div class = "span4">
+            <img src="http://louisvillebeerblog.files.wordpress.com/2013/05/popeye1.gif">
+        </div>
+        <div class = "span4" id = "blarg">
+            <h4> Contacts for Website/Gateway Problems</h4>
+            <ul>
+                <li>Annette Greiner, AMGreiner@lbl.gov</li>
+                <li>Jeff Johnson, JNJohnson</li>
+                <li>Noel Keen, NDKeen@lbl.gov</li>
+            </ul>
+            <h4>TOUGH Web Developers</h4>
+            <ul>
+                <li>Tony Wang, tonywang@lbl.gov</li>
+                <li>Terence Sun, tsun@lbl.gov</li>
+                <li>James Ren, jamesren@lbl.gov</li>
+            </ul>
+        </div>
+    </div>
+           
+    
+{% endblock content %}

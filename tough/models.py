@@ -179,7 +179,7 @@ class Job(models.Model):
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
 
-    project = models.ForeignKey(Project, null=True, blank=True)
+    project = models.ForeignKey(Project, null=True, blank=True, default=None)
    
 
     # Useful timestamps
@@ -243,7 +243,6 @@ class Job(models.Model):
             b = self.block_set.get(blockType__name = 'mesh')
             b.last_uploaded = datetime.utcnow()
             b.save()
-
         if response.status_code!=200:
             raise Exception(response)
         return response
@@ -258,6 +257,7 @@ class Job(models.Model):
         blockendregex = '(?<=<<<)\w+'
         blocking = False
         blocktype = ""
+        blockschanged = []
         for line in lines:
             # line = lines[i]
             if (re.search(blocktitleregex, line) != None):
@@ -274,11 +274,12 @@ class Job(models.Model):
                     b = self.block_set.get(blockType__name=blocktype)
                     b.content = block
                     b.save()
+                    blockschanged.append(blocktype)
                 except ObjectDoesNotExist:
                     pass
                 blocking = False
                 block = ""
-        return "parsed"
+        return blockschanged
         # start_line_beg = 0
         # start_line_end = 0
         # end_line_beg = 0
@@ -642,7 +643,7 @@ class Job(models.Model):
     #     return blockarray
 
     def __unicode__(self):
-        return "%s,/queue/%s/%s" % (self.id, self.machine, self.pbsjob_id)
+        return self.jobname
 
     def get_req_blocks(self):
         return self.block_set.filter(blockType__required=1)
@@ -729,6 +730,14 @@ class RawInputForm(forms.Form):
 class FileUploadForm(forms.Form):
     files = forms.FileField()
 
+class ImportBlockForm(forms.Form):
+    user = models.ForeignKey(NoahUser)
+    jobchoice = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, user, job_id, *args, **kwargs):
+        super(ImportBlockForm, self).__init__(*args, **kwargs)
+        self.fields['jobchoice'].queryset = user.job_set.all().exclude(pk = job_id)
+
 
 class BlockType(models.Model):
     name = models.CharField(max_length=255)
@@ -760,5 +769,7 @@ class Block(models.Model):
     def get_raw_input_form(self):
         return RawInputForm(data={"rawinput": self.content})
 
+    def get_import_form(self):
+        return ImportBlockForm(user = self.job.user, job_id = self.job.pk)
     def is_empty(self):
         return len(self.content) <= 0

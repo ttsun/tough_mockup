@@ -2,6 +2,7 @@
         <ul class = "nav nav-tabs">
             <li class = "active"><a href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
             <li><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
+            <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
         </ul>
         <div class = "tab-content">
             <div class = "tab-pane active" id = "{{block.blockType.tough_name}}-guided">
@@ -23,6 +24,18 @@
                 <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
                 <input class="btn btn-primary" type="submit" id='saverawblock' />
                 <button class="btn" type="button" id='cancel'>Cancel</button>
+                </form>
+            </div>
+            <div class = "tab-pane" id = "{{block.blockType.tough_name}}-import">
+                <form class="importblockform" action="" method="POST">
+                    {% csrf_token %}
+                    <div class = "control-group">
+                        {% for field in block.get_import_form %}
+                        <div class = "control">
+                            {{field}}
+                        </div>
+                        {% endfor %}
+                    </div>
                 </form>
             </div>
         </div>

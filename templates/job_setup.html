@@ -12,8 +12,14 @@
         function validateSpecialChars(){
             var specialChars = "!@#$%^&*();/{}";
             var content = document.getElementById("jobname").value;
+            if(content == ""){
+                $("#errormsg").text("Name field is required."); 
+                $("#errormsg").css("display","block");
+                return false;
+            }
             for(var z = 0; z < content.length; z++){
                 if(specialChars.indexOf(content.charAt(z)) != -1){
+                    $("#errormsg").text("No special characters allowed."); 
                     $("#errormsg").css("display","block");
                     document.getElementById("jobname").value = "";
                     return false;
@@ -49,7 +55,7 @@
             {% if setup_type != "move" %}                
                 <div>
                     <label for="jobname">What do you want to name this new job?</label>
-                    <p id = "errormsg">No special characters allowed. </p>
+                    <p id = "errormsg"></p>
                     <input type="text" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
                 </div>
             <div>

@@ -138,16 +138,16 @@ def job_edit(request, job_id):
                               context_instance=RequestContext(request))
 
 @login_required
-def mesh_upload_view(request, job_id):
+def file_upload_view(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
-    return render_to_response('mesh_upload.html',
-                                {'job_name': j.jobname, 'job_id':job_id, 'job': j}, 
+    return render_to_response('file_upload.html',
+                                {'job_name': j.jobname, 'job_id':job_id, 'job': j, 'file_type':file_type}, 
                                 context_instance=RequestContext(request))
 
 @login_required
-def mesh_upload(request, job_id):
+def file_upload(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
-    response = j.upload_mesh(request.FILES['mesh'])
+    response = j.upload_files(request.FILES['files'], filename = file_type)
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")
     return redirect("tough.views.job_edit", j.pk)
@@ -176,9 +176,9 @@ def ajax_get_tough_files(request, job_id):
 
 
 @login_required
-def upload_MESH(request, jobid):
+def upload_file(request, jobid):
     j = get_object_or_404(Job, id=int(jobid))
-    return render_to_response('mesh_upload.html', {"job_id": j.pk, "jobname": j.jobname}, context_instance=RequestContext(request))
+    return render_to_response('file_upload.html', {"job_id": j.pk, "jobname": j.jobname}, context_instance=RequestContext(request))
 
 
 @login_required

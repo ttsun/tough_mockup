@@ -205,11 +205,11 @@ class Job(models.Model):
         return simplejson.loads(content)
  
        
-    def upload_mesh(self, uploaded_file):
+    def upload_files(self, uploaded_file, filename):
         path = self.jobdir
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
-        response = util.upload_request(url=url, uploaded_file=uploaded_file, cookie_str=cookie_str) #problem here
+        response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
         if response.status_code!=200:
             raise Exception(response)
         return response
@@ -546,8 +546,8 @@ class Job(models.Model):
                                 "email_notifications": self.emailnotifications.split(","),
                                 "nodemem": self.nodemem},)
 
-    def get_mesh_upload_form(self):
-        return MeshUploadForm()
+    def get_file_upload_form(self):
+        return FileUploadForm()
     
     # def get_block_array(self):
     #     blockarray = []
@@ -644,8 +644,8 @@ class CompSettingsForm(forms.Form):
 class RawInputForm(forms.Form):
     rawinput = forms.CharField(widget=forms.Textarea(attrs={"cols": 120, "rows": 30}))
 
-class MeshUploadForm(forms.Form):
-    mesh = forms.FileField()
+class FileUploadForm(forms.Form):
+    files = forms.FileField()
 
 
 class BlockType(models.Model):

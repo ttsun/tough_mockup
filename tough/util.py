@@ -75,7 +75,7 @@ def encode_multipart_data(files, data=None):
 
     return body, headers
 
-def upload_request(url, uploaded_file, cookie_str=None):
+def upload_request(url, uploaded_file, filename, cookie_str=None):
     newt_base_url=getattr(settings, 'NEWT_BASE_URL')
     newtcookie = NewtCookie(cookie_str).__dict__
     cookies = {
@@ -88,7 +88,7 @@ def upload_request(url, uploaded_file, cookie_str=None):
     }
     full_url = newt_base_url+url+"/"
     import ipdb; ipdb.set_trace()
-    response = requests.post(full_url, cookies=cookies, files={"file": (uploaded_file.name, File(uploaded_file).read())})
+    response = requests.post(full_url, cookies=cookies, files={"file": (filename, File(uploaded_file).read())})
     return response
 
 def newt_upload_request(url, files, params=None, cookie_str=None):

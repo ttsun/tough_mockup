@@ -74,6 +74,21 @@
                 });
                 return false;
             });
+            $("#projectbar a").click(function(e){
+                e.preventDefault();
+                if($(this).parent(".disabled").length == 0){
+                    $("#projectbar .active").removeClass("active");
+                    $(this).parent("li").addClass("active");
+                    var curr = $(this).attr("href");
+                    if(curr != "#show"){
+                        $(".project:not('"+curr+"')").hide()
+                        $(curr).show(500);
+                    } else{
+                        $(".project").show(500);
+                    }
+                }
+                return false;
+            });
         });
     </script>
 {% endblock head %}
@@ -87,13 +102,21 @@
                 <li><a href="#">Import Job</a></li>
                 <li><a href="{% url 'tough.views.create_project' %}" class = "popup">Create Project</a></li>
             </ul>
-            <ul class="nav nav-list">
+            <ul class="nav nav-list" id = "projectbar">
                 <li class="nav-header">Projects</li>
                 {% for project in user.get_projects %}
                     <li><a href="#project-{{project.pk}}">{{project.name}}</a></li>
                 {% endfor %}
-                <li class="nav-header"></li>
-                <li><a href="#project-ungrouped">Ungrouped</a></li>
+                {% if not user.get_projects %}
+                    <li class="disabled"><a>No Projects</a></li>
+                {% endif %}
+                <li class="divider"></li>
+                {% if user.get_orphan_jobs %}
+                    <li><a href="#project-ungrouped">Ungrouped</a></li>                    
+                {% endif %}
+                {% if user.get_projects %}
+                    <li><a href="#show">Show All</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class = "span10">
@@ -109,7 +132,7 @@
                     </tr>
                 </thead>
                 {% for project in user.get_projects %}
-                    <tbody id="project-{{project.pk}}">
+                    <tbody id="project-{{project.pk}}" class = "project">
                         {% if project.job_set.all %}
                             <tr class="project-name">
                                 <th colspan="6">{{project.name}}</th>
@@ -134,7 +157,7 @@
                         {% endfor %}
                     </tbody>
                 {% endfor %}
-                <tbody id="project-ungrouped">
+                <tbody id="project-ungrouped" class = "project">
                     {% if user.get_orphan_jobs %}
                     <tr class="project-name">
                         <th colspan="6">Ungrouped</th>

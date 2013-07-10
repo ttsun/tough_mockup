@@ -248,8 +248,7 @@ class Job(models.Model):
         return response
 
 
-    def parse_input_file(self, file_name):
-        file_from = self.get_file(filename=file_name)
+    def parse_input_file(self, file_from):
         lines = file_from.split("\n")
         block = ""
         blocktitleregex = '(?<=>>>)\w+'
@@ -329,6 +328,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s?view=read' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         return content
@@ -771,6 +771,6 @@ class Block(models.Model):
 
     def get_import_form(self):
         return ImportBlockForm(user = self.job.user, job_id = self.job.pk)
-        
+
     def is_empty(self):
         return len(self.content) <= 0

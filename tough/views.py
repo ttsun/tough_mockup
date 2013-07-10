@@ -154,10 +154,14 @@ def file_upload_view(request, job_id, file_type):
 @login_required
 def file_upload(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
-    response = j.upload_files(request.FILES['files'], filename=file_type)
-    if(file_type != "mesh"):
-        j.parse_input_file(file_type)
+    if (file_type != 'mesh'):
+        file_from = request.FILES['files'].read()
+        j.parse_input_file(file_from)
         messages.success(request, "File successfully uploaded and parsed!")
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+    else:
+        response = j.upload_files(request.FILES['files'], filename = file_type)
+        messages.success(request, "MESH was successfully uploaded and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")

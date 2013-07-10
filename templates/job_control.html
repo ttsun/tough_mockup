@@ -23,6 +23,16 @@
             padding:0 1em !important;
             background-color: #EEEEEE !important;
         }
+        #nojobs tr td{
+            background-color: #EEEEEE !important;
+            height:100px;
+            text-align: center;
+            font-size:1.3em;
+            vertical-align: middle;
+        }
+        .span2.well{
+            margin-top:0;
+        }
     </style>
     <script type="text/javascript">
         $(document).ready(function(){
@@ -138,9 +148,11 @@
                     </tbody>
                 {% endfor %}
                 <tbody id="project-ungrouped" class = "project">
+                    {% if user.get_orphan_jobs %}
                     <tr class="project-name">
                         <th colspan="6">Ungrouped</th>
                     </tr>
+                    {% endif %}
                     {% for job in user.get_orphan_jobs %}
                         <tr>
                             <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
@@ -159,6 +171,13 @@
                         </tr>
                     {% endfor %}
                 </tbody>
+                {% if not user.get_all_jobs %}
+                    <tbody id="nojobs">
+                        <tr>
+                            <td colspan="6">It looks like you don't have any jobs... Click the side bar to create a new job.</td>
+                        </tr>
+                    </tbody>
+                {% endif %}
             </table>
         </div>
         

@@ -1,3 +1,29 @@
+<head>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#dirinput").submit(function(){
+                if(validateSpecialChars()){
+                    return true;
+                }else{
+                    return false;
+                }
+            });
+        });
+        function validateSpecialChars(){
+            var specialChars = "!@#$%^&*();/{}";
+            var content = document.getElementById("jobname").value;
+            for(var z = 0; z < content.length; z++){
+                if(specialChars.indexOf(content.charAt(z)) != -1){
+                    alert("Special characters are not allowed.");
+                    document.getElementById("jobname").value = "";
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</head>
+
 <div class="row-fluid">
     <div class="span12 inputarea" id="dirsetup">
         {% if setup_type == "new" %}

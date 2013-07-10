@@ -732,7 +732,7 @@ class FileUploadForm(forms.Form):
 
 class ImportBlockForm(forms.Form):
     user = models.ForeignKey(NoahUser)
-    jobchoice = forms.ModelChoiceField(queryset=None)
+    jobchoice = forms.ModelChoiceField(queryset=None, empty_label="No job selected")
 
     def __init__(self, user, job_id, *args, **kwargs):
         super(ImportBlockForm, self).__init__(*args, **kwargs)
@@ -771,5 +771,6 @@ class Block(models.Model):
 
     def get_import_form(self):
         return ImportBlockForm(user = self.job.user, job_id = self.job.pk)
+        
     def is_empty(self):
         return len(self.content) <= 0

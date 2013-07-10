@@ -78,6 +78,9 @@ $(document).ready(function(){
                 if($("[href='#"+href+"']").children('i').length == 0){
                     $("[href='#"+href+"']").append("<i class='icon-ok'></i>");
                 }
+                if(data.content != ""){
+                    $("#"+href).find("[name='rawinput']").val(data.content);
+                }
             }else{
                 Alertify.log.error(data.error);
             }
@@ -102,10 +105,16 @@ $(document).ready(function(){
     $(".popup").click(function(e){
         e.preventDefault();
         $("#uploadformbox").load($(this).attr("href"), function(){
-            $("#uploadformbox").dialog("open");                    
+            $("#uploadformbox").dialog("open");   
+            $(".closedialog").click(function(e){
+                e.preventDefault();
+                $("#uploadformbox").dialog("close");
+                return false;
+            });                 
         });
         return false;
-    });
+    });      
+    
 });
    // $("#upload_MESH").click(function(e){
    //      e.preventDefault();

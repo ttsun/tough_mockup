@@ -1,3 +1,11 @@
+<head>
+    <style type="text/css">
+        #errormsg{
+            display:none;
+        }
+    </style>
+</head>
+
 <div class="row-fluid">
     <div class="span12 inputarea" id="dirsetup">
         {% if setup_type == "new" %}
@@ -8,6 +16,7 @@
             <h2>Copy Job</h2>
         {% endif %}
         <form action="{% url 'tough.views.create_job'%}" method="POST" id="dirinput">
+            <p id = "errormsg" class="error"></p>
             {% csrf_token %}
             <input type="hidden" name="setup_type" id="setup_type" value="{{setup_type|default:'new'}}" />
             {% if job %}
@@ -79,12 +88,18 @@
         }
     });
     $("#dirinput").submit(function(e){
-        var values = {};
-        $.each($('#dirinput').serializeArray(), function(i, field) {
-            values[field.name] = field.value;
-        });
-        Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        return true;
+        if(validateSpecialChars($("#jobname").val())){
+            var values = {};
+            $.each($('#dirinput').serializeArray(), function(i, field) {
+                values[field.name] = field.value;
+            });
+            Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
+            return true;
+        }else{
+            $("#errormsg").text("Please enter a valid job name.");
+            $("#errormsg").show();
+            return false;
+        }
    });
     $(document).ready(function(){
         $("#jobdir").val(homedir)

@@ -244,7 +244,6 @@ class Job(models.Model):
             b.last_uploaded = datetime.utcnow()
             b.save()
 
-        import ipdb; ipdb.set_trace()
         if response.status_code!=200:
             raise Exception(response)
         return response

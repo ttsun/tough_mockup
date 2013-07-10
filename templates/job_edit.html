@@ -65,6 +65,9 @@ $(document).ready(function(){
         {% if new_job %}
             Alertify.log.success("{{job_name}}"+" created at "+"{{job.jobdir}}");
         {% endif %}
+        {% if new_upload %}
+            Alertify.log.success("Input file successfully uploaded and parsed!");
+        {% endif %}
     $("#compset").removeClass("inputarea").addClass("inputareaactive");
     current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();

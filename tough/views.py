@@ -134,9 +134,7 @@ def create_job(request, job_id=None, type="new"):
 
 
 @login_required
-def job_edit(request, job_id, **kwargs):
-    if (parsemessage):
-
+def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
     return render_to_response('job_edit.html',
                               {'job_name': j.jobname, 'job_id': job_id, 'new_job': bool(request.GET.get("new", False)), 'job': j},

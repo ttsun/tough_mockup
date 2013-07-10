@@ -1,29 +1,11 @@
 <head>
     <script type="text/javascript">
-        $(document).ready(function(){
-            $("#dirinput").submit(function(){
-                if(validateSpecialChars()){
-                    return true;
-                }else{
-                    return false;
-                }
-            });
-        });
         function validateSpecialChars(){
-            var specialChars = "!@#$%^&*();/{}";
-            var content = document.getElementById("jobname").value;
-            if(content == ""){
-                $("#errormsg").text("Name field is required."); 
+            var regex = /[^a-zA-Z0-9\_\-\)\(]/g;
+            if($("#jobname").val().search(regex) != -1){
+                $("#errormsg").text("No special characters allowed."); 
                 $("#errormsg").css("display","block");
                 return false;
-            }
-            for(var z = 0; z < content.length; z++){
-                if(specialChars.indexOf(content.charAt(z)) != -1){
-                    $("#errormsg").text("No special characters allowed."); 
-                    $("#errormsg").css("display","block");
-                    document.getElementById("jobname").value = "";
-                    return false;
-                }
             }
             return true;
         }
@@ -118,12 +100,16 @@
         }
     });
     $("#dirinput").submit(function(e){
-        var values = {};
-        $.each($('#dirinput').serializeArray(), function(i, field) {
-            values[field.name] = field.value;
-        });
-        Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
-        return true;
+        if(validateSpecialChars()){
+            var values = {};
+            $.each($('#dirinput').serializeArray(), function(i, field) {
+                values[field.name] = field.value;
+            });
+            Alertify.log.info("Creating job directory for \"" + values["jobname"] + "\" in \"" + values["jobdir"] + "\"");
+            return true;
+        }else{
+            return false;
+        }
    });
     $(document).ready(function(){
         $("#jobdir").val(homedir)

@@ -1,0 +1,32 @@
+<style type = "text/css">
+#id_mesh{
+	line-height:0px !important;
+}
+</style>
+<script type = "text/javascript">
+$("#submitfile").click(function(e){
+	e.preventDefault();
+	$("#fileuploadform").submit();
+})
+// $("#meshuploadform").submit(function(e){
+// })
+
+</script>
+<div class="row-fluid">    
+    <div class = "span12" id = "fileform">
+        <h2>Upload Mesh File</h2>
+        <form action = "{% url 'tough.views.file_upload' job_id=job_id %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+            {% csrf_token %}
+            {%for field in job.get_file_upload_form %}
+            <div class="control-group">
+            <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                <div class="controls">
+                {{ field }}
+                </div>
+            </div>                 
+            {%endfor%}
+            <a href = "" id ="submitfile" class = "btn btn-large btn-primary">Upload</a>
+            <a href = "" id = "cancelfile" class = "btn btn-large">Cancel</a>
+        </form>
+    </div>
+</div>

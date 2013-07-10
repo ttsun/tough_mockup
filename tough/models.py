@@ -569,6 +569,15 @@ class Job(models.Model):
         return self.block_set.filter(blockType__required=0)
 
 
+# Provides a level of organization for users with jobs
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    jobs = models.ManyToManyField(Job)
+    users = models.ManyToManyField(NoahUser)
+
+
+
 QUEUE_CHOICES = (('regular', 'Regular'),
                 ('low', 'Low'),
                 ('debug', "Debug"),)

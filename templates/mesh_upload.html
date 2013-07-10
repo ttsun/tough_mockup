@@ -12,18 +12,21 @@ $("#submitmesh").click(function(e){
 // })
 
 </script>
-<div class = "span10" id = "meshform">
-    <form action = "{% url 'tough.views.mesh_upload' job_id=job_id %}" method = "POST" id = "meshuploadform" enctype = "multipart/form-data">
-    	{% csrf_token %}
-        {%for field in job.get_mesh_upload_form %}
-        <div class="control-group">
-        <label for = "id_{{field.html_name}}" class = "control-label">{{field.label}}</label>
-            <div class="controls">
-            {{ field }}
-            </div>
-        </div>                 
-        {%endfor%}
-        <a href = "" id ="submitmesh" class = "btn btn-large btn-primary">Upload</a>
-		<a href = "" id = "cancelmesh" class = "btn btn-large">Cancel</a>
-    </form>
+<div class="row-fluid">    
+    <div class = "span12" id = "meshform">
+        <h2>Upload Mesh File</h2>
+        <form action = "{% url 'tough.views.mesh_upload' job_id=job_id %}" method = "POST" id = "meshuploadform" enctype = "multipart/form-data">
+            {% csrf_token %}
+            {%for field in job.get_mesh_upload_form %}
+            <div class="control-group">
+            <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                <div class="controls">
+                {{ field }}
+                </div>
+            </div>                 
+            {%endfor%}
+            <a href = "" id ="submitmesh" class = "btn btn-large btn-primary">Upload</a>
+            <a href = "" id = "cancelmesh" class = "btn btn-large">Cancel</a>
+        </form>
+    </div>
 </div>

@@ -87,7 +87,8 @@ def upload_request(url, uploaded_file, cookie_str=None):
         "secure": newtcookie['secure'].__str__()
     }
     full_url = newt_base_url+url+"/"
-    response = requests.post(full_url, cookies=cookies, files={"file": (uploaded_file.name, open(uploaded_file.temporary_file_path(), 'rb'))})
+    import ipdb; ipdb.set_trace()
+    response = requests.post(full_url, cookies=cookies, files={"file": (uploaded_file.name, File(uploaded_file).read())})
     return response
 
 def newt_upload_request(url, files, params=None, cookie_str=None):

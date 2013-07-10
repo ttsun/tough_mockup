@@ -65,12 +65,6 @@ MEDIA_ROOT = ''
 MEDIA_URL = ''
 
 
-FILE_UPLOAD_HANDLERS = (
-    # "django.core.files.uploadhandler.MemoryFileUploadHandler",
-    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-)
-
-
 SESSION_COOKIE_AGE = 43200
 SESSION_COOKIE_NAME = 'tough_sessionid'
 

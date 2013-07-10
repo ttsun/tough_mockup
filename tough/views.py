@@ -138,11 +138,8 @@ def create_job(request, job_id=None, type="new"):
 @login_required
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
-    new_upload = None
-    if request.GET.get("upload", False) == 1:
-        new_upload = True 
     return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh": j.block_set.get(blockType__name='mesh'), 'new_upload': new_upload, 'new_job': bool(request.GET.get("new", False)), 'job': j},
+                              {'job_name': j.jobname, 'job_id': job_id, "mesh": j.block_set.get(blockType__name='mesh'), 'new_upload': bool(request.GET.get("upload", False)), 'new_job': bool(request.GET.get("new", False)), 'job': j},
                               context_instance=RequestContext(request))
 
 @login_required

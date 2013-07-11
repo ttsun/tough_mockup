@@ -14,10 +14,10 @@ $(document).ready(function(){
             type: 'POST',
             //Ajax events
             beforeSend: function(){
-                if($("#filetype").val() != 'mesh'){
+                if($("#filetype").val() == 'infile'){
                     Alertify.log.info("Uploading and parsing file...");
                 } else {
-                    Alertify.log.info("Uploading your MESH file...");
+                    Alertify.log.info("Uploading your {{file_type}} file...");
                 }
             },
             success: function(response){

@@ -25,7 +25,11 @@
 <div class = "row-fluid">
     <div class = "span12">
         <h2>Create New Project</h2>
+        {% if formtype == 'create' %}
         <form method = "POST" action = "{% url 'tough.views.create_project'%}" class="form-horizontal" id="project_form">
+        {% else %}
+        <form method = "POST" action = "{% url 'tough.views.edit_project' project_id=project_id%}" class="form-horizontal" id="project_form">
+        {% endif %}
             <p class="error" id="errormsg"></p>
             {% csrf_token %}
             {% for field in form %}

@@ -251,6 +251,7 @@ class Job(models.Model):
     def parse_input_file(self, file_from):
         lines = file_from.split("\n")
         block = ""
+        infiletitleregex = '(?<=<).+'
         blocktitleregex = '(?<=>>>)\w+'
         # (?=[A-Z]).
         blockendregex = '(?<=<<<)\w+'
@@ -258,7 +259,14 @@ class Job(models.Model):
         blocktype = ""
         blockschanged = []
         for line in lines:
-            # line = lines[i]
+            if(re.search(infiletitleregex, line) != None):
+                block += line + '\n'
+                b = self.block_set.get(blockType__name = 'title')
+                b.content = block
+                b.save()
+                block = ""
+                break
+        for line in lines:
             if (re.search(blocktitleregex, line) != None):
                 if(blocking == True):
                     return "blockception"

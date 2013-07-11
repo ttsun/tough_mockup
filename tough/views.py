@@ -57,7 +57,6 @@ def jobs(request):
                               {'dirlist': dirlist, 'all_jobs': jobs, 'username': username},
                               context_instance=RequestContext(request))
 
-
 @login_required
 def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
@@ -249,6 +248,12 @@ def job_view(request, job_id):
                               {"jobname": j.jobname, "job_id": j.pk, "jobdir": j.jobdir, "job": j},
                               context_instance=RequestContext(request))
 
+@login_required
+def project_view(request, project_id):
+    p = get_object_or_404(Project, pk = project_id)
+    return render_to_response('project_edit.html',
+                             {"name": p.name,"project_id":p.pk, "project":p},
+                             context_instance=RequestContext(request))
 # @login_required
 # def get_block(request, jobid, blockname):
 #     j = get_object_or_404(Job, id=int(jobid))
@@ -495,6 +500,8 @@ def ajax_run_job(request, job_id):
 
 def report_error(request):
     return render_to_response("report.html")
+
+
 
 """
 #for checking user licenses by NERSC group

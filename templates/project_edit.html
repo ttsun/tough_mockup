@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class = "row-fluid">
+        <div class = "span2 well">
+            <ul class = "nav nav-list">
+                <li class="nav-header">Options</li>
+                <li><a href="#">Edit Information</a></li>
+                <li><a href="#">Delete Project</a></li>
+            </ul>
+        </div>
+        <div class = "span10">
+            <h1>{{name}}</h1>
+            <h3>Project Information</h3>
+            <p><strong>Project Creator: </strong> {{project.creator}}</p>
+            <p><strong>Users: </strong>
+                {% for user in project.users.all %}
+                    {{user}}, 
+                {% endfor %}
+            </p>
+            <p><strong>Project Description: </strong>{{project.description}}</p>
+            <h2>Jobs in Project:</h2>
+            <table class = "table table-striped">
+                <thead>
+                    <tr>
+                        <th>Job Name</th>
+                        <th>Processors</th>
+                        <th>PBS Job ID</th>
+                        <th>Time Queued</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in project.job_set.all %}
+                            <tr>
+                                <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                                <td class="numprocs">{{job.numprocs}}</td>
+                                <td class="job_id">{{job.pbsjob_id}}</td>
+                                <td class="time">{{job.time_started}}</td>
+                                <td class="state">{{job.nova_state}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
+                                        <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
+                                        <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
+                                        <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

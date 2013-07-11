@@ -137,6 +137,9 @@ class Project(models.Model):
     creator = models.ForeignKey(NoahUser, related_name='+')
     users = models.ManyToManyField(NoahUser, blank=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class ProjectForm(forms.ModelForm):
     jobs = forms.ModelMultipleChoiceField(queryset=None, required=False)
@@ -650,6 +653,17 @@ class Job(models.Model):
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)
+
+
+class InfoEditForm(forms.ModelForm):
+
+    class Meta:
+        model = Job
+        fields = ("jobname", "project", "jobdir")
+
+    def __init__(self, job, *args, **kwargs):
+        super(InfoEditForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.filter(creator=job.user) | job.user.project_set.all()
 
 
 QUEUE_CHOICES = (('regular', 'Regular'),

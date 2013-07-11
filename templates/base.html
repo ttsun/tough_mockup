@@ -73,6 +73,23 @@
 		            Alertify.log.info("{{message}}");
 		        {% endif %}
 		    {% endfor %}
+		    $("#popupbox").dialog({
+		        autoOpen: false,
+		        width:450,
+		        position: {my:"top", at:"top", of:$(".container")},
+		    });
+		    $(".popup").click(function(e){
+		        e.preventDefault();
+		        $("#popupbox").load($(this).attr("href"), function(){
+		            $("#popupbox").dialog("open");   
+		            $(".closedialog").click(function(e){
+		                e.preventDefault();
+		                $("#popupbox").dialog("close");
+		                return false;
+		            });                 
+		        });
+		        return false;
+		    }); 
 		});
 	</script>
 

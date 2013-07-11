@@ -1,4 +1,4 @@
-from tough.models import Block, BlockType, Job
+from tough.models import Block, BlockType, Job, QualifiedBlockRef
 from django.contrib import admin
 
 
@@ -13,3 +13,7 @@ admin.site.register(Job, JobAdmin)
 class BlockAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Block, BlockAdmin)
+
+class QualifiedBlockRefAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(QualifiedBlockRef, QualifiedBlockRefAdmin)

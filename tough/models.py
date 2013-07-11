@@ -251,6 +251,7 @@ class Job(models.Model):
     def parse_input_file(self, file_from):
         lines = file_from.split("\n")
         block = ""
+        infiletitleregex = '(?<=<).+'
         blocktitleregex = '(?<=>>>)\w+'
         # (?=[A-Z]).
         blockendregex = '(?<=<<<)\w+'
@@ -258,7 +259,14 @@ class Job(models.Model):
         blocktype = ""
         blockschanged = []
         for line in lines:
-            # line = lines[i]
+            if(re.search(infiletitleregex, line) != None):
+                block += line + '\n'
+                b = self.block_set.get(blockType__name = 'title')
+                b.content = block
+                b.save()
+                block = ""
+                break
+        for line in lines:
             if (re.search(blocktitleregex, line) != None):
                 if(blocking == True):
                     return "blockception"
@@ -269,32 +277,27 @@ class Job(models.Model):
             if(re.search(blockendregex, line) != None):
                 if(blocking == False):
                     return "too many closes"
-                try:
-                    b = self.block_set.get(blockType__name=blocktype)
+                b = self.search_block_references(blocktype=blocktype)
+                if (b != None):
                     b.content = block
                     b.save()
                     blockschanged.append(blocktype)
-                except ObjectDoesNotExist:
+                else:
                     pass
                 blocking = False
                 block = ""
         return blockschanged
-        # start_line_beg = 0
-        # start_line_end = 0
-        # end_line_beg = 0
-        # end_line_end = 0
-        # file_length = len(file_from) - 3
-        # while (end_line_end < file_length):
-        #     start_line_beg = file_from.find(">>>", 0)
-        #     start_line_end = file_from.find("\n", start_line_beg)
-        #     end_line_beg = file_from.find("<<<", start_line_end)
-        #     end_line_end = file_from.find("\n", end_line_beg)
-        #     block = file_from[start_line_beg:end_line_end]
-        #     blocktype = re.search(blocktitleregex, file_from[start_line_beg:start_line_end]).group(0).lower()
-        #     if (self.block_set.get(blockType__name=blocktype)):
-        #         self.block_set.get(blockType__name=blocktype).content=block
-        # return 
 
+    def search_block_references(self, blocktype):
+        if (self.block_set.filter(blockType__name = blocktype).count() != 0):
+            b = self.block_set.get(blockType__name = blocktype)
+            return b
+        elif (QualifiedBlockRef.objects.filter(name = blocktype).count() != 0):
+            block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.name
+            b = self.block_set.get(blockType__name = block_type_name)
+            return b
+        else:
+            return None
 
     def del_file(self, filename,  *args, **kwargs):
         """
@@ -774,3 +777,7 @@ class Block(models.Model):
 
     def is_empty(self):
         return len(self.content) <= 0
+
+class QualifiedBlockRef(models.Model):
+    blockType = models.ForeignKey(BlockType)
+    name = models.CharField(max_length=255)

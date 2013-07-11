@@ -140,7 +140,7 @@ def create_job(request, job_id=None, type="new"):
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
     return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh": j.block_set.get(blockType__name='mesh'), 'job': j},
+                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__name='incon').last_uploaded, 'job': j},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -153,14 +153,18 @@ def file_upload_view(request, job_id, file_type):
 @login_required
 def file_upload(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
-    if (file_type != 'mesh'):
+    if (file_type == 'infile'):
         file_from = request.FILES['files'].read()
         j.parse_input_file(file_from)
         messages.success(request, "File successfully uploaded and parsed!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
-    else:
+    elif (file_type == 'mesh'):
         response = j.upload_files(request.FILES['files'], filename = file_type)
         messages.success(request, "MESH was successfully uploaded and saved!")
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+    else:
+        response = j.upload_files(request.FILES['files'], filename = file_type)
+        messages.success(request, "INCON was successfully uploaded and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")

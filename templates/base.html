@@ -92,9 +92,9 @@
 					<ul class="dropdown-menu" style="height:135px">
 						{% for job in user.get_recent_jobs %}
 						{% if job.nova_state == "toberun" %}
-						<li><a href="{% url 'tough.views.job_edit' job.pk%}"><b>{{job.jobname}}</b>  {{job.nova_state}}  {{job.time_last_updated}}</a></li>
+						<li><a href="{% url 'tough.views.job_edit' job.pk%}"><b>{{job.jobname}}</b>  <em>{{job.project.name}}</em> {{job.nova_state}}  {{job.time_last_updated}}</a></li>
 						{% else %}
-						<li><a href="{% url 'tough.views.job_view' job.pk%}"><b>{{job.jobname}}</b>  {{job.nova_state}}  {{job.time_last_updated}}</a></li>
+						<li><a href="{% url 'tough.views.job_view' job.pk%}"><b>{{job.jobname}}</b>  <em>{{job.project.name}}</em> {{job.nova_state}}  {{job.time_last_updated}}</a></li>
 						{% endif %}
 						{% endfor %}
 					</ul>

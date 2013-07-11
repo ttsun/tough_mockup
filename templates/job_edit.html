@@ -93,7 +93,7 @@ $(document).ready(function(){
    });   
 
 
-   $("#sidebar a:not(#submit_job, #upload_MESH, #upload_input, #upload_incon)").click(function(e){
+   $("#sidebar a:not(#submit_job, .popup)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             $("#sidebar .active").removeClass("active");
@@ -103,7 +103,7 @@ $(document).ready(function(){
     });
    $("#uploadformbox").dialog({
         autoOpen: false,
-        width:400,
+        width:450,
         position: {my:"top", at:"top", of:$(".container")},
     });
     $(".popup").click(function(e){
@@ -142,7 +142,7 @@ $(document).ready(function(){
     <div class = "span2 well" id = "sidebar">
         {% if job_id %}
         <ul id="jobdetails" class = "nav nav-list">
-            <li class = "nav-header">Job Details</li>
+            <li class = "nav-header">Job Details | <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit</a></small></li>
                 <li><b>Machine:</b> {{job.machine|capfirst}}</li>
                 <li><b>Project:</b> {{job.project.name|capfirst}}</li>
                 <li><b>Job Name:</b> {{job_name|capfirst}}</li>

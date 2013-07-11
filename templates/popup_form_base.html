@@ -1,0 +1,49 @@
+<style type="text/css">
+    .form-horizontal .control-label{
+        width:120px;
+    }
+    .form-horizontal .controls{
+        margin-left:130px;
+    }
+</style>
+<div class="row-fluid">    
+    <div class = "span12" id = "fileform">
+        <h2>{{form_title}}</h2>
+        <form class="form-horizontal popup-form" action = "{{form_action}}" method = "{{form_method|default:'POST'}}">
+            {% csrf_token %}
+            {% block form %}                    
+                {%for field in form %}
+                <div class="control-group">
+                <label for = "id_{{field.html_name}}" class = "control-label">{{field.label}}</label>
+                    <div class="controls">
+                    {{ field }}
+                    </div>
+                </div>                 
+                {%endfor%}
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="submit" class = "btn btn-large btn-primary" value="{{submit_text|default:'Submit'}}" />
+                        <button class = "closedialog btn btn-large">Cancel</button>
+                    </div>
+                </div>
+            {% endblock form %}
+        </form>
+    </div>
+</div>
+{% if is_ajax %}
+    <script>
+        $(".popup-form").submit(function(){
+            var submitted_form = $(this);
+            $.ajax({
+                url: submitted_form.attr("action"),
+                method: submitted_form.attr("method"),
+                data: submitted_form.serialize(),
+                success: function(response){
+                    if(response.success){
+                        Alertify.log("{{msg_success|default:'Form successfully submitted'}}");
+                    }
+                }
+            });
+        });
+    </script>
+{% endif %}

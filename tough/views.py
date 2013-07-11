@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project, ImportBlockForm
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project, ImportBlockForm, InfoEditForm
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -364,6 +364,20 @@ def create_project(request):
         form = ProjectForm(user=request.user, instance = None)
     return render_to_response("project_creation.html", {"form": form, "formtype": 'create'}, context_instance=RequestContext(request))
 
+
+
+def info_edit(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    if request.method == "POST":
+        form = InfoEditForm(data=request.POST, job=job, instance=job)
+        if form.is_valid():
+            form.save()
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "info": {"name": job.jobname, "project": job.project.name}}))
+            return redirect("tough.views.job_edit", job_id=job.pk)
+    else:
+        form = InfoEditForm(instance=job, job=job)
+    return render_to_response("popup_form_base.html", {"form_title": "Edit Job Information", "form_action": reverse("tough.views.info_edit", kwargs={"job_id": job.pk}), "form": form}, context_instance=RequestContext(request))
 
 """
 @login_required

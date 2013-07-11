@@ -2,21 +2,6 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-	$("#copyBox").dialog({
-                autoOpen: false,
-                width:400,
-                position: {my:"top", at:"center", of:$(".container")},
-    });
-	$("#copyjob").click(function(e){
-		e.preventDefault();
-		$("#copyBox").load($(this).attr("href"), function(){
-           $("#copyBox").dialog("open");                    
-        });
-	});
-});
-</script>
 {% endblock head %}
 {% block content %}
 <div class = "span 10" style="margin-left:20px">
@@ -54,7 +39,4 @@ $(document).ready(function(){
 		<a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob" class = "btn btn-danger span10" style="margin:10px">Delete Job</a>
 	</div>
 </div>
-<div id = "copyBox">
-</div>
-
 {% endblock %}

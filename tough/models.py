@@ -148,7 +148,8 @@ class ProjectForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
         self.fields['jobs'].queryset = user.job_set.filter(project=None)
-
+        if kwargs['instance']:
+            self.fields['jobs'].queryset = self.fields['jobs'].queryset | kwargs['instance'].job_set.all()
 
 class Job(models.Model):
     """

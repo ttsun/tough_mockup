@@ -331,10 +331,27 @@ def ajax_save(request, job_id, input_type):
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
+def edit_project(request, project_id):
+    p = Project.objects.get(pk = project_id)
+    if request.method == "POST":
+        form = ProjectForm(data=request.POST, user=request.user, instance = p)
+        if form.is_valid():
+            p = form.save(commit=False)
+            p.save()
+            for j in p.job_set.all():
+                j.project = None
+                j.save()
+            for job in form.cleaned_data['jobs']:
+                job.project = p
+                job.save()
+            return redirect("tough.views.jobs")
+    else:
+        form = ProjectForm(user=request.user, instance = p, initial = {"jobs":p.job_set.all()})
+    return render_to_response("project_creation.html", {"form": form, "formtype": 'edit', "project_id": project_id}, context_instance=RequestContext(request))
 
 def create_project(request):
     if request.method == "POST":
-        form = ProjectForm(data=request.POST, user=request.user)
+        form = ProjectForm(data=request.POST, user=request.user, instance = None)
         if form.is_valid():
             project = form.save(commit=False)
             project.creator = request.user
@@ -344,8 +361,8 @@ def create_project(request):
                 job.save()
             return redirect("tough.views.jobs")
     else:
-        form = ProjectForm(user=request.user)
-    return render_to_response("project_creation.html", {"form": form}, context_instance=RequestContext(request))
+        form = ProjectForm(user=request.user, instance = None)
+    return render_to_response("project_creation.html", {"form": form, "formtype": 'create'}, context_instance=RequestContext(request))
 
 
 """

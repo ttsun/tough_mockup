@@ -1,11 +1,37 @@
 {% extends "base.html" %}
-
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+<script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+<style type="text/css"> 
+</style>
+<script type"text/javascript">
+    $(document).ready(function(){
+        $("#projecteditbox").dialog({
+        autoOpen: false,
+        width:400,
+        position: {my:"top", at:"top", of:$(".container")},
+        });
+        $(".popup").click(function(e){
+            e.preventDefault();
+            $("#projecteditbox").load($(this).attr("href"), function(){
+            $("#projecteditbox").dialog("open");   
+            $(".closedialog").click(function(e){
+                e.preventDefault();
+                $("#projecteditbox").dialog("close");
+                return false;
+            });                 
+        });
+        return false;
+        })
+    });
+</script>
+{% endblock head %}
 {% block content %}
     <div class = "row-fluid">
         <div class = "span2 well">
             <ul class = "nav nav-list">
                 <li class="nav-header">Options</li>
-                <li><a href="#">Edit Information</a></li>
+                <li><a href="{% url 'tough.views.edit_project' project_id=project.pk %}" class = "popup btn btn-small btn-primary span10" >Edit Information</a></li>
                 <li><a href="#">Delete Project</a></li>
             </ul>
         </div>
@@ -52,5 +78,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div id = "projecteditbox">
     </div>
 {% endblock %}

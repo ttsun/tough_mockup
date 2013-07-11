@@ -135,7 +135,7 @@
                     <tbody id="project-{{project.pk}}" class = "project">
                         {% if project.job_set.all %}
                             <tr class="project-name">
-                                <th colspan="6">{{project.name}}</th>
+                                <th colspan="6"><a href="{% url 'tough.views.project_view' project_id=project.pk %}">{{project.name}}</a></th>
                             </tr>                        
                         {% endif %}
                         {% for job in project.job_set.all %}

@@ -36,4 +36,5 @@ urlpatterns = patterns('',
     url(r'^job/submit/(?P<job_id>\d+)/$', 'tough.views.ajax_submit'),
     url(r'^project/new/$', 'tough.views.create_project'),
     url(r'^error/$', 'tough.views.report_error'),
+    url(r'^project/(?P<project_id>\d+)/$','tough.views.project_view'),
 )

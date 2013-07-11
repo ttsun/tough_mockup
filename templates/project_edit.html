@@ -3,6 +3,9 @@
 <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
 <style type="text/css"> 
+.btn{
+    margin:5px;
+}
 </style>
 <script type"text/javascript">
     $(document).ready(function(){
@@ -31,8 +34,8 @@
         <div class = "span2 well">
             <ul class = "nav nav-list">
                 <li class="nav-header">Options</li>
-                <li><a href="{% url 'tough.views.edit_project' project_id=project.pk %}" class = "popup btn btn-small btn-primary span10" >Edit Information</a></li>
-                <li><a href="#">Delete Project</a></li>
+                <a href="{% url 'tough.views.edit_project' project_id=project.pk %}" class = "popup btn btn-small btn-primary span10" >Edit Information</a>
+                <a href="#" class = "popup btn btn-small btn-primary span10">Delete Project</a>
             </ul>
         </div>
         <div class = "span10">

@@ -30,7 +30,7 @@
 					{% if file.name != "." and file.name != ".." %}
 						<tr>
 							<td><a href="{% url 'tough.views.get_file' job_id=job.pk filename=file.name %}">{{file.name}}</a></td>
-							<td>{{file.size|as_mb}}</td>
+							<td>{{file.size|size_nice}}</td>
 							<td>{{file.date}}</td>
 						</tr>
 					{% endif %}

@@ -2,6 +2,9 @@
 #id_mesh{
 	line-height:0px !important;
 }
+.disabled{
+    display:none;
+}
 </style>
 <script type = "text/javascript">
 $(document).ready(function(){
@@ -34,14 +37,30 @@ $(document).ready(function(){
             contentType: false,
             processData: false
         });
-    });    
+    }); 
+    $(".inputoptions").click(function(e){
+        e.preventDefault();
+        console.log("clicked");
+        if($(this).attr("id") == "import"){
+            $("#fileimportform").removeClass("disabled");
+            $("#fileuploadform").addClass("disabled");
+        } else {
+            $("#fileuploadform").removeClass("disabled");
+            $("#fileimportform").addClass("disabled");
+        }
+    });   
 });
 
 </script>
 <div class="row-fluid">    
     <div class = "span12" id = "fileform">
         <h2>Upload {{file_type}} File</h2>
-        <form action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type%}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+        <select id="inputselect" placeholder="Select your MESH input method">
+            <option>None Selected</option>
+            <option class="inputoptions" id="upload">Upload from my computer</option>
+            <option class="inputoptions" id="import">Import from another job</option>
+        </select>
+        <form class = "disabled" action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type%}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
             {% csrf_token %}
             <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
             {%for field in job.get_file_upload_form %}
@@ -55,5 +74,20 @@ $(document).ready(function(){
             <input type="submit" class = "btn btn-large btn-primary" value="Upload" />
             <button class = "closedialog btn btn-large">Cancel</button>
         </form>
+        <form class = "disabled" action = "" method = "POST" id = "fileimportform">
+            {% csrf_token %}
+            <input type = "hidden" id = "filetype" name = "filetype" value = "{{file_type}}" />
+            {% for field in job.get_import_form %}
+            <div class="control-group">
+            <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                <div class="controls">
+                {{ field }}
+                </div>
+            </div>                 
+            {%endfor%}
+            <input type="submit" class = "btn btn-large btn-primary" value="Upload" />
+            <button class = "closedialog btn btn-large">Cancel</button>
+        </form>
+
     </div>
 </div>

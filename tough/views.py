@@ -499,7 +499,8 @@ def ajax_run_job(request, job_id):
         return HttpResponse(content, content_type='text/plain')
 
 def report_error(request):
-    return render_to_response("report.html")
+    return render_to_response("report.html", {},
+                              context_instance=RequestContext(request))
 
 
 

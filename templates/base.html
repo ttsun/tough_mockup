@@ -86,8 +86,11 @@
 		                e.preventDefault();
 		                $("#popupbox").dialog("close");
 		                return false;
-		            });                 
-		        	addListeners();
+		            });    
+		            try{
+		        		addListeners();
+		            }catch(e){
+		            }
 		        });
 		        return false;
 		    }); 

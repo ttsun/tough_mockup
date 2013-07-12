@@ -6,9 +6,12 @@
         margin-left:130px;
     }
 </style>
+<script src="/static/js/chosen.jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/chosen.min.css" />
 <div class="row-fluid">    
     <div class = "span12" id = "fileform">
         <h2>{{form_title}}</h2>
+        <p id = "errormsg" class="error"></p>
         <form class="form-horizontal popup-form" action = "{{form_action}}" method = "{{form_method|default:'POST'}}">
             {% csrf_token %}
             {% block form %}                    
@@ -30,20 +33,43 @@
         </form>
     </div>
 </div>
-{% if is_ajax %}
-    <script>
-        $(".popup-form").submit(function(){
-            var submitted_form = $(this);
-            $.ajax({
-                url: submitted_form.attr("action"),
-                method: submitted_form.attr("method"),
-                data: submitted_form.serialize(),
-                success: function(response){
-                    if(response.success){
-                        Alertify.log("{{msg_success|default:'Form successfully submitted'}}");
+{% if is_ajax|default:True %}
+    <script type="text/javascript">
+        function addListeners(){
+            $("select").chosen();
+            $(".popup-form").submit(function(e){
+                if($("#id_name").length > 0){
+                    if(!validateSpecialChars($("#id_name").val())){
+                        $("#errormsg").text("Please enter a valid name.");
+                        $("#errormsg").show();
+                        return false;
                     }
                 }
+                if($("#id_jobname").length > 0){
+                    if(!validateSpecialChars($("#id_jobname").val())){
+                        $("#errormsg").text("Please enter a valid job name.");
+                        $("#errormsg").show();
+                        return false;
+                    }
+                }
+                e.preventDefault();
+                var submitted_form = $(this);
+                $.ajax({
+                    url: submitted_form.attr("action"),
+                    method: submitted_form.attr("method"),
+                    data: submitted_form.serialize(),
+                    success: function(response){
+                        if(response.success){
+                            Alertify.log.success("{{msg_success|default:'Form successfully submitted'}}");
+                            if(response.redirect){
+                                window.location.href=response.redirect;
+                            }
+                        }
+                        $("#popupbox").dialog("close");
+                    }
+                });
+                return false;
             });
-        });
+        }
     </script>
 {% endif %}

@@ -26,7 +26,7 @@
             {% if setup_type != "move" %}                
                 <div>
                     <label for="jobname">What do you want to name this new job?</label>
-                    <input type="text" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>
+                    <input type="text" name="jobname" id="id_name" size="50" value="{{job.jobname}}"/>
                 </div>
             <div>
                 <label for="machine">Which machine should this job run on?</label>
@@ -88,7 +88,7 @@
         }
     });
     $("#dirinput").submit(function(e){
-        if(validateSpecialChars($("#jobname").val())){
+        if(validateSpecialChars($("#id_name").val())){
             var values = {};
             $.each($('#dirinput').serializeArray(), function(i, field) {
                 values[field.name] = field.value;

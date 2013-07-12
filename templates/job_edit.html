@@ -101,24 +101,6 @@ $(document).ready(function(){
             showInputArea($(this).attr("href"));
         }
     });
-   $("#uploadformbox").dialog({
-        autoOpen: false,
-        width:450,
-        position: {my:"top", at:"top", of:$(".container")},
-    });
-    $(".popup").click(function(e){
-        e.preventDefault();
-        $("#uploadformbox").load($(this).attr("href"), function(){
-            $("#uploadformbox").dialog("open");   
-            $(".closedialog").click(function(e){
-                e.preventDefault();
-                $("#uploadformbox").dialog("close");
-                return false;
-            });                 
-        });
-        return false;
-    });      
-    
 });
    // $("#upload_MESH").click(function(e){
    //      e.preventDefault();
@@ -191,7 +173,5 @@ $(document).ready(function(){
     {% endfor %}
     {% endif %}
 
-</div>
-<div id = "uploadformbox">
 </div>
 {% endblock content %}    

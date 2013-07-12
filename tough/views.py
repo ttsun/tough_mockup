@@ -344,10 +344,13 @@ def edit_project(request, project_id):
             for job in form.cleaned_data['jobs']:
                 job.project = p
                 job.save()
+            messages.success(request, "Project successfully updated!")
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.project_view", kwargs={"project_id": project_id})}), content_type="application/json")
             return redirect("tough.views.jobs")
     else:
         form = ProjectForm(user=request.user, instance = p, initial = {"jobs":p.job_set.all()})
-    return render_to_response("project_creation.html", {"form": form, "formtype": 'edit', "project_id": project_id}, context_instance=RequestContext(request))
+    return render_to_response("popup_form_base.html", {"form": form, "form_action": reverse("tough.views.edit_project", kwargs={"project_id": project_id}), "form_title": "Edit Project"}, context_instance=RequestContext(request))
 
 def create_project(request):
     if request.method == "POST":
@@ -373,7 +376,7 @@ def info_edit(request, job_id):
         if form.is_valid():
             form.save()
             if request.is_ajax():
-                return HttpResponse(simplejson.dumps({"success": True, "info": {"name": job.jobname, "project": job.project.name}}))
+                return HttpResponse(simplejson.dumps({"success": True, "redirect":reverse("tough.views.job_edit", kwargs={"job_id": job.pk}),"info": {"name": job.jobname, "project": job.project.name if job.project else ""}}), content_type="application/json")
             return redirect("tough.views.job_edit", job_id=job.pk)
     else:
         form = InfoEditForm(instance=job, job=job)

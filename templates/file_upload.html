@@ -87,6 +87,7 @@ function addListeners(){
 <div class="row-fluid">    
     <div class = "span12" id = "fileform">
         <h2 id = "title">Upload {{file_type}} File</h2>
+        {% if file_type != "infile" %}
         <select id="inputselect" placeholder="Select your MESH input method">
             <option value = "none">None Selected</option>
             <option class="inputoptions" id="upload" value = "upload">Upload from my computer</option>
@@ -120,6 +121,22 @@ function addListeners(){
             <input class="btn btn-primary" type="submit" id='saveimportblock' value="Import"/>
             <button class="btn" type="button" id='cancel'>Cancel</button>
         </form>
+        {% else %}
+        <form action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+            {% csrf_token %}
+            <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
+            {%for field in job.get_file_upload_form %}
+            <div class="control-group">
+            <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                <div class="controls">
+                {{ field }}
+                </div>
+            </div>                 
+            {%endfor%}
+            <input type="submit" class = "btn btn-primary" value="Upload" />
+            <button class = "closedialog btn">Cancel</button>
+        </form>
+        {% endif %}
 
     </div>
 </div>

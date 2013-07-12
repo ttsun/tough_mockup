@@ -601,9 +601,6 @@ class Job(models.Model):
                 # any other error in retrieving the job from the queue - do something reasonable 
                 raise Exception(content)
 
-                    
-                
-        
         # Decode JSON
         job_info=simplejson.loads(content)
         # Set queue, jobname, timeuse, status

@@ -1,6 +1,5 @@
 {% extends "base.html"%}
-{% block head %}
-{% endblock head %}
+{% load file_filters %}
 {% block content %}
 <div class = "row-fluid">
 	<div class = "span2 well">
@@ -18,25 +17,25 @@
 		<p><b>Job Status: </b>{{job.nova_state}}</p>
 		<p><b>Number of Processors: </b>{{job.numprocs}}</p>
 		<h2>Files</h2>
-		<table class = "table table-striped">
+		<table class = "table table-hover table-striped">
 			<thead>
 				<tr>
 					<th>File Name</th>
 					<th>Size</th>
+					<th>Last Modified</th>
 				</tr>
 			</thead>
-			<tr>
-				<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename='OUTPUT' %}">{{jobname}} Output</a></td>
-				<td>Downloadable file</td>
-			</tr>
-			<tr>
-				<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename=job.jobname %}">{{jobname}} Input</a></td>
-				<td>Downloadable file</td>
-			</tr>
-			<tr>
-				<td><a>MESH File</a></td>
-				<td>Downloadable file</td>
-			</tr>
+			<tbody>
+				{% for file in job.get_dir %}
+					{% if file.name != "." and file.name != ".." %}
+						<tr>
+							<td><a href="{% url 'tough.views.get_file' job_id=job.pk filename=file.name %}">{{file.name}}</a></td>
+							<td>{{file.size|as_mb}}</td>
+							<td>{{file.date}}</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			</tbody>
 		</table>
 	</div>
 </div>

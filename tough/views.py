@@ -160,7 +160,10 @@ def job_edit(request, job_id):
 @login_required
 def file_upload_view(request, job_id, file_type):
     j = get_object_or_404(Job , pk=job_id)
-    block = j.block_set.get(blockType__name = file_type)
+    if (file_type != 'infile'):
+        block = j.block_set.get(blockType__name = file_type)
+    else:
+        block = None
     return render_to_response('file_upload.html',
                                 {'job_name': j.jobname, 'job_id':job_id, 'job': j, 'file_type':file_type, "block":block}, 
                                 context_instance=RequestContext(request))
@@ -329,8 +332,6 @@ def ajax_save(request, job_id, input_type):
                 content += '#PBS -d ' + j.jobdir + '\n'
                 content += '#PBS -V\n\n'
                 content += 'cd $PBS_O_WORKDIR\n\n'
-                content += '#PBS -o sout\n'
-                content += '#PBS -e serr\n'
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
                 content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"

@@ -25,7 +25,7 @@
                 {%endfor%}
                 <div class="control-group">
                     <div class="controls">
-                        <input type="submit" class = "btn btn-large btn-primary" value="{{submit_text|default:'Submit'}}" />
+                        <input type="submit" class = "btn btn-large btn-primary" value="{{submit_text|default:'Save'}}" />
                         <button class = "closedialog btn btn-large">Cancel</button>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
 {% if is_ajax|default:True %}
     <script type="text/javascript">
         function addListeners(){
-            $("select").chosen();
+            $("select").chosen({no_results_text: "Nothing found!"});
             $(".popup-form").submit(function(e){
                 if($("#id_name").length > 0){
                     if(!validateSpecialChars($("#id_name").val())){

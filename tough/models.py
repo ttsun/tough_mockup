@@ -113,7 +113,9 @@ class NoahUser(AbstractBaseUser):
         toberun = Job.objects.filter(user=self.id, nova_state='toberun')
         #get the list of jobs listed in the database as running and update them.
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
-        for runningjob in dbrunning: runningjob.update();
+
+        # for runningjob in dbrunning: runningjob.update();
+
         #get the updated list of running jobs
         running = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         #get completed and aborted and sort together by time submitted
@@ -163,6 +165,7 @@ class Job(models.Model):
     # Required fields - user, jobdir, machine
     user = models.ForeignKey(NoahUser)
     jobdir = models.CharField(max_length=1024)
+    dir_name = models.CharField(max_length=1024)
     machine = models.CharField(max_length=256)
 
     # field to keep track of the job's state from Nova's point of view
@@ -262,6 +265,8 @@ class Job(models.Model):
         blocking = False
         blocktype = ""
         blockschanged = []
+
+        unparsed = ""
         for line in lines:
             if(re.search(infiletitleregex, line) != None):
                 block += line + '\n'
@@ -287,9 +292,12 @@ class Job(models.Model):
                     b.save()
                     blockschanged.append(blocktype)
                 else:
-                    pass
+                    unparsed += block
                 blocking = False
                 block = ""
+        b = self.block_set.get(blockType__name="extras")
+        b.content = unparsed
+        b.save()
         return blockschanged
 
     def search_block_references(self, blocktype):
@@ -335,7 +343,6 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s?view=read' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         return content
@@ -573,16 +580,16 @@ class Job(models.Model):
                 if (not self.time_started or self.time_started == None):
                     time_started_obj = self.get_timestamp('started')
                     if time_started_obj != None:
-                        self.time_started= time_started_obj
+                        self.time_started = time_started_obj
                          
                 if (not self.time_completed or self.time_completed == None):
                     time_completed_obj = self.get_timestamp('completed')
-                    if time_completed_obj == None: 
+                    if time_completed_obj == None:
                         self.nova_state = 'aborted'
                     else:
-                         self.time_completed=time_completed_obj
+                         self.time_completed = time_completed_obj
                  
-                if  self.timeuse == '' or self.timeuse == '-' or self.timeuse == '0':
+                if self.timeuse == '' or self.timeuse == '-' or self.timeuse == '0':
                     try:
                         self.timeuse = str(self.time_completed - self.time_started)
                     except:
@@ -738,7 +745,6 @@ class CompSettingsForm(forms.Form):
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
     num_procs = forms.IntegerField()
     max_walltime = TimeSelectorField()
-    nodemem = forms.ChoiceField(choices=MEM_CHOICES)
     email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple(), required=False)
 
 

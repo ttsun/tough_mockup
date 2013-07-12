@@ -15,7 +15,7 @@
         {% elif setup_type == "copy" %}
             <h2>Copy Job</h2>
         {% endif %}
-        <form action="{% url 'tough.views.create_job'%}" method="POST" id="dirinput">
+        <form action="{% url 'tough.views.create_job' %}" method="POST" id="dirinput">
             <p id = "errormsg" class="error"></p>
             {% csrf_token %}
             <input type="hidden" name="setup_type" id="setup_type" value="{{setup_type|default:'new'}}" />

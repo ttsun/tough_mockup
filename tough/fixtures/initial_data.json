@@ -298,5 +298,17 @@
         "default_content": "", 
         "name": "mesh"
     }
+},
+{
+    "pk": 25, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "All extra inputs", 
+        "ordering": 6, 
+        "required": 0, 
+        "tough_name": "extras", 
+        "default_content": "", 
+        "name": "extras"
+    }
 }
 ]

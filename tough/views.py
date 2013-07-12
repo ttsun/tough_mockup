@@ -63,7 +63,8 @@ def create_job(request, job_id=None, type="new"):
         #create new job in database
         u = NoahUser.objects.get(username=request.user)
         #add a timestamp-based directory name to the path that will become jobdir
-        jobdir = request.POST['jobdir'] + '/' + request.POST['jobname'] + '_TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
+        folder_name = request.POST['jobname'] + '_TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
+        jobdir = request.POST['jobdir'] + '/' + folder_name
 
         if request.POST['setup_type'] == 'new':
             srcdir = None
@@ -91,7 +92,7 @@ def create_job(request, job_id=None, type="new"):
             j.save()
             return redirect('tough.views.jobs')
         else:
-            j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'])
+            j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name)
 
             #create directory with unique id
             j.create_dir()
@@ -101,7 +102,7 @@ def create_job(request, job_id=None, type="new"):
 
             # Copy over the files to the new dir, if this is an import or copy
             if srcdir:
-                j.import_files(srcdir)
+                j.import_files(srcdir, filelist=['incon', 'mesh'])
                 # Delete any old timestamp files and update directory in batch file
                 # running this on imports, too, in case the user imports an old nova directory
                 dir_info = j.get_dir()
@@ -122,6 +123,19 @@ def create_job(request, job_id=None, type="new"):
             j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
             j.save()
             populate_job(j)
+
+            if request.POST.get("setup_type") == "copy" and request.POST.get("job_id"):
+                old_job = Job.objects.get(pk=request.POST.get("job_id"))
+                j.queue = old_job.queue
+                j.numprocs = old_job.numprocs
+                j.maxwalltime = old_job.maxwalltime
+                j.emailnotifications = old_job.emailnotifications
+                j.nodemem = old_job.nodemem
+                j.save()
+                for block in old_job.block_set.all():
+                    temp_block = j.block_set.get(blockType__pk=block.blockType.pk)
+                    temp_block.content = block.content
+                    temp_block.save()
             #create default vasp files
             #render default setup form
             messages.success(request, "%s successfully created at %s" % (j.jobname, j.jobdir))
@@ -220,10 +234,7 @@ def ajax_submit(request, job_id):
         j.put_file(batchname, batch_text)
     except Exception:
         return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
-    try:
-        j.put_file("OUTPUT", "")
-    except Exception:
-        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to create output file."}), content_type="application/json")
+    
     try:
         j.submit()
     except Exception:
@@ -285,35 +296,26 @@ def ajax_save(request, job_id, input_type):
             # If the block is a batch block (pk=1)
             if blocktype.pk == 1:
                 content = ''
-                content += '#! /global/common/hopper/osp/tough/noah/bin\n'
                 content += '#PBS -N tough\n'
                 content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
                 j.queue = form.cleaned_data['queue']
-                content += '#PBS -l mppwidth=%d' % (form.cleaned_data['num_procs'])
+                content += '#PBS -l mppwidth=%d\n' % (form.cleaned_data['num_procs'])
 
                 j.numprocs = int(form.cleaned_data['num_procs'])
-                nodemem = form.cleaned_data['nodemem']
-                j.nodemem = nodemem
-                if nodemem != 'first':
-                    content += ':' + nodemem + '\n'
-                else:
-                    content += '\n'
 
                 content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
                 j.maxwalltime = time(hour=int(form.cleaned_data["max_walltime"][0]), minute=int(form.cleaned_data["max_walltime"][1]))
-                content += '-o tough_output'
-                content += '#PBS -m '
                 j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
                 mail = "".join(form.cleaned_data['email_notifications'])
                 if not mail:
                     mail = 'n'
-                content += mail + '\n'
+                content += '#PBS -m %s \n' % mail
                 content += '#PBS -j oe\n'
                 content += '#PBS -d ' + j.jobdir + '\n'
                 content += '#PBS -V\n\n'
-                content += 'cd ' + j.jobdir + '\n'
-                content += 'module load tough/noah\n\n'
-                content += ''
+                content += 'cd $PBS_O_WORKDIR\n\n'
+                content += '#PBS -o sout\n'
+                content += '#PBS -e serr\n'
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
                 content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"

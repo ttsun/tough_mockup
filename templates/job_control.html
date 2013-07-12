@@ -62,18 +62,6 @@
                     }
                 );
             });
-            $("#formBox").dialog({
-                autoOpen: false,
-                width:400,
-                position: {my:"top", at:"top", of:$(".container")},
-            });
-            $(".popup").click(function(e){
-                e.preventDefault();
-                $("#formBox").load($(this).attr("href"), function(){
-                    $("#formBox").dialog("open");                    
-                });
-                return false;
-            });
             $("#projectbar a").click(function(e){
                 e.preventDefault();
                 if($(this).parent(".disabled").length == 0){
@@ -104,18 +92,18 @@
             </ul>
             <ul class="nav nav-list" id = "projectbar">
                 <li class="nav-header">Projects</li>
+                {% if user.get_projects %}
+                    <li class="active"><a href="#show">Show All</a></li>
+                {% endif %}
+                {% if user.get_orphan_jobs %}
+                    <li><a href="#project-ungrouped">Ungrouped</a></li>                    
+                {% endif %}
+                <li class="divider"></li>
                 {% for project in user.get_projects %}
                     <li><a href="#project-{{project.pk}}">{{project.name}}</a></li>
                 {% endfor %}
                 {% if not user.get_projects %}
                     <li class="disabled"><a>No Projects</a></li>
-                {% endif %}
-                <li class="divider"></li>
-                {% if user.get_orphan_jobs %}
-                    <li><a href="#project-ungrouped">Ungrouped</a></li>                    
-                {% endif %}
-                {% if user.get_projects %}
-                    <li><a href="#show">Show All</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -133,11 +121,9 @@
                 </thead>
                 {% for project in user.get_projects %}
                     <tbody id="project-{{project.pk}}" class = "project">
-                        {% if project.job_set.all %}
-                            <tr class="project-name">
-                                <th colspan="6"><a href="{% url 'tough.views.project_view' project_id=project.pk %}">{{project.name}}</a></th>
-                            </tr>                        
-                        {% endif %}
+                        <tr class="project-name">
+                            <th colspan="6"><strong>{{project.name}} |</strong><a href="{% url 'tough.views.project_view' project_id=project.pk %}"><small> Edit</small></a></th>
+                        </tr>   
                         {% for job in project.job_set.all %}
                             <tr>
                                 <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
@@ -175,7 +161,7 @@
                                     <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
                                     <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
                                     <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
-                                    <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
+                                    <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                 </div>
                             </td>
                         </tr>
@@ -184,7 +170,7 @@
                 {% if not user.get_all_jobs %}
                     <tbody id="nojobs">
                         <tr>
-                            <td colspan="6">It looks like you don't have any jobs... Click the side bar to create a new job.</td>
+                            <td colspan="6">It looks like you don't have any jobs... Click <strong>Create Job</strong> on the sidebar to create a new job.</td>
                         </tr>
                     </tbody>
                 {% endif %}
@@ -192,6 +178,4 @@
         </div>
         
     </div>
-<div id="formBox">
-</div>
 {% endblock content %}

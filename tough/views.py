@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
-from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project, ImportBlockForm
+from tough.models import Job, NoahUser, Block, CompSettingsForm, RawInputForm, BlockType, ProjectForm, Project, ImportBlockForm, InfoEditForm
 from django.contrib.auth.decorators import login_required
 from time import localtime, strftime
 from django.shortcuts import get_object_or_404
@@ -331,10 +331,30 @@ def ajax_save(request, job_id, input_type):
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
     return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
+def edit_project(request, project_id):
+    p = Project.objects.get(pk = project_id)
+    if request.method == "POST":
+        form = ProjectForm(data=request.POST, user=request.user, instance = p)
+        if form.is_valid():
+            p = form.save(commit=False)
+            p.save()
+            for j in p.job_set.all():
+                j.project = None
+                j.save()
+            for job in form.cleaned_data['jobs']:
+                job.project = p
+                job.save()
+            messages.success(request, "Project successfully updated!")
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.project_view", kwargs={"project_id": project_id})}), content_type="application/json")
+            return redirect("tough.views.jobs")
+    else:
+        form = ProjectForm(user=request.user, instance = p, initial = {"jobs":p.job_set.all()})
+    return render_to_response("popup_form_base.html", {"form": form, "form_action": reverse("tough.views.edit_project", kwargs={"project_id": project_id}), "form_title": "Edit Project"}, context_instance=RequestContext(request))
 
 def create_project(request):
     if request.method == "POST":
-        form = ProjectForm(data=request.POST, user=request.user)
+        form = ProjectForm(data=request.POST, user=request.user, instance = None)
         if form.is_valid():
             project = form.save(commit=False)
             project.creator = request.user
@@ -344,9 +364,23 @@ def create_project(request):
                 job.save()
             return redirect("tough.views.jobs")
     else:
-        form = ProjectForm(user=request.user)
-    return render_to_response("project_creation.html", {"form": form}, context_instance=RequestContext(request))
+        form = ProjectForm(user=request.user, instance = None)
+    return render_to_response("project_creation.html", {"form": form, "formtype": 'create'}, context_instance=RequestContext(request))
 
+
+
+def info_edit(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    if request.method == "POST":
+        form = InfoEditForm(data=request.POST, job=job, instance=job)
+        if form.is_valid():
+            form.save()
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "redirect":reverse("tough.views.job_edit", kwargs={"job_id": job.pk}),"info": {"name": job.jobname, "project": job.project.name if job.project else ""}}), content_type="application/json")
+            return redirect("tough.views.job_edit", job_id=job.pk)
+    else:
+        form = InfoEditForm(instance=job, job=job)
+    return render_to_response("popup_form_base.html", {"form_title": "Edit Job Information", "form_action": reverse("tough.views.info_edit", kwargs={"job_id": job.pk}), "form": form}, context_instance=RequestContext(request))
 
 """
 @login_required

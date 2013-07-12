@@ -73,6 +73,24 @@
 		            Alertify.log.info("{{message}}");
 		        {% endif %}
 		    {% endfor %}
+		    $("#popupbox").dialog({
+		        autoOpen: false,
+		        width:450,
+		        position: {my:"top", at:"top", of:$(".container")},
+		    });
+		    $(".popup").click(function(e){
+		        e.preventDefault();
+		        $("#popupbox").load($(this).attr("href"), function(){
+		            $("#popupbox").dialog("open");   
+		            $(".closedialog").click(function(e){
+		                e.preventDefault();
+		                $("#popupbox").dialog("close");
+		                return false;
+		            });                 
+		        	addListeners();
+		        });
+		        return false;
+		    }); 
 		});
 	</script>
 
@@ -83,7 +101,7 @@
 <body>
 	<div class="navbar ">
 		<div class="navbar-inner">
-			<a href="/" class="brand">TOUGH</a>
+			<a href="/" class="brand">TOUGH<small>WIMP</small></a>
 			<ul class="nav">
 				{% if user.is_authenticated %}
 				<li><a href="/job">Manage Jobs</a></li>
@@ -92,9 +110,9 @@
 					<ul class="dropdown-menu" style="height:135px">
 						{% for job in user.get_recent_jobs %}
 						{% if job.nova_state == "toberun" %}
-						<li><a href="{% url 'tough.views.job_edit' job.pk%}"><b>{{job.jobname}}</b>  {{job.nova_state}}  {{job.time_last_updated}}</a></li>
+						<li><a href="{% url 'tough.views.job_edit' job.pk%}"><b>{{job.jobname}}</b>  <em>{{job.project.name}}</em> {{job.nova_state}}  {{job.time_last_updated}}</a></li>
 						{% else %}
-						<li><a href="{% url 'tough.views.job_view' job.pk%}"><b>{{job.jobname}}</b>  {{job.nova_state}}  {{job.time_last_updated}}</a></li>
+						<li><a href="{% url 'tough.views.job_view' job.pk%}"><b>{{job.jobname}}</b>  <em>{{job.project.name}}</em> {{job.nova_state}}  {{job.time_last_updated}}</a></li>
 						{% endif %}
 						{% endfor %}
 					</ul>
@@ -116,6 +134,9 @@
 		{% block content%}
 		
 		{% endblock content%}
+	</div>
+	
+	<div id = "popupbox">
 	</div>
 	
 </body>

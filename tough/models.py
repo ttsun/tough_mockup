@@ -137,6 +137,9 @@ class Project(models.Model):
     creator = models.ForeignKey(NoahUser, related_name='+')
     users = models.ManyToManyField(NoahUser, blank=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class ProjectForm(forms.ModelForm):
     jobs = forms.ModelMultipleChoiceField(queryset=None, required=False)
@@ -148,7 +151,8 @@ class ProjectForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
         self.fields['jobs'].queryset = user.job_set.filter(project=None)
-
+        if kwargs['instance']:
+            self.fields['jobs'].queryset = self.fields['jobs'].queryset | kwargs['instance'].job_set.all()
 
 class Job(models.Model):
     """
@@ -239,10 +243,9 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
-        if (filename == 'mesh'):
-            b = self.block_set.get(blockType__name = 'mesh')
-            b.last_uploaded = datetime.utcnow()
-            b.save()
+        b = self.block_set.get(blockType__name = filename)
+        b.last_uploaded = datetime.now()
+        b.save()
         if response.status_code!=200:
             raise Exception(response)
         return response
@@ -653,6 +656,17 @@ class Job(models.Model):
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)
+
+
+class InfoEditForm(forms.ModelForm):
+
+    class Meta:
+        model = Job
+        fields = ("jobname", "project", "jobdir")
+
+    def __init__(self, job, *args, **kwargs):
+        super(InfoEditForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.filter(creator=job.user) | job.user.project_set.all()
 
 
 QUEUE_CHOICES = (('regular', 'Regular'),

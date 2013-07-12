@@ -78,12 +78,14 @@ $(document).ready(function(){
         var href = $(this).parent().parent().parent(".inputarea").attr("id");
         $.post($(this).attr("action"), $(this).serialize(), function(data){
             if(data.success){
-                Alertify.log.success("Block successfully saved!");
-                if($("[href='#"+href+"']").children('i').length == 0){
-                    $("[href='#"+href+"']").append("<i class='icon-ok'></i>");
-                }
+                Alertify.log.success("Block successfully saved!");                
                 if(data.content != ""){
+                    if($("[href='#"+href+"']").children('i').length == 0){
+                        $("[href='#"+href+"']").append("<i class='icon-ok'></i>");
+                    }
                     $("#"+href).find("[name='rawinput']").val(data.content);
+                }else{
+                    $("[href='#"+href+"']").children("i").remove();
                 }
             }else{
                 Alertify.log.error(data.error);
@@ -96,24 +98,21 @@ $(document).ready(function(){
    $("#sidebar a:not(#submit_job, .popup)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
+            $("form:visible").submit();
             $("#sidebar .active").removeClass("active");
             $(this).parent("li").addClass("active");
             showInputArea($(this).attr("href"));
         }
     });
 });
-   // $("#upload_MESH").click(function(e){
-   //      e.preventDefault();
-   //      showInputArea($(this).attr("href"));
-   // });
 
-   function showInputArea(id){
-        $(".inputareaactive").removeClass("inputareaactive").hide();
-        current_doc = $(id).attr("id");
-        $(id).addClass("inputareaactive").show();
-        console.log($(id));
-        $(".inputarea:not(.inputareaactive)").hide();
-    }
+function showInputArea(id){
+    $(".inputareaactive").removeClass("inputareaactive").hide();
+    current_doc = $(id).attr("id");
+    $(id).addClass("inputareaactive").show();
+    console.log($(id));
+    $(".inputarea:not(.inputareaactive)").hide();
+}
 
 
 </script>

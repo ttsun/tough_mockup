@@ -160,8 +160,9 @@ def job_edit(request, job_id):
 @login_required
 def file_upload_view(request, job_id, file_type):
     j = get_object_or_404(Job , pk=job_id)
+    block = j.block_set.get(blockType__name = file_type)
     return render_to_response('file_upload.html',
-                                {'job_name': j.jobname, 'job_id':job_id, 'job': j, 'file_type':file_type}, 
+                                {'job_name': j.jobname, 'job_id':job_id, 'job': j, 'file_type':file_type, "block":block}, 
                                 context_instance=RequestContext(request))
 
 @login_required
@@ -273,6 +274,20 @@ def project_view(request, project_id):
 #     response = HttpResponse(content, content_type="text/plain")
 #     response['Content-Disposition'] = 'attachment; filename=' + filename
 #     return response
+
+@login_required
+def import_file(request, job_id, file_type):
+    j = get_object_or_404(Job, id=job_id)
+    form = ImportBlockForm(data=request.POST, user = j.user, job_id=job_id)
+    if form.is_valid():
+        job_from = form.cleaned_data['jobchoice']
+        content_from = job_from.get_file(filename = file_type)
+        j.put_file(filename = file_type, contents = content_from)
+        messages.success(request, file_type.upper() + " was successfully imported from " + job_from.jobname + " and saved!")
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+    else:
+        messages.error(request, file_type,upper() + "failed to import from " + job_from.jobname)
+        return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
 
 @login_required

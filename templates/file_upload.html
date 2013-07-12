@@ -1,11 +1,31 @@
+<link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+<script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
 <style type = "text/css">
 #id_mesh{
 	line-height:0px !important;
 }
+.disabled{
+    display:none;
+}
 </style>
 <script type = "text/javascript">
-$(document).ready(function(){
-
+function addListeners(){
+    $("#inputselect").change(function(e){
+        var inputtype = $(this).val();
+        switch (inputtype){
+            case "upload":
+                $("#fileuploadform").removeClass("disabled");
+                $("#fileimportform").addClass("disabled");
+                break;
+            case "import":
+                $("#fileimportform").removeClass("disabled");
+                $("#fileuploadform").addClass("disabled");
+                break;
+            case "none":
+                $("#fileimportform").addClass("disabled");
+                $("#fileuploadform").addClass("disabled");
+        }
+    }); 
     $('#fileuploadform').submit(function(e){
         e.preventDefault();
         var formData = new FormData($('#fileuploadform')[0]);
@@ -34,14 +54,45 @@ $(document).ready(function(){
             contentType: false,
             processData: false
         });
-    });    
-});
+    });  
+    
+    $("#fileimportform").submit(function(e){
+        e.preventDefault();
+        var formData = new FormData($('#fileimportform')[0]);
+        $.ajax({
+            url: $("#fileimportform").attr("action"),
+            type: 'POST',
+
+            beforeSend: function(){
+                Alertify.log.info("Importing your {{file_type}} file...");
+            }, 
+            success: function(response){
+                console.log("got to success")
+                if(response.success){
+                    window.location.href = response.redirect;
+                }else{
+                    Alertify.log.error("Something went wrong when importing. Please try again.");
+                }
+            },
+
+            data: formData, 
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+}
 
 </script>
 <div class="row-fluid">    
     <div class = "span12" id = "fileform">
-        <h2>Upload {{file_type}} File</h2>
-        <form action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type%}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+        <h2 id = "title">Upload {{file_type}} File</h2>
+        <select id="inputselect" placeholder="Select your MESH input method">
+            <option value = "none">None Selected</option>
+            <option class="inputoptions" id="upload" value = "upload">Upload from my computer</option>
+            <option class="inputoptions" id="import" value = "import">Import from another job</option>
+        </select>
+        <form class = "disabled" action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
             {% csrf_token %}
             <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
             {%for field in job.get_file_upload_form %}
@@ -52,8 +103,23 @@ $(document).ready(function(){
                 </div>
             </div>                 
             {%endfor%}
-            <input type="submit" class = "btn btn-large btn-primary" value="Upload" />
-            <button class = "closedialog btn btn-large">Cancel</button>
+            <input type="submit" class = "btn btn-primary" value="Upload" />
+            <button class = "closedialog btn">Cancel</button>
         </form>
+        <form class = "disabled" action = "{% url 'tough.views.import_file' job_id=job_id file_type=file_type %}" method="POST" id = "fileimportform">
+            {% csrf_token %}
+            <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
+            <div class = "control-group">
+                {% for field in block.get_import_form %}
+                <div class = "control">
+                    {{field}}
+                </div>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
+            <input class="btn btn-primary" type="submit" id='saveimportblock' value="Import"/>
+            <button class="btn" type="button" id='cancel'>Cancel</button>
+        </form>
+
     </div>
 </div>

@@ -335,7 +335,6 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s?view=read' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         return content

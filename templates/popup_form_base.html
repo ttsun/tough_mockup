@@ -36,7 +36,7 @@
 {% if is_ajax|default:True %}
     <script type="text/javascript">
         function addListeners(){
-            $("select").chosen();
+            $("select").chosen({no_results_text: "Nothing found!"});
             $(".popup-form").submit(function(e){
                 if($("#id_name").length > 0){
                     if(!validateSpecialChars($("#id_name").val())){

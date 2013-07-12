@@ -86,8 +86,11 @@
 		                e.preventDefault();
 		                $("#popupbox").dialog("close");
 		                return false;
-		            });                 
-		        	addListeners();
+		            });    
+		            try{
+		        		addListeners();
+		            }catch(e){
+		            }
 		        });
 		        return false;
 		    }); 
@@ -120,7 +123,7 @@
 				{% endif %}
 				<li><a href="http://esd.lbl.gov/files/research/projects/tough/documentation/TplusH_Manual_v1.pdf" target="_blank">TOUGH Manual</a></li>
 				<li><a href="/about/">About Project</a></li>
-				<li><a href="/error/">Report an error</a></li>
+				<li><a href="/error/">Report A Problem</a></li>
 			</ul>
 			{% if user.is_authenticated %}
 				<a href="{% url 'login.views.logout_view' %}" class="login">Logout</a>

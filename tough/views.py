@@ -362,10 +362,12 @@ def create_project(request):
             for job in form.cleaned_data['jobs']:
                 job.project = project
                 job.save()
+            if request.is_ajax():
+                return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
             return redirect("tough.views.jobs")
     else:
         form = ProjectForm(user=request.user, instance = None)
-    return render_to_response("project_creation.html", {"form": form, "formtype": 'create'}, context_instance=RequestContext(request))
+    return render_to_response("popup_form_base.html", {"form": form, "form_action": reverse("tough.views.create_project"), "form_title": "Create Project"}, context_instance=RequestContext(request))
 
 
 
@@ -533,7 +535,8 @@ def ajax_run_job(request, job_id):
         return HttpResponse(content, content_type='text/plain')
 
 def report_error(request):
-    return render_to_response("report.html")
+    return render_to_response("report.html", {},
+                              context_instance=RequestContext(request))
 
 
 

@@ -136,11 +136,21 @@ def create_job(request, job_id=None, type="new"):
                     batch_string = re.sub(r'#PBS -d \S+\n', d_repl, batch_string)
                     batch_string = re.sub(r'cd \S+\n', cd_repl, batch_string)
                     j.put_file('tough.pbs', batch_string)
+                j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
+                j.save()
+                populate_job(j)
+                m = j.block_set.get(blockType__tough_name = "mesh")
+                m.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
+                m.save()
 
-            #note creation time so that sorting works
-            j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
-            j.save()
-            populate_job(j)
+                inconblock = j.block_set.get(blockType__tough_name = "incon")
+                inconblock.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
+                inconblock.save()
+                #note creation time so that sorting works
+            else:
+                j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
+                j.save()
+                populate_job(j)
 
             if request.POST.get("setup_type") == "copy" and request.POST.get("job_id"):
                 old_job = Job.objects.get(pk=request.POST.get("job_id"))
@@ -178,7 +188,7 @@ def populate_job(job):
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
     return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, 'job': j},
+                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -200,13 +210,9 @@ def file_upload(request, job_id, file_type):
         j.parse_input_file(file_from)
         messages.success(request, "File successfully uploaded and parsed!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
-    elif (file_type == 'mesh'):
-        response = j.upload_files(request.FILES['files'], filename = file_type)
-        messages.success(request, "MESH was successfully uploaded and saved!")
-        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     else:
         response = j.upload_files(request.FILES['files'], filename = file_type)
-        messages.success(request, "INCON was successfully uploaded and saved!")
+        messages.success(request, file_type.upper() + " was successfully uploaded and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")

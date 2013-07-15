@@ -786,7 +786,7 @@ class ImportBlockForm(forms.Form):
 
     def __init__(self, user, job_id, *args, **kwargs):
         super(ImportBlockForm, self).__init__(*args, **kwargs)
-        self.fields['jobchoice'].queryset = user.job_set.all().exclude(pk = job_id)
+        self.fields['jobchoice'].queryset = user.job_set.all().exclude(pk = job_id).exclude(exists = False)
 
 
 class BlockType(models.Model):

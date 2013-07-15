@@ -799,3 +799,7 @@ class Block(models.Model):
 class QualifiedBlockRef(models.Model):
     blockType = models.ForeignKey(BlockType)
     name = models.CharField(max_length=255)
+
+class BlockVariable(models.Model):
+    blockType = models.ForeignKey(BlockType)
+    var_name = models.CharField(max_length=255)

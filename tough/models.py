@@ -100,7 +100,7 @@ class NoahUser(AbstractBaseUser):
         #get the updated list 
         all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
         return all_jobs
-        
+    
     def get_jobs(self):
         #appears to be only used in tests.py
         """

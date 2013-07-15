@@ -7,7 +7,7 @@
 			<li class="nav-header">Options</li>
 		   	<li><a href = "{% url 'tough.views.create_job' 'copy' job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
 			<li><a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob">Delete Job</a></li>
-			<li><a href = "{%url 'tough.views.ajax_get_zip' job_id=job.pk filename='zip' %}">Download {{job.jobname}} as ZIP</a></li>
+			<li><a href = "{%url 'tough.views.ajax_get_zip' job_id=job.pk %}">Download {{job.jobname}} as ZIP</a></li>
 		</ul>
 	</div>
 	<div class = "span10">

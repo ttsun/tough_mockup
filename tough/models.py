@@ -94,6 +94,11 @@ class NoahUser(AbstractBaseUser):
         """
         Return a list of all jobs
         """
+        all_jobs = Job.objects.filter(user=self.id)
+        for job in all_jobs:
+            if job.check_exists() == False:
+                job.delete()
+
         #get the list of jobs listed in the database as running and update them.
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
@@ -565,6 +570,19 @@ class Job(models.Model):
 
         return output
     
+    def check_exists(self):
+        
+        cookie_str=self.user.cookie
+        
+        url = '/file/%s/%s' % (self.machine, self.jobdir)
+        
+        response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        import ipdb; ipdb.set_trace()
+        if (response['status'] != '200'):
+            return False
+        else:
+            return True
+
     def update(self):
         """
         >>> j=Job.objects.get(id=1)
@@ -578,7 +596,6 @@ class Job(models.Model):
         url = '/queue/%s/%s' % (self.machine, self.pbsjob_id)
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        
         # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             if response['status']=='404':

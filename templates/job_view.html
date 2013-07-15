@@ -15,7 +15,11 @@
 						$("#file_list").append("<tr class='entry'></tr>");
 						var curr_entry = $($(".entry").last());
 						if(file.is_folder){
-							curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
+							if(file.name==".."){
+								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
+							}else{								
+								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a> <a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>ZIP</a></td>");
+							}
 						}else{
 							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-file'></i>"+file.name+"</a></td>");
 						}

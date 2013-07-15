@@ -30,6 +30,10 @@
 				<td>Downloadable file</td>
 			</tr>
 			<tr>
+				<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename='zip' %}">{{jobname}} Outputs ZIP</a></td>
+				<td>Downloadable file</td>
+			</tr>
+			<tr>
 				<td><a href = "{% url 'tough.views.get_file' job_id=job_id filename=job.jobname %}">{{jobname}} Input</a></td>
 				<td>Downloadable file</td>
 			</tr>

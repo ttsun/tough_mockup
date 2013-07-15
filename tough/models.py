@@ -356,12 +356,18 @@ class Job(models.Model):
         """
         #make a zip of the dir on the hpc side
         directory = self.jobdir
+        output_files = ["test1.ALLOC", "test1.LINEQ", "test1.TS_Hydrate", "test1.VERS SinkSource"]
+        to_compress = ""
+        for output in output_files:
+            to_compress += " %s/%s" %(directory, output)
+
         slash = directory.rfind("/")
-        zipfilename = directory[slash+1:] + ".zip"
+        zipfilename = directory + ".tar"
         cookie_str=self.user.cookie
         url = '/command/' + self.machine
-        newtcommand = { 'executable': '/usr/bin/zip -rj /tmp/' + zipfilename + ' ' + directory }
+        newtcommand = { 'executable': '/bin/tar -cf' + zipfilename + " " + directory + " ; /bin/gzip " + zipfilename}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
+        import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         #fetch the newly created zip

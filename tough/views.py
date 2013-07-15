@@ -519,12 +519,15 @@ def rename_job(request, job_id):
 
 
 @login_required
-def ajax_get_zip(request, job_id):
+def ajax_get_zip(request, job_id, directory=""):
     j=Job.objects.get(id=job_id)
-    zip = j.get_zip()
-
+    zip = j.get_zip(directory=directory)
+    if directory:
+        filename = directory[directory.rfind("/")+1:] + ".tar.gz"
+    else:
+        filename = j.dir_name + ".tar.gz"
     response = HttpResponse(zip, content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=' + j.dir_name + ".tar.gz"
+    response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
 

@@ -446,20 +446,6 @@ def get_file(request, job_id, filename):
 
 
 @login_required
-def ajax_getdir(request, machine, directory):
-    u = NoahUser.objects.get(username=request.user)
-    try:
-        dir_info = Job(user=u, machine=machine).get_dir(dir=directory)
-    except IOError, ex:
-        return HttpResponseBadRequest("File Not Found: %s" % str(ex))
-
-    dir_info = sorted(dir_info, key=itemgetter('name'))
-    content = JSONEncoder().encode(dir_info)
-    content_type = 'application/json'
-    return HttpResponse(content, content_type=content_type)
-
-
-@login_required
 def ajax_get_job_dir(request, job_id, directory=""):
     job = get_object_or_404(Job, pk=job_id)
     try:

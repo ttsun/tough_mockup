@@ -161,13 +161,13 @@ def parse_file_for_block_vars(input_file):
     blockendregex = '(?<=<<<)\w+'
     blocking = False
     for line in lines:
-        if(re.search(blocktitleregex, input_file) != None):
-            blockType = re.search(blocktitleregex, input_file).group(0).lower()
-            b = BlockType.objects.get(name = blockType).lower()
+        if(re.search(blocktitleregex, line) != None):
+            blockType = re.search(blocktitleregex, line).group(0).lower()
+            b = BlockType.objects.get(tough_name = blockType)
             blocking = True
         if(blocking == True):
             if(re.search(varnameregex, line) != None):
-                var_name = re.search(varnameregex,input_file)
+                var_name = re.search(varnameregex,line).group(0).lower()
                 block_var = BlockVariable(blockType = b, var_name = var_name)
                 block_var.save()
         if(re.search(blockendregex,line) != None):

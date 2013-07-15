@@ -16,6 +16,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.timezone import utc
 from django.forms import widgets
 import re
+from django.utils.dateparse import parse_datetime
+import pytz
 
 logger = logging.getLogger(__name__)
 logger.setLevel(getattr(settings, 'LOG_LEVEL', logging.DEBUG))
@@ -513,8 +515,7 @@ class Job(models.Model):
             return None
         content=content.strip()
         format_string = '%a %b %d %H:%M:%S %Z %Y'
-        ts = datetime.strptime(content, format_string)
-
+        ts = datetime.strptime(content, format_string).replace(tzinfo=utc)
         #ts=parser.parse(content)  this approach gave inconsistent datetime objects
         return ts
 
@@ -524,12 +525,12 @@ class Job(models.Model):
         >>> j.save()
         >>> j.submit()
         """
-        cookie_str=self.user.cookie
+        cookie_str = self.user.cookie
         url = '/queue/%s/' % self.machine
-        executable=os.path.join(self.jobdir, self.jobfile)
+        executable = os.path.join(self.jobdir, self.jobfile)
         # raise Exception(executable)
 
-        params={'jobfile':executable}
+        params = {'jobfile':executable}
 
         response, content = util.newt_request(url, 'POST', params=params, cookie_str=cookie_str)
         # raise Exception(content)

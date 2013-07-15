@@ -246,8 +246,7 @@ def combine_inputs(job):
     text = ''
     for block in job.get_title_block():
         text += block.content + "\n"
-    for block in job.get_io_files_block():
-        text += block.content + "\n"
+    text += job.get_io_files_block().content + "\n"
     for block in job.get_req_blocks():
         text += block.content + "\n"
     for block in job.get_op_blocks():

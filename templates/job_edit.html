@@ -99,17 +99,15 @@ $(document).ready(function(){
    $(".showhide").click(function(e){
         e.preventDefault();
         console.log("showhide clicked");
-        if ($(this).attr("id") == "show"){
+        if ($(this).parent().parent().siblings().is(":hidden")){
+            console.log("display none");
             $(this).parent().parent().siblings().slideDown();
-            $(this).parent().append("<a class = 'showhide' id = 'hide'>Hide</a>");
+            $(this).text("Hide");
         } else {
             $(this).parent().parent().siblings().slideUp();
-            $(this).parent().append("<a class = 'showhide' id = 'show'>Show</a>");
+            $(this).text("Show");
         }
-        $(this).remove();
-
-
-   })
+   });
 
    $("#sidebar a:not(#submit_job, .popup, .showhide)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
@@ -183,7 +181,9 @@ function showInputArea(id){
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
     </div>
-    
+    {% for block in job.get_title_block %}
+        {% include "block_input.html" %}
+        {% endfor %}
     {% for block in job.get_req_blocks%}
         {% include "block_input.html" %}
     {% endfor %}

@@ -66,6 +66,8 @@ function getjobfiles(){
 }
 
 $(document).ready(function(){    
+    $("#reqblocksheader").siblings().slideUp();
+    $("#opblocksheader").siblings().slideUp();
     $("#compset").removeClass("inputarea").addClass("inputareaactive");
     current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();
@@ -94,8 +96,22 @@ $(document).ready(function(){
         return false;
    });   
 
+   $(".showhide").click(function(e){
+        e.preventDefault();
+        console.log("showhide clicked");
+        if ($(this).attr("id") == "show"){
+            $(this).parent().parent().siblings().slideDown();
+            $(this).parent().append("<a class = 'showhide' id = 'hide'>Hide</a>");
+        } else {
+            $(this).parent().parent().siblings().slideUp();
+            $(this).parent().append("<a class = 'showhide' id = 'show'>Show</a>");
+        }
+        $(this).remove();
 
-   $("#sidebar a:not(#submit_job, .popup)").click(function(e){
+
+   })
+
+   $("#sidebar a:not(#submit_job, .popup, .showhide)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             $("form:visible").submit();
@@ -134,7 +150,7 @@ function showInputArea(id){
             <li id = "batchselect" class = "blockchoice active"><a href="#compset" id = "batch" >Computational Settings</a></a>
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
-            <li class = "nav-header">Required Blocks</li>
+            <li class = "nav-header" id = "reqblocksheader">Required Blocks | <small class="showhidearea"><a class="showhide" id = "show">Show</a></small></li>
             {% for block in job.get_title_block%}
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
                     {% if not block.is_empty %} <i class="icon-ok"></i>{% endif %}</a></li>
@@ -145,7 +161,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
-            <li class = "nav-header"> Optional Blocks</li>
+            <li class = "nav-header" id = "opblocksheader"> Optional Blocks | <small class="showhidearea"><a class="showhide" id = "show">Show</a></small></li>
             {% for block in job.get_op_blocks %}
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
                     {% if not block.is_empty %}<i class="icon-ok"></i>{% endif %}</a></li>

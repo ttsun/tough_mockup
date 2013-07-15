@@ -15,5 +15,5 @@ class BlockAdmin(admin.ModelAdmin):
 admin.site.register(Block, BlockAdmin)
 
 class QualifiedBlockRefAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("blockType","name")
 admin.site.register(QualifiedBlockRef, QualifiedBlockRefAdmin)

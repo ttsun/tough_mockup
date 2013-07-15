@@ -254,7 +254,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
-        b = self.block_set.get(blockType__name = filename)
+        b = self.block_set.get(blockType__tough_name = filename)
         b.last_uploaded = datetime.now()
         b.save()
         if response.status_code!=200:
@@ -277,7 +277,7 @@ class Job(models.Model):
         for line in lines:
             if(re.search(infiletitleregex, line) != None):
                 block += line + '\n'
-                b = self.block_set.get(blockType__name = 'title')
+                b = self.block_set.get(blockType__tough_name = 'title')
                 b.content = block
                 b.save()
                 block = ""
@@ -302,18 +302,18 @@ class Job(models.Model):
                     unparsed += block
                 blocking = False
                 block = ""
-        b = self.block_set.get(blockType__name="extras")
+        b = self.block_set.get(blockType__tough_name="extras")
         b.content = unparsed
         b.save()
         return blockschanged
 
     def search_block_references(self, blocktype):
-        if (self.block_set.filter(blockType__name = blocktype).count() != 0):
-            b = self.block_set.get(blockType__name = blocktype)
+        if (self.block_set.filter(blockType__tough_name = blocktype).count() != 0):
+            b = self.block_set.get(blockType__tough_name = blocktype)
             return b
         elif (QualifiedBlockRef.objects.filter(name = blocktype).count() != 0):
             block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.name
-            b = self.block_set.get(blockType__name = block_type_name)
+            b = self.block_set.get(blockType__tough_name = block_type_name)
             return b
         else:
             return None
@@ -677,16 +677,16 @@ class Job(models.Model):
         return self.jobname
 
     def get_title_block(self):
-        return self.block_set.get(blockType__name = "title")
+        return self.block_set.filter(blockType__tough_name = "title")
 
     def get_io_files_block(self):
-        return self.block_set.get(blockType__name = "io_files")
+        return self.block_set.get(blockType__tough_name = "io_files")
 
     def get_end_block(self):
-        return self.block_set.get(blockType__name = "endcy")
+        return self.block_set.get(blockType__tough_name = "endcy")
 
     def get_req_blocks(self):
-        return self.block_set.filter(blockType__required=1).exclude(blockType__name = "title")
+        return self.block_set.filter(blockType__required=1).exclude(blockType__tough_name = "title")
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)

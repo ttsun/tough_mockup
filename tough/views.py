@@ -19,6 +19,7 @@ import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.html import escape
+from tough.templatetags.file_filters import *
 
 def home(request):
     return render_to_response("home.html", {},
@@ -456,6 +457,29 @@ def ajax_getdir(request, machine, directory):
     content = JSONEncoder().encode(dir_info)
     content_type = 'application/json'
     return HttpResponse(content, content_type=content_type)
+
+
+@login_required
+def ajax_get_job_dir(request, job_id, directory=""):
+    job = get_object_or_404(Job, pk=job_id)
+    try:
+        ls = job.get_dir(dir=job.jobdir+"/"+directory)
+    except IOError, ex:
+        return HttpResponseBadRequest("Directory not found %s" % str(ex))
+    s = sorted(ls, key=lambda f: f['perms'][0])
+    ls = sorted(s, key=lambda f: f['name'].lower())
+    listing = []
+    for f in ls:
+        if not (directory == "" and (f['name'] == "." or f['name'] == "..")) and f['name']!=".":
+            listing.append({
+                "name": f['name'],
+                "size": size_nice(f['size']),
+                "date": f['date'],
+                "is_folder": f['perms'][0] == "d"
+            })
+    listing = sorted(listing, key=lambda f: f['name'].lower())
+    listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
+    return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
 
 @login_required

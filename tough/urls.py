@@ -40,4 +40,6 @@ urlpatterns = patterns('',
     url(r'^project/edit/(?P<project_id>\d+)/$', 'tough.views.edit_project'),
     url(r'^error/$', 'tough.views.report_error'),
     url(r'^project/(?P<project_id>\d+)/$','tough.views.project_view'),
+    url(r'^ajax/job/(?P<job_id>\d+)/file/(?P<directory>.+)/$', 'tough.views.ajax_get_job_dir'),
+    url(r'^ajax/job/(?P<job_id>\d+)/file/$', 'tough.views.ajax_get_job_dir'),
 )

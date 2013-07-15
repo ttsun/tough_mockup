@@ -64,6 +64,18 @@ def jobs(request):
                               context_instance=RequestContext(request))
 
 @login_required
+def rebuild_job(request, job_id):
+    j = get_object_or_404(Job, pk = job_id)
+    j.create_dir()
+    j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
+    j.save()
+    messages.success(request, "%s successfully rebuilt at %s" % (j.jobname, j.jobdir))
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
+    return redirect("/job/job_setup/%d/" % j.pk)
+
+
+@login_required
 def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
         #create new job in database

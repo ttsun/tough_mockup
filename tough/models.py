@@ -96,8 +96,7 @@ class NoahUser(AbstractBaseUser):
         """
         all_jobs = Job.objects.filter(user=self.id)
         for job in all_jobs:
-            if job.check_exists() == False:
-                job.delete()
+            job.check_exists()
 
         #get the list of jobs listed in the database as running and update them.
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
@@ -172,6 +171,7 @@ class Job(models.Model):
     jobdir = models.CharField(max_length=1024)
     dir_name = models.CharField(max_length=1024)
     machine = models.CharField(max_length=256)
+    exists = models.BooleanField(blank = True, default = True)
 
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
@@ -577,11 +577,12 @@ class Job(models.Model):
         url = '/file/%s/%s' % (self.machine, self.jobdir)
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        import ipdb; ipdb.set_trace()
         if (response['status'] != '200'):
-            return False
+            self.exists = False
+            self.save()
         else:
-            return True
+            self.exists = True
+            self.save()
 
     def update(self):
         """

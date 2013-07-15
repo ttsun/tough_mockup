@@ -436,22 +436,13 @@ def stopjob(request, job_id):
 @login_required
 def get_file(request, job_id, filename):
     j = Job.objects.get(id=job_id)
-    if (filename == 'zip'):
-        try: 
-            content = j.get_zip()
-        except Exception, ex:
-            return HttpResponseBadRequest("Could not read file: %s" % str(ex))
-        response = HttpResponse(content, content_type="text/plain")
-        response['Content-Disposition'] = 'attachment; filename=' + filename
-        return response
-    else:
-        try:
-            content = j.get_file(filename)
-        except IOError, ex:
-            return HttpResponseBadRequest("Could not read file: %s" % str(ex))
-        response = HttpResponse(content, content_type="text/plain")
-        response['Content-Disposition'] = 'attachment; filename=' + filename
-        return response
+    try:
+        content = j.get_file(filename)
+    except IOError, ex:
+        return HttpResponseBadRequest("Could not read file: %s" % str(ex))
+    response = HttpResponse(content, content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
 
 
 @login_required
@@ -515,12 +506,9 @@ def rename_job(request, job_id):
 def ajax_get_zip(request, job_id):
     j=Job.objects.get(id=job_id)
     zip = j.get_zip()
-    directory = j.jobdir
-    slash = directory.rfind("/")
-    zipfilename = directory[slash+1:] + ".zip"
 
     response = HttpResponse(zip, content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=' + zipfilename
+    response['Content-Disposition'] = 'attachment; filename=' + j.dir_name + ".tar.gz"
     return response
 
 

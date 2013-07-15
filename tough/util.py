@@ -152,7 +152,7 @@ class NewtCookie:
                 self.__dict__[key]=True
 
 def parse_file_for_block_vars(input_file):
-    from tough.models import BlockVariable, BlockType
+    from tough.models import BlockVariable, BlockType, QualifiedBlockRef
     lines = input_file.split("\n")
     var_name = ""
     blockType = ""
@@ -163,7 +163,7 @@ def parse_file_for_block_vars(input_file):
     for line in lines:
         if(re.search(blocktitleregex, line) != None):
             blockType = re.search(blocktitleregex, line).group(0).lower()
-            b = BlockType.objects.get(tough_name = blockType)
+            b = QualifiedBlockRef.objects.get(name = blockType).blockType
             blocking = True
         if(blocking == True):
             if(re.search(varnameregex, line) != None):

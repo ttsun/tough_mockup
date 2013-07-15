@@ -30,6 +30,11 @@ def about(request):
                               context_instance=RequestContext(request))
 
 
+def report_error(request):
+    return render_to_response("report.html", {},
+                              context_instance=RequestContext(request))
+
+
 def submit(request, job_id):
     j = Job.objects.get(id=job_id)
     finalinput = ''
@@ -150,6 +155,12 @@ def create_job(request, job_id=None, type="new"):
         return render_to_response('job_setup.html', {"job": job, "setup_type": type}, context_instance=RequestContext(request))
 
 
+def populate_job(job):
+    for blocktype in BlockType.objects.all():
+        b = Block(blockType=blocktype, job=job)
+        b.save()
+
+
 @login_required
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
@@ -187,35 +198,6 @@ def file_upload(request, job_id, file_type):
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")
     return redirect("tough.views.job_edit", j.pk)
-
-
-@login_required
-def ajax_get_tough_files(request, job_id):
-    j = get_object_or_404(Job, id=int(job_id))
-    tough_files = {}
-
-    # Get various files
-
-    # TODO: if job is new, don't bother
-    for block in j.block_set.all():
-        try:
-            key = block.blockType
-            if key == "batch":
-                tough_files.update({key: j.get_file("tough.pbs")})
-            else:
-                tough_files.update({key: j.get_file(key)})
-
-        except IOError:
-            tough_files[key] = ""
-
-    content = json.dumps(tough_files)
-    return HttpResponse(content, content_type='application/json')
-
-
-@login_required
-def upload_file(request, jobid):
-    j = get_object_or_404(Job, id=int(jobid))
-    return render_to_response('file_upload.html', {"job_id": j.pk, "jobname": j.jobname}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -289,7 +271,7 @@ def import_file(request, job_id, file_type):
         messages.success(request, file_type.upper() + " was successfully imported from " + job_from.jobname + " and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     else:
-        messages.error(request, file_type,upper() + "failed to import from " + job_from.jobname)
+        messages.error(request, file_type.upper() + "failed to import from " + job_from.jobname)
         return HttpResponse(simplejson.dumps({"success": False, "error": "Something went wrong."}), content_type="application/json")
 
 
@@ -499,12 +481,6 @@ def ajax_mkdir(request, machine, directory):
     return HttpResponse(content, content_type='application/json')
 
 
-def populate_job(job):
-    for blocktype in BlockType.objects.all():
-        b = Block(blockType=blocktype, job=job)
-        b.save()
-
-
 @login_required
 def delete_job(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
@@ -560,10 +536,6 @@ def ajax_run_job(request, job_id):
     else:
         content = 'job already submitted'
         return HttpResponse(content, content_type='text/plain')
-
-def report_error(request):
-    return render_to_response("report.html", {},
-                              context_instance=RequestContext(request))
 
 
 

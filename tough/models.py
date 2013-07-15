@@ -361,17 +361,19 @@ class Job(models.Model):
         for output in output_files:
             to_compress += " %s/%s" %(directory, output)
 
-        slash = directory.rfind("/")
-        zipfilename = directory + ".tar"
+        tarfilename = directory + ".tar"
+        zipfilename = tarfilename + ".gz"
         cookie_str=self.user.cookie
         url = '/command/' + self.machine
-        newtcommand = { 'executable': '/bin/tar -cf' + zipfilename + " " + directory + " ; /bin/gzip " + zipfilename}
+        newtcommand = { 'executable': '/bin/tar -cvzf ' + zipfilename + " " + self.dir_name}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
-        import ipdb; ipdb.set_trace()
+        # newtcommand = { 'executable': '/bin/gzip ' + tarfilename}
+        # response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
+        # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         #fetch the newly created zip
-        url = '/file/%s/tmp/%s?view=read' % (self.machine, zipfilename)
+        url = '/file/%s/%s?view=read' % (self.machine, zipfilename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         if response['status']!='200':
             raise IOError(content)
@@ -607,9 +609,6 @@ class Job(models.Model):
                 # any other error in retrieving the job from the queue - do something reasonable 
                 raise Exception(content)
 
-                    
-                
-        
         # Decode JSON
         job_info=simplejson.loads(content)
         # Set queue, jobname, timeuse, status

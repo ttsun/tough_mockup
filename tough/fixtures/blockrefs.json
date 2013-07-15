@@ -108,7 +108,7 @@
     "model": "tough.qualifiedblockref", 
     "fields": {
         "blockType": 15, 
-        "name": "RCAP/WETTA"
+        "name": "wetta"
     }
 },
 {
@@ -180,7 +180,7 @@
     "model": "tough.qualifiedblockref", 
     "fields": {
         "blockType": 24, 
-        "name": "startrando"
+        "name": "rando"
     }
 },
 {
@@ -261,6 +261,30 @@
     "fields": {
         "blockType": 14, 
         "name": "endfi"
+    }
+},
+{
+    "pk": 34, 
+    "model": "tough.qualifiedblockref", 
+    "fields": {
+        "blockType": 15, 
+        "name": "rcap"
+    }
+},
+{
+    "pk": 35, 
+    "model": "tough.qualifiedblockref", 
+    "fields": {
+        "blockType": 24, 
+        "name": "start"
+    }
+},
+{
+    "pk": 36, 
+    "model": "tough.qualifiedblockref", 
+    "fields": {
+        "blockType": 3, 
+        "name": "media"
     }
 }
 ]

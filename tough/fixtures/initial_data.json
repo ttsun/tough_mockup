@@ -174,7 +174,7 @@
         "description": "Optional;Parameters for relative permeability and capillary pressure (reservoir)", 
         "ordering": 5, 
         "required": 0, 
-        "tough_name": "RCAP/WETTA", 
+        "tough_name": "wetta", 
         "default_content": "", 
         "name": "wettability"
     }
@@ -282,9 +282,9 @@
         "description": "optional; one data record for more flexible initialization ", 
         "ordering": 5, 
         "required": 0, 
-        "tough_name": "startrando", 
+        "tough_name": "start", 
         "default_content": "", 
-        "name": "Start or Random"
+        "name": "Start"
     }
 },
 {
@@ -313,37 +313,37 @@
 },
 {
     "pk": 27, 
-    "model": "tough.blocktype",
+    "model": "tough.blocktype", 
     "fields": {
-        "description": "The input output files of the job.",
-        "ordering": 1,
-        "required": 2,
-        "tough_name": "io_files",
-        "default_content": "",
-        "name": "IO Files"  
+        "description": "The input output files of the job.", 
+        "ordering": 1, 
+        "required": 2, 
+        "tough_name": "io_files", 
+        "default_content": "", 
+        "name": "IO Files"
     }
 },
 {
     "pk": 28, 
-    "model": "tough.blocktype",
+    "model": "tough.blocktype", 
     "fields": {
-        "description": "Time information",
-        "ordering": 5,
-        "required": 1,
-        "tough_name": "time_discretization_data",
-        "default_content": "",
+        "description": "Time information", 
+        "ordering": 5, 
+        "required": 1, 
+        "tough_name": "time_discretization_data", 
+        "default_content": "", 
         "name": "Time Discretization Data"
     }
 },
 {
     "pk": 29, 
-    "model": "tough.blocktype",
+    "model": "tough.blocktype", 
     "fields": {
-        "description": "input for Newton-Raphson Iterations",
-        "ordering": 5,
-        "required": 1,
-        "tough_name": "nr_iteration_data",
-        "default_content": "",
+        "description": "input for Newton-Raphson Iterations", 
+        "ordering": 5, 
+        "required": 1, 
+        "tough_name": "nr_iteration_data", 
+        "default_content": "", 
         "name": "NR Iteration Data"
     }
 },
@@ -356,11 +356,11 @@
         "required": 3, 
         "tough_name": "output_options", 
         "default_content": "", 
-        "name": "Output Options" 
+        "name": "Output Options"
     }
 },
 {
-    "pk": 31,
+    "pk": 31, 
     "model": "tough.blocktype", 
     "fields": {
         "description": "Computational parameters for the job", 

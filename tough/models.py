@@ -792,7 +792,8 @@ class BlockType(models.Model):
     description = models.CharField(max_length=2000)
     # 0 - Not Required
     # 1 - Required
-    # 2 - Batch
+    # 2 - Batch - changeable through form
+    # 3 - Unchangeable files (io, etc.)
     required = models.IntegerField(default=0)
     default_content = models.TextField(default="", blank=True)
     ordering = models.IntegerField()
@@ -825,3 +826,7 @@ class Block(models.Model):
 class QualifiedBlockRef(models.Model):
     blockType = models.ForeignKey(BlockType)
     name = models.CharField(max_length=255)
+
+class BlockVariable(models.Model):
+    blockType = models.ForeignKey(BlockType)
+    var_name = models.CharField(max_length=255)

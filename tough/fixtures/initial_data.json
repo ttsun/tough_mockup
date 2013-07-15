@@ -315,23 +315,23 @@
     "pk": 27, 
     "model": "tough.blocktype",
     "fields": {
-        "description": "io_files",
+        "description": "The input output files of the job.",
         "ordering": 1,
         "required": 2,
         "tough_name": "io_files",
-        "default_content": ,
-        "name": "io_files"  
+        "default_content": "",
+        "name": "IO files"  
     }
 },
 {
     "pk": 28, 
     "model": "tough.blocktype",
     "fields": {
-        "description": "",
+        "description": "Time information",
         "ordering": 1,
         "required": 1,
         "tough_name": "time_discretization_data",
-        "default_content": ,
+        "default_content": "",
         "name": "time_discretization_data"
     }
 },
@@ -339,24 +339,60 @@
     "pk": 29, 
     "model": "tough.blocktype",
     "fields": {
-        "description": "",
+        "description": "input for Newton-Raphson Iterations",
         "ordering": 1,
         "required": 1,
         "tough_name": "nr_iteration_data",
         "default_content": "",
-        "name": "nr_iteration_data"
+        "name": "newton-raphson iteration_data"
     }
 },
 {
     "pk": 30, 
-    "model": "tough.blocktype",
+    "model": "tough.blocktype", 
     "fields": {
-        "description": ,
-        "ordering": ,
-        "required": ,
-        "tough_name": ,
-        "default_content": ,
-        "name": 
+        "description": "Options for output files", 
+        "ordering": 5, 
+        "required": 3, 
+        "tough_name": "output_options", 
+        "default_content": "", 
+        "name": "output options" 
     }
 },
+{
+    "pk": 31,
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Computational parameters for the job", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "computational_parameters", 
+        "default_content": "", 
+        "name": "computational parameters"
+    }
+},
+{
+    "pk": 32, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "Not working.", 
+        "ordering": 5, 
+        "required": 3, 
+        "tough_name": "df_well_model", 
+        "default_content": "", 
+        "name": "df well model"
+    }
+},
+{
+    "pk": 33, 
+    "model": "tough.blocktype", 
+    "fields": {
+        "description": "The sinks and sources information for the job", 
+        "ordering": 5, 
+        "required": 0, 
+        "tough_name": "sinkssources", 
+        "default_content": "", 
+        "name": "sinks and sources"
+    }
+}
 ]

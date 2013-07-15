@@ -365,18 +365,24 @@ class Job(models.Model):
         else:
             zipfilename = self.dir_name + ".tar.gz"
         directory = self.jobdir + "/" + directory
+        directory = directory.rstrip("/")
         cookie_str = self.user.cookie
         url = '/command/' + self.machine
-        newtcommand = {'executable': '/bin/tar -cvzf ' + zipfilename + " -C " + directory + " ."}
+        newtcommand = {'executable': '/bin/tar -cvzf /tmp/' + zipfilename + " -C " + directory[:directory.rfind("/")] + " " + directory[directory.rfind("/")+1:]}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
 
         if response['status'] != '200':
             raise IOError(content)
         #fetch the newly created zip
-        url = '/file/%s/%s?view=read' % (self.machine, os.path.join(self.jobdir, "..", zipfilename))
+        url = '/file/%s/%s?view=read' % (self.machine, "/tmp/"+zipfilename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         if response['status']!='200':
             raise IOError(content)
+
+        # Removes files created in temp folder
+        # Currently doens't do any error checking
+        util.newt_request('/command/'+self.machine, "POST", {"executable": "/bin/rm /tmp/"+zipfilename}, cookie_str=cookie_str)
+
         return content
         
         

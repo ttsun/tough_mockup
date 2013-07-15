@@ -19,6 +19,7 @@ import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.html import escape
+from tough.templatetags.file_filters import *
 
 def home(request):
     return render_to_response("home.html", {},
@@ -61,6 +62,18 @@ def jobs(request):
     return render_to_response('job_control.html',
                               {'dirlist': dirlist, 'all_jobs': jobs, 'username': username},
                               context_instance=RequestContext(request))
+
+@login_required
+def rebuild_job(request, job_id):
+    j = get_object_or_404(Job, pk = job_id)
+    j.create_dir()
+    j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
+    j.save()
+    messages.success(request, "%s successfully rebuilt at %s" % (j.jobname, j.jobdir))
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
+    return redirect("/job/job_setup/%d/" % j.pk)
+
 
 @login_required
 def create_job(request, job_id=None, type="new"):
@@ -445,17 +458,26 @@ def get_file(request, job_id, filename):
 
 
 @login_required
-def ajax_getdir(request, machine, directory):
-    u = NoahUser.objects.get(username=request.user)
+def ajax_get_job_dir(request, job_id, directory=""):
+    job = get_object_or_404(Job, pk=job_id)
     try:
-        dir_info = Job(user=u, machine=machine).get_dir(dir=directory)
+        ls = job.get_dir(dir=job.jobdir+"/"+directory)
     except IOError, ex:
-        return HttpResponseBadRequest("File Not Found: %s" % str(ex))
-
-    dir_info = sorted(dir_info, key=itemgetter('name'))
-    content = JSONEncoder().encode(dir_info)
-    content_type = 'application/json'
-    return HttpResponse(content, content_type=content_type)
+        return HttpResponseBadRequest("Directory not found %s" % str(ex))
+    s = sorted(ls, key=lambda f: f['perms'][0])
+    ls = sorted(s, key=lambda f: f['name'].lower())
+    listing = []
+    for f in ls:
+        if not (directory == "" and (f['name'] == "." or f['name'] == "..")) and f['name']!=".":
+            listing.append({
+                "name": f['name'],
+                "size": size_nice(f['size']),
+                "date": f['date'],
+                "is_folder": f['perms'][0] == "d"
+            })
+    listing = sorted(listing, key=lambda f: f['name'].lower())
+    listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
+    return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
 
 @login_required
@@ -496,12 +518,9 @@ def rename_job(request, job_id):
 def ajax_get_zip(request, job_id):
     j=Job.objects.get(id=job_id)
     zip = j.get_zip()
-    directory = j.jobdir
-    slash = directory.rfind("/")
-    zipfilename = directory[slash+1:] + ".zip"
 
     response = HttpResponse(zip, content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=' + zipfilename
+    response['Content-Disposition'] = 'attachment; filename=' + j.dir_name + ".tar.gz"
     return response
 
 

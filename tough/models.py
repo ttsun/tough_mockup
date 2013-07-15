@@ -94,13 +94,17 @@ class NoahUser(AbstractBaseUser):
         """
         Return a list of all jobs
         """
+        all_jobs = Job.objects.filter(user=self.id)
+        for job in all_jobs:
+            job.check_exists()
+
         #get the list of jobs listed in the database as running and update them.
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
         #get the updated list 
-        all_jobs = self.job_set.all().order_by("project__name", "-time_last_updated", "-id")
+        all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
         return all_jobs
-        
+    
     def get_jobs(self):
         #appears to be only used in tests.py
         """
@@ -167,6 +171,7 @@ class Job(models.Model):
     jobdir = models.CharField(max_length=1024)
     dir_name = models.CharField(max_length=1024)
     machine = models.CharField(max_length=256)
+    exists = models.BooleanField(blank = True, default = True)
 
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
@@ -356,16 +361,24 @@ class Job(models.Model):
         """
         #make a zip of the dir on the hpc side
         directory = self.jobdir
-        slash = directory.rfind("/")
-        zipfilename = directory[slash+1:] + ".zip"
+        output_files = ["test1.ALLOC", "test1.LINEQ", "test1.TS_Hydrate", "test1.VERS SinkSource"]
+        to_compress = ""
+        for output in output_files:
+            to_compress += " %s/%s" %(directory, output)
+
+        tarfilename = directory + ".tar"
+        zipfilename = tarfilename + ".gz"
         cookie_str=self.user.cookie
         url = '/command/' + self.machine
-        newtcommand = { 'executable': '/usr/bin/zip -rj /tmp/' + zipfilename + ' ' + directory }
+        newtcommand = { 'executable': '/bin/tar -cvzf ' + zipfilename + " " + self.dir_name}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
+        # newtcommand = { 'executable': '/bin/gzip ' + tarfilename}
+        # response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
+        # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             raise IOError(content)
         #fetch the newly created zip
-        url = '/file/%s/tmp/%s?view=read' % (self.machine, zipfilename)
+        url = '/file/%s/%s?view=read' % (self.machine, zipfilename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         if response['status']!='200':
             raise IOError(content)
@@ -557,6 +570,20 @@ class Job(models.Model):
 
         return output
     
+    def check_exists(self):
+        
+        cookie_str=self.user.cookie
+        
+        url = '/file/%s/%s' % (self.machine, self.jobdir)
+        
+        response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        if (response['status'] != '200'):
+            self.exists = False
+            self.save()
+        else:
+            self.exists = True
+            self.save()
+
     def update(self):
         """
         >>> j=Job.objects.get(id=1)
@@ -570,8 +597,7 @@ class Job(models.Model):
         url = '/queue/%s/%s' % (self.machine, self.pbsjob_id)
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        
-        
+        # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             if response['status']=='404':
                 # We should be OK - the job is simply no longer in the Q, so we assume it is complete for nova's purposes
@@ -617,18 +643,18 @@ class Job(models.Model):
                     self.time_started=self.get_timestamp('started')
                 except:
                     print 'started job in queue with no time_started'
-            self.nova_state = 'started'  
-            
-        if (self.status=='C'):
-            if (not self.time_completed or self.time_completed == None):
-                try:
-                    self.time_completed=self.get_timestamp('completed')
-                except:
-                    print 'completed job in queue with no time_completed, assuming aborted'
-            if self.time_completed: 
-                self.nova_state = 'completed'
+            if (self.status == 'C'):
+                if (not self.time_completed or self.time_completed == None):
+                    try:
+                        self.time_completed=self.get_timestamp('completed')
+                    except:
+                        print 'completed job in queue with no time_completed, assuming aborted'
+                if self.time_completed: 
+                    self.nova_state = 'completed'
+                else:
+                    self.nova_state = 'aborted'
             else:
-                self.nova_state = 'aborted'
+                self.nova_state = 'started'  
 
         self.save()
         return self

@@ -1,5 +1,37 @@
 {% extends "base.html"%}
 {% load file_filters %}
+{% block head %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			getFolder("");			
+		});
+
+		function getFolder(dir){
+			$("#file_list").html("");
+			$.get("{% url 'tough.views.ajax_get_job_dir' job_id=job.pk %}" + dir, function(response){
+				if(response.success){
+					for(var x in response.listing){
+						var file = response.listing[x];
+						$("#file_list").append("<tr class='entry'></tr>");
+						var curr_entry = $($(".entry").last());
+						if(file.is_folder){
+							curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
+						}else{
+							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-file'></i>"+file.name+"</a></td>");
+						}
+						curr_entry.append("<td>"+file.size+"</td>");
+						curr_entry.append("<td>"+file.date+"</td>");
+					}
+					$(".folder").click(function(e){
+						e.preventDefault();
+						getFolder($(this).attr("data-dir"));
+						return false;
+					});
+				}
+			});
+		}
+	</script>
+{% endblock head %}
 {% block content %}
 <div class = "row-fluid">
 	<div class = "span2 well">
@@ -7,6 +39,7 @@
 			<li class="nav-header">Options</li>
 		   	<li><a href = "{% url 'tough.views.create_job' 'copy' job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
 			<li><a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob">Delete Job</a></li>
+			<li><a href = "{%url 'tough.views.ajax_get_zip' job_id=job.pk %}">Download {{job.jobname}} as ZIP</a></li>
 		</ul>
 	</div>
 	<div class = "span10">
@@ -25,16 +58,7 @@
 					<th>Last Modified</th>
 				</tr>
 			</thead>
-			<tbody>
-				{% for file in job.get_dir %}
-					{% if file.name != "." and file.name != ".." %}
-						<tr>
-							<td><a href="{% url 'tough.views.get_file' job_id=job.pk filename=file.name %}">{{file.name}}</a></td>
-							<td>{{file.size|size_nice}}</td>
-							<td>{{file.date}}</td>
-						</tr>
-					{% endif %}
-				{% endfor %}
+			<tbody id="file_list">
 			</tbody>
 		</table>
 	</div>

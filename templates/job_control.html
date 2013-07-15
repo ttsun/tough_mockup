@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
 {% block head %}
-
-    <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
-    <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
     <style type="text/css">
         thead tr th{
             text-align: center !important;
@@ -125,6 +122,7 @@
                             <th colspan="6"><strong>{{project.name}} |</strong><a href="{% url 'tough.views.project_view' project_id=project.pk %}"><small> Edit</small></a></th>
                         </tr>   
                         {% for job in project.job_set.all %}
+                            {% if job.exists %}
                             <tr>
                                 <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
@@ -140,6 +138,13 @@
                                     </div>
                                 </td>
                             </tr>
+                            {% else %}
+                            <tr>
+                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted by supercomputer. Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
+                                <td><a href="{% url 'tough.views.rebuild_job' job_id=job.pk%}" class="btn cp">Rebuild</a>
+                            </tr>
+                            {% endif %}
+
                         {% endfor %}
                     </tbody>
                 {% endfor %}
@@ -150,21 +155,28 @@
                     </tr>
                     {% endif %}
                     {% for job in user.get_orphan_jobs %}
-                        <tr>
-                            <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
-                            <td class="numprocs">{{job.numprocs}}</td>
-                            <td class="job_id">{{job.pbsjob_id}}</td>
-                            <td class="time">{{job.time_started}}</td>
-                            <td class="state">{{job.nova_state}}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
-                                    <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
-                                    <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
-                                    <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
-                                </div>
-                            </td>
-                        </tr>
+                        {% if job.exists %}
+                            <tr>
+                                <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                                <td class="numprocs">{{job.numprocs}}</td>
+                                <td class="job_id">{{job.pbsjob_id}}</td>
+                                <td class="time">{{job.time_started}}</td>
+                                <td class="state">{{job.nova_state}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
+                                        <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
+                                        <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
+                                        <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted by supercomputer. Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
+                                <td><a href="{% url 'tough.views.rebuild_job' job_id=job.pk%}" class="btn cp">Rebuild</a></td>
+                            </tr>
+                            {% endif %}
                     {% endfor %}
                 </tbody>
                 {% if not user.get_all_jobs %}

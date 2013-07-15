@@ -682,8 +682,17 @@ class Job(models.Model):
     def __unicode__(self):
         return self.jobname
 
+    def get_title_block(self):
+        return self.block_set.get(blockType__name = "title")
+
+    def get_io_files_block(self):
+        return self.block_set.get(blockType__name = "io_files")
+
+    def get_end_block(self):
+        return self.block_set.get(blockType__name = "endcy")
+
     def get_req_blocks(self):
-        return self.block_set.filter(blockType__required=1)
+        return self.block_set.filter(blockType__required=1).exclude(blockType__name = "title")
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)

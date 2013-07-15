@@ -288,7 +288,7 @@
     }
 },
 {
-    "pk": 24, 
+    "pk": 25, 
     "model": "tough.blocktype", 
     "fields": {
         "description": "mesh file", 
@@ -300,7 +300,7 @@
     }
 },
 {
-    "pk": 25, 
+    "pk": 26, 
     "model": "tough.blocktype", 
     "fields": {
         "description": "All extra inputs", 
@@ -310,5 +310,53 @@
         "default_content": "", 
         "name": "extras"
     }
-}
+},
+{
+    "pk": 27, 
+    "model": "tough.blocktype",
+    "fields": {
+        "description": "io_files",
+        "ordering": 1,
+        "required": 2,
+        "tough_name": "io_files",
+        "default_content": ,
+        "name": "io_files"  
+    }
+},
+{
+    "pk": 28, 
+    "model": "tough.blocktype",
+    "fields": {
+        "description": "",
+        "ordering": 1,
+        "required": 1,
+        "tough_name": "time_discretization_data",
+        "default_content": ,
+        "name": "time_discretization_data"
+    }
+},
+{
+    "pk": 29, 
+    "model": "tough.blocktype",
+    "fields": {
+        "description": "",
+        "ordering": 1,
+        "required": 1,
+        "tough_name": "nr_iteration_data",
+        "default_content": "",
+        "name": "nr_iteration_data"
+    }
+},
+{
+    "pk": 30, 
+    "model": "tough.blocktype",
+    "fields": {
+        "description": ,
+        "ordering": ,
+        "required": ,
+        "tough_name": ,
+        "default_content": ,
+        "name": 
+    }
+},
 ]

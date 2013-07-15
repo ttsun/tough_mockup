@@ -128,7 +128,7 @@
         "required": 1, 
         "tough_name": "title", 
         "default_content": "", 
-        "name": "title"
+        "name": "Title"
     }
 },
 {
@@ -224,7 +224,7 @@
         "required": 0, 
         "tough_name": "elem_time_series", 
         "default_content": "", 
-        "name": "elem_time_series"
+        "name": "elem time series"
     }
 },
 {
@@ -248,7 +248,7 @@
         "required": 0, 
         "tough_name": "ss_time_series", 
         "default_content": "", 
-        "name": "sinks and sources time series data"
+        "name": "sinks&sources time series data"
     }
 },
 {
@@ -284,7 +284,7 @@
         "required": 0, 
         "tough_name": "startrando", 
         "default_content": "", 
-        "name": "start or random"
+        "name": "Start or Random"
     }
 },
 {
@@ -320,7 +320,7 @@
         "required": 2,
         "tough_name": "io_files",
         "default_content": "",
-        "name": "io_files"  
+        "name": "IO Files"  
     }
 },
 {
@@ -332,7 +332,7 @@
         "required": 1,
         "tough_name": "time_discretization_data",
         "default_content": "",
-        "name": "time_discretization_data"
+        "name": "Time Discretization Data"
     }
 },
 {
@@ -344,7 +344,7 @@
         "required": 1,
         "tough_name": "nr_iteration_data",
         "default_content": "",
-        "name": "nr_iteration_data"
+        "name": "NR Iteration Data"
     }
 },
 {
@@ -356,7 +356,7 @@
         "required": 3, 
         "tough_name": "output_options", 
         "default_content": "", 
-        "name": "output_options" 
+        "name": "Output Options" 
     }
 },
 {
@@ -368,7 +368,7 @@
         "required": 0, 
         "tough_name": "computational_parameters", 
         "default_content": "", 
-        "name": "computational_parameters"
+        "name": "Computational Parameters for TOUGH"
     }
 },
 {
@@ -380,7 +380,7 @@
         "required": 3, 
         "tough_name": "df_well_model", 
         "default_content": "", 
-        "name": "df_well_model"
+        "name": "df well model"
     }
 },
 {
@@ -392,7 +392,7 @@
         "required": 0, 
         "tough_name": "sinkssources", 
         "default_content": "", 
-        "name": "sinkssources"
+        "name": "Sinks&Sources"
     }
 }
 ]

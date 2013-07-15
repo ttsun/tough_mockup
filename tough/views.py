@@ -178,14 +178,14 @@ def populate_job(job):
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
     return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__name='incon').last_uploaded, 'job': j},
+                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, 'job': j},
                               context_instance=RequestContext(request))
 
 @login_required
 def file_upload_view(request, job_id, file_type):
     j = get_object_or_404(Job , pk=job_id)
     if (file_type != 'infile'):
-        block = j.block_set.get(blockType__name = file_type)
+        block = j.block_set.get(blockType__tough_name = file_type)
     else:
         block = None
     return render_to_response('file_upload.html',
@@ -244,8 +244,10 @@ def ajax_submit(request, job_id):
 
 def combine_inputs(job):
     text = ''
-    text += job.get_title_block().content
-    text += job.get_io_files_block().content
+    for block in job.get_title_block():
+        text += block.content + "\n"
+    for block in job.get_io_files_block():
+        text += block.content + "\n"
     for block in job.get_req_blocks():
         text += block.content + "\n"
     for block in job.get_op_blocks():

@@ -99,17 +99,15 @@ $(document).ready(function(){
    $(".showhide").click(function(e){
         e.preventDefault();
         console.log("showhide clicked");
-        if ($(this).attr("id") == "show"){
+        if ($(this).parent().parent().siblings().is(":hidden")){
+            console.log("display none");
             $(this).parent().parent().siblings().slideDown();
-            $(this).parent().append("<a class = 'showhide' id = 'hide'>Hide</a>");
+            $(this).text("Hide");
         } else {
             $(this).parent().parent().siblings().slideUp();
-            $(this).parent().append("<a class = 'showhide' id = 'show'>Show</a>");
+            $(this).text("Show");
         }
-        $(this).remove();
-
-
-   })
+   });
 
    $("#sidebar a:not(#submit_job, .popup, .showhide)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){

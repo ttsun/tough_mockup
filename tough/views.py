@@ -441,7 +441,7 @@ def get_file(request, job_id, filename):
         except Exception, ex:
             return HttpResponseBadRequest("Could not read file: %s" % str(ex))
         response = HttpResponse(content, content_type="text/plain")
-        response['Content-Disposition'] = 'attachment; filename=' + filename
+        response['Content-Disposition'] = 'attachment; filename=' + j.jobname + ".tar.gz"
         return response
     else:
         try:

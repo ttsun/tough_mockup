@@ -98,7 +98,7 @@ class NoahUser(AbstractBaseUser):
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
         #get the updated list 
-        all_jobs = self.job_set.all().order_by("project__name", "-time_last_updated", "-id")
+        all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
         return all_jobs
         
     def get_jobs(self):
@@ -579,7 +579,7 @@ class Job(models.Model):
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         
-        
+        # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             if response['status']=='404':
                 # We should be OK - the job is simply no longer in the Q, so we assume it is complete for nova's purposes
@@ -625,18 +625,18 @@ class Job(models.Model):
                     self.time_started=self.get_timestamp('started')
                 except:
                     print 'started job in queue with no time_started'
-            self.nova_state = 'started'  
-            
-        if (self.status=='C'):
-            if (not self.time_completed or self.time_completed == None):
-                try:
-                    self.time_completed=self.get_timestamp('completed')
-                except:
-                    print 'completed job in queue with no time_completed, assuming aborted'
-            if self.time_completed: 
-                self.nova_state = 'completed'
+            if (self.status == 'C'):
+                if (not self.time_completed or self.time_completed == None):
+                    try:
+                        self.time_completed=self.get_timestamp('completed')
+                    except:
+                        print 'completed job in queue with no time_completed, assuming aborted'
+                if self.time_completed: 
+                    self.nova_state = 'completed'
+                else:
+                    self.nova_state = 'aborted'
             else:
-                self.nova_state = 'aborted'
+                self.nova_state = 'started'  
 
         self.save()
         return self

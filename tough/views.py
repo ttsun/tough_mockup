@@ -244,10 +244,14 @@ def ajax_submit(request, job_id):
 
 def combine_inputs(job):
     text = ''
+    text += job.get_title_block().content
+    text += job.get_io_files_block().content
     for block in job.get_req_blocks():
         text += block.content + "\n"
     for block in job.get_op_blocks():
         text += block.content + "\n"
+    text += job.get_end_block().content
+
     return text
 
 
@@ -515,12 +519,15 @@ def rename_job(request, job_id):
 
 
 @login_required
-def ajax_get_zip(request, job_id):
+def ajax_get_zip(request, job_id, directory=""):
     j=Job.objects.get(id=job_id)
-    zip = j.get_zip()
-
+    zip = j.get_zip(directory=directory)
+    if directory:
+        filename = directory[directory.rfind("/")+1:] + ".tar.gz"
+    else:
+        filename = j.dir_name + ".tar.gz"
     response = HttpResponse(zip, content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=' + j.dir_name + ".tar.gz"
+    response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
 

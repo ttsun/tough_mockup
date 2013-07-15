@@ -320,7 +320,7 @@
         "required": 2,
         "tough_name": "io_files",
         "default_content": "",
-        "name": "IO files"  
+        "name": "io_files"  
     }
 },
 {
@@ -328,7 +328,7 @@
     "model": "tough.blocktype",
     "fields": {
         "description": "Time information",
-        "ordering": 1,
+        "ordering": 5,
         "required": 1,
         "tough_name": "time_discretization_data",
         "default_content": "",
@@ -340,11 +340,11 @@
     "model": "tough.blocktype",
     "fields": {
         "description": "input for Newton-Raphson Iterations",
-        "ordering": 1,
+        "ordering": 5,
         "required": 1,
         "tough_name": "nr_iteration_data",
         "default_content": "",
-        "name": "newton-raphson iteration_data"
+        "name": "nr_iteration_data"
     }
 },
 {
@@ -356,7 +356,7 @@
         "required": 3, 
         "tough_name": "output_options", 
         "default_content": "", 
-        "name": "output options" 
+        "name": "output_options" 
     }
 },
 {
@@ -368,7 +368,7 @@
         "required": 0, 
         "tough_name": "computational_parameters", 
         "default_content": "", 
-        "name": "computational parameters"
+        "name": "computational_parameters"
     }
 },
 {
@@ -380,7 +380,7 @@
         "required": 3, 
         "tough_name": "df_well_model", 
         "default_content": "", 
-        "name": "df well model"
+        "name": "df_well_model"
     }
 },
 {
@@ -392,7 +392,7 @@
         "required": 0, 
         "tough_name": "sinkssources", 
         "default_content": "", 
-        "name": "sinks and sources"
+        "name": "sinkssources"
     }
 }
 ]

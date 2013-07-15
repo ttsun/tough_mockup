@@ -135,6 +135,10 @@ function showInputArea(id){
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
             <li class = "nav-header">Required Blocks</li>
+            {% for block in job.get_title_block%}
+                <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
+                    {% if not block.is_empty %} <i class="icon-ok"></i>{% endif %}</a></li>
+            {% endfor %}
             {% for block in job.get_req_blocks %}
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
                     {% if not block.is_empty %} <i class="icon-ok"></i>{% endif %}</a></li>

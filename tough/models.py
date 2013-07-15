@@ -353,32 +353,25 @@ class Job(models.Model):
         return content
     
     
-    def get_zip(self, *args, **kwargs):
+    def get_zip(self, directory):
         """
         >>>j.get_zip()
         zip file of entire jobdir directory
-        
         """
-        #make a zip of the dir on the hpc side
-        directory = self.jobdir
-        output_files = ["test1.ALLOC", "test1.LINEQ", "test1.TS_Hydrate", "test1.VERS SinkSource"]
-        to_compress = ""
-        for output in output_files:
-            to_compress += " %s/%s" %(directory, output)
-
-        tarfilename = directory + ".tar"
-        zipfilename = tarfilename + ".gz"
-        cookie_str=self.user.cookie
+        if directory:
+            zipfilename = directory[directory.rfind("/")+1:] + ".tar.gz"
+        else:
+            zipfilename = self.dir_name + ".tar.gz"
+        directory = self.jobdir + "/" + directory
+        cookie_str = self.user.cookie
         url = '/command/' + self.machine
-        newtcommand = { 'executable': '/bin/tar -cvzf ' + zipfilename + " " + self.dir_name}
+        newtcommand = {'executable': '/bin/tar -cvzf ' + zipfilename + " -C " + directory + " ."}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
-        # newtcommand = { 'executable': '/bin/gzip ' + tarfilename}
-        # response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
-        # import ipdb; ipdb.set_trace()
-        if response['status']!='200':
+
+        if response['status'] != '200':
             raise IOError(content)
         #fetch the newly created zip
-        url = '/file/%s/%s?view=read' % (self.machine, zipfilename)
+        url = '/file/%s/%s?view=read' % (self.machine, os.path.join(self.jobdir, "..", zipfilename))
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         if response['status']!='200':
             raise IOError(content)
@@ -682,8 +675,17 @@ class Job(models.Model):
     def __unicode__(self):
         return self.jobname
 
+    def get_title_block(self):
+        return self.block_set.get(blockType__name = "title")
+
+    def get_io_files_block(self):
+        return self.block_set.get(blockType__name = "io_files")
+
+    def get_end_block(self):
+        return self.block_set.get(blockType__name = "endcy")
+
     def get_req_blocks(self):
-        return self.block_set.filter(blockType__required=1)
+        return self.block_set.filter(blockType__required=1).exclude(blockType__name = "title")
 
     def get_op_blocks(self):
         return self.block_set.filter(blockType__required=0)

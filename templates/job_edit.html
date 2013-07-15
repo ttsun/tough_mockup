@@ -183,7 +183,9 @@ function showInputArea(id){
         <h2>Computational Settings</h2>
         {% include "batch_form.html" %}
     </div>
-    
+    {% for block in job.get_title_block %}
+        {% include "block_input.html" %}
+        {% endfor %}
     {% for block in job.get_req_blocks%}
         {% include "block_input.html" %}
     {% endfor %}

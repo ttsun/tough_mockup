@@ -7,6 +7,8 @@ import mimetypes
 import random
 from django.utils import encoding as encoding
 from django.core.files import File
+import re
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -148,3 +150,27 @@ class NewtCookie:
                 self.__dict__[key]=kvarray[1]
             elif len(kvarray)==1:
                 self.__dict__[key]=True
+
+def parse_file_for_block_vars(input_file):
+    from tough.models import BlockVariable, BlockType
+    lines = input_file.split("\n")
+    var_name = ""
+    blockType = ""
+    varnameregex = '(?<=\s{2})\w+'
+    blocktitleregex = '(?<=>>>)\w+'
+    blockendregex = '(?<=<<<)\w+'
+    blocking = False
+    for line in lines:
+        if(re.search(blocktitleregex, input_file) != None):
+            blockType = re.search(blocktitleregex, input_file).group(0).lower()
+            b = BlockType.objects.get(name = blockType).lower()
+            blocking = True
+        if(blocking == True):
+            if(re.search(varnameregex, line) != None):
+                var_name = re.search(varnameregex,input_file)
+                block_var = BlockVariable(blockType = b, var_name = var_name)
+                block_var.save()
+        if(re.search(blockendregex,line) != None):
+            blocking = False
+
+

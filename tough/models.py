@@ -94,6 +94,10 @@ class NoahUser(AbstractBaseUser):
         """
         Return a list of all jobs
         """
+        all_jobs = Job.objects.filter(user=self.id)
+        for job in all_jobs:
+            job.check_exists()
+
         #get the list of jobs listed in the database as running and update them.
         dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
@@ -167,6 +171,7 @@ class Job(models.Model):
     jobdir = models.CharField(max_length=1024)
     dir_name = models.CharField(max_length=1024)
     machine = models.CharField(max_length=256)
+    exists = models.BooleanField(blank = True, default = True)
 
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
@@ -558,6 +563,20 @@ class Job(models.Model):
 
         return output
     
+    def check_exists(self):
+        
+        cookie_str=self.user.cookie
+        
+        url = '/file/%s/%s' % (self.machine, self.jobdir)
+        
+        response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        if (response['status'] != '200'):
+            self.exists = False
+            self.save()
+        else:
+            self.exists = True
+            self.save()
+
     def update(self):
         """
         >>> j=Job.objects.get(id=1)
@@ -571,7 +590,6 @@ class Job(models.Model):
         url = '/queue/%s/%s' % (self.machine, self.pbsjob_id)
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        
         # import ipdb; ipdb.set_trace()
         if response['status']!='200':
             if response['status']=='404':
@@ -767,7 +785,8 @@ class BlockType(models.Model):
     description = models.CharField(max_length=2000)
     # 0 - Not Required
     # 1 - Required
-    # 2 - Batch
+    # 2 - Batch - changeable through form
+    # 3 - Unchangeable files (io, etc.)
     required = models.IntegerField(default=0)
     default_content = models.TextField(default="", blank=True)
     ordering = models.IntegerField()
@@ -800,3 +819,7 @@ class Block(models.Model):
 class QualifiedBlockRef(models.Model):
     blockType = models.ForeignKey(BlockType)
     name = models.CharField(max_length=255)
+
+class BlockVariable(models.Model):
+    blockType = models.ForeignKey(BlockType)
+    var_name = models.CharField(max_length=255)

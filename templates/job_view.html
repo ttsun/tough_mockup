@@ -52,7 +52,7 @@
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a class = 'view' href = '{% url 'tough.views.tail_file' job_id=job.pk filename='" + file.name + "'><i class='icon-eye-open'></i>View</a></td>");
+							curr_entry.append("<td><a class = 'view' target='_blank' href = '/job/{{job.pk}}/view/"+dir+file.name+"'><i class='icon-eye-open'></i>View</a></td>");
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download ZIP</a></td>");
@@ -62,6 +62,11 @@
 					$(".folder").click(function(e){
 						e.preventDefault();
 						getFolder($(this).attr("data-dir"));
+						return false;
+					});
+					$(".view").click(function(e){
+						e.preventDefault();
+						window.open($(this).attr("href"), $(this).text() + " view", 'width=700,height=500,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1');
 						return false;
 					});
 				}

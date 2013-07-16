@@ -36,10 +36,13 @@ def report_error(request):
                               context_instance=RequestContext(request))
 
 
-def tail_file(request, job_id, path):
+def tail_file(request, job_id, filename):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + path
-    return render_to_response("tail.html", {"file_url": file_url} context_instance=RequestContext(request))
+    content = job.get_file(filename)
+    if request.method == 'GET':
+        return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "file_url": file_url, "file_content": content}), content_type="application/json")
+    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "file_url": file_url, "file_content": content}, context_instance=RequestContext(request))
 
 
 def submit(request, job_id):

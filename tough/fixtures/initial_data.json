@@ -319,7 +319,7 @@
         "ordering": 1,
         "required": 2,
         "tough_name": "io_files",
-        "default_content": ">>>IO_FILES: Begin of the data block \n &IO_File_Names   IO_file_nomenclature = 'INPUT-FILE-NAME-BASED',   ! Options: 'STANDARD-T', 'INPUT-FILE-NAME-BASED' OR 'USER-SPECIFIED'\n                 MESH_file_name  = 'mesh',                     ! The name of the MESH file  (These are needed only when <IO_file_nomenclature> = 'USER-SPECIFIED')\n                 INCON_file_name = 'incon',                    ! The name of the INCON file\n                 SAVE_file_name  = 'SAVE',                     ! The name of the SAVE file\n                 SinkSource_file_name = 'sinks_sources'          ! The name of the SinkSource file\n                 /\n<<<End of the <IO_FILES> data block",
+        "default_content": ">>>IO_FILES: Begin of the data block \n &IO_File_Names   IO_file_nomenclature = 'USER-SPECIFIED',   ! Options: 'STANDARD-T', 'INPUT-FILE-NAME-BASED' OR 'USER-SPECIFIED'\n                 MESH_file_name  = 'mesh',                     ! The name of the MESH file  (These are needed only when <IO_file_nomenclature> = 'USER-SPECIFIED')\n                 INCON_file_name = 'incon',                    ! The name of the INCON file\n                 SAVE_file_name  = 'SAVE',                     ! The name of the SAVE file\n                 SinkSource_file_name = 'sinks_sources'          ! The name of the SinkSource file\n                 /\n<<<End of the <IO_FILES> data block",
         "name": "IO Files"  
     }
 },

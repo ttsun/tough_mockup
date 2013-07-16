@@ -3,7 +3,33 @@
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function(){
-			getFolder("");			
+			getFolder("");
+			$(".deljob").click(function(e){
+                e.preventDefault();
+                var url = $(this).attr("href");
+                Alertify.dialog.confirm("Are you sure you want to delete this job? This operation is irreversable", 
+                    function(){
+                        Alertify.dialog.confirm("Do you want to delete the associated job files?", 
+                            function(){
+                                console.log(url);
+                                $.post(url, {"files": true}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }, 
+                            function(){
+                                $.post(url, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }
+                        );
+                    }, 
+                    function(){
+                        return false;
+                    }
+                );
+            });			
 		});
 
 		function getFolder(dir){

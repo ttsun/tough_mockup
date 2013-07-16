@@ -181,6 +181,7 @@ def create_job(request, job_id=None, type="new"):
 def populate_job(job):
     for blocktype in BlockType.objects.all():
         b = Block(blockType=blocktype, job=job)
+        b.content = blocktype.default_content
         b.save()
 
 
@@ -252,6 +253,7 @@ def combine_inputs(job):
     text = ''
     for block in job.get_title_block():
         text += block.content + "\n"
+    import ipdb; ipdb.set_trace()
     text += job.get_io_files_block().content + "\n"
     for block in job.get_req_blocks():
         text += block.content + "\n"
@@ -265,6 +267,7 @@ def combine_inputs(job):
 @login_required
 def job_view(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
+    j.update()
     return render_to_response('job_view.html',
                               {"jobname": j.jobname, "job_id": j.pk, "jobdir": j.jobdir, "job": j},
                               context_instance=RequestContext(request))

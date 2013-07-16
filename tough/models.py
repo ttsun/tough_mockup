@@ -318,6 +318,7 @@ class Job(models.Model):
                 blockschanged.append(blocktype)
                 blocking = False
                 block = ""
+                blocktype = ""
                 
         b = self.block_set.get(blockType__tough_name="extras")
         b.content = unparsed

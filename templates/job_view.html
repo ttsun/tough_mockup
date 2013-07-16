@@ -47,14 +47,14 @@
 		</ul>
 	</div>
 	<div class = "span10">
+		<h1>{{jobname}}</h1>
+		<h2>Job Information</h2>
 		<div class="row-fluid">
-			<div class="span6">				
-				<h1>{{jobname}}</h1>
-				<h2>Job Information</h2>
+			<div class="span6">			
 				<p><strong>System:</strong> Hopper</p>
 				<p><strong>Job Directory:</strong> {{jobdir}}</p>
-				<p><strong>Job Status:</strong> {{job.state | capfirst}}</p>
 				<p><strong>Number of Processors:</strong> {{job.numprocs}}</p>		
+				<p><strong>Job Status:</strong> {{job.state | capfirst}}</p>
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}
@@ -68,6 +68,9 @@
 				{% endif %}
 				{% if job.project %}
 					<p><strong>Project:</strong> {{job.project.name}}</p>
+				{% endif %}
+				{% if job.timeuse %}
+					<p><strong>Time Elapsed:</strong> {{job.timeuse}}</p>
 				{% endif %}
 			</div>
 		</div>

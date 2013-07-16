@@ -165,7 +165,7 @@ def parse_file_for_block_vars(input_file):
             blockType = re.search(blocktitleregex, line).group(0).lower()
             b = QualifiedBlockRef.objects.get(name = blockType).blockType
             blocking = True
-        if(blocking == True):
+        if(blocking == True and (b.required==0 or b.required==1)):
             if(re.search(varnameregex, line) != None):
                 var_name = re.search(varnameregex,line).group(0).lower()
                 block_var = BlockVariable(blockType = b, var_name = var_name)

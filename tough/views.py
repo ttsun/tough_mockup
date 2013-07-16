@@ -39,7 +39,7 @@ def report_error(request):
 def tail_file(request, job_id, path):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + path
-    return render_to_response("tail.html", {"file_url": file_url} context_instance=RequestContext(request))
+    return render_to_response("tail.html", {"file_url": file_url}, context_instance=RequestContext(request))
 
 
 def submit(request, job_id):

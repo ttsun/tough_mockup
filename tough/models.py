@@ -665,6 +665,10 @@ class Job(models.Model):
                 if (not self.time_completed or self.time_completed == None):
                     try:
                         self.time_completed=self.get_timestamp('completed')
+                        try:
+                            self.timeuse = str(self.time_completed - self.time_started)
+                        except:
+                            print 'unable to calculate time use'
                     except:
                         print 'completed job in queue with no time_completed, assuming aborted'
                 if self.time_completed: 
@@ -672,7 +676,8 @@ class Job(models.Model):
                 else:
                     self.state = 'aborted'
             else:
-                self.state = 'started'  
+                self.state = 'started'
+                self.timeuse = str(datetime.utcnow().replace(tzinfo=utc) - self.time_started)
 
         self.save()
         return self
@@ -857,4 +862,3 @@ class QualifiedBlockRef(models.Model):
 class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
-    val = models.CharField(max_length=255)

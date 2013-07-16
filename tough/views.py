@@ -212,7 +212,7 @@ def file_upload(request, job_id, file_type):
         messages.success(request, "File successfully uploaded and parsed!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     else:
-        response = j.upload_files(request.FILES['files'], filename = file_type)
+        response = j.upload_files(request.FILES['files'], filename=file_type)
         messages.success(request, file_type.upper() + " was successfully uploaded and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     if request.is_ajax():
@@ -253,7 +253,6 @@ def combine_inputs(job):
     text = ''
     for block in job.get_title_block():
         text += block.content + "\n"
-    import ipdb; ipdb.set_trace()
     text += job.get_io_files_block().content + "\n"
     for block in job.get_req_blocks():
         text += block.content + "\n"
@@ -267,7 +266,8 @@ def combine_inputs(job):
 @login_required
 def job_view(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
-    j.update()
+    if j.state and j.state not in ['completed', 'aborted', 'toberun']:
+        j.update()
     return render_to_response('job_view.html',
                               {"jobname": j.jobname, "job_id": j.pk, "jobdir": j.jobdir, "job": j},
                               context_instance=RequestContext(request))
@@ -515,7 +515,7 @@ def delete_job(request, job_id):
         j.del_dir()
     j.delete()
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps({"success": True}))
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
     else:
         return redirect("tough.views.jobs")
 

@@ -8,7 +8,7 @@
             <div class = "tab-pane" id = "{{block.blockType.tough_name}}-guided">
                 {% for var in block.blockType.blockvariable_set.all %}
                     <p>
-                        {{var.var_name}}: <input type = "text"/>
+                        {{var.var_name}}: <input type = "text" value = "{{var.val}}"/>
 
                     </p>
                 {% endfor %}

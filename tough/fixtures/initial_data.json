@@ -389,7 +389,7 @@
     "fields": {
         "description": "The sinks and sources information for the job", 
         "ordering": 5, 
-        "required": 0, 
+        "required": 2, 
         "tough_name": "sinks_sources", 
         "default_content": "", 
         "name": "Sinks&Sources"

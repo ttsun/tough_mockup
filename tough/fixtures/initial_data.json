@@ -113,7 +113,7 @@
     "fields": {
         "description": "list of initial conditions for individual blocks", 
         "ordering": 5, 
-        "required": 0, 
+        "required": 2, 
         "tough_name": "incon", 
         "default_content": "", 
         "name": "incon"
@@ -198,7 +198,7 @@
         "description": "optional;Specifies parameters used by linear equation solvers ", 
         "ordering": 5, 
         "required": 0, 
-        "tough_name": "solvr", 
+        "tough_name": "solver", 
         "default_content": "", 
         "name": "solver"
     }
@@ -353,7 +353,7 @@
     "fields": {
         "description": "Options for output files", 
         "ordering": 5, 
-        "required": 3, 
+        "required": 1, 
         "tough_name": "output_options", 
         "default_content": "", 
         "name": "Output Options"
@@ -389,7 +389,7 @@
     "fields": {
         "description": "The sinks and sources information for the job", 
         "ordering": 5, 
-        "required": 0, 
+        "required": 2, 
         "tough_name": "sinks_sources", 
         "default_content": "", 
         "name": "Sinks&Sources"

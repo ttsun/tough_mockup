@@ -294,12 +294,13 @@ class Job(models.Model):
                 if(blocking == False):
                     return "too many closes"
                 b = self.search_block_references(blocktype=blocktype)
-                if (b != None):
-                    b.content = block
-                    b.save()
-                    blockschanged.append(blocktype)
-                else:
+                if (b == None):
                     unparsed += block
+                else:
+                    if (b.blockType.required == 0 or b.blockType.required == 1):
+                        b.content = block
+                        b.save()
+                        blockschanged.append(blocktype)
                 blocking = False
                 block = ""
         b = self.block_set.get(blockType__tough_name="extras")
@@ -801,7 +802,7 @@ class BlockType(models.Model):
     description = models.CharField(max_length=2000)
     # 0 - Not Required
     # 1 - Required
-    # 2 - Batch - changeable through form
+    # 2 - Batch - changeable through form, and uploaded files
     # 3 - Unchangeable files (io, etc.)
     required = models.IntegerField(default=0)
     default_content = models.TextField(default="", blank=True)

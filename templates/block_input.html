@@ -12,6 +12,8 @@
 
                     </p>
                 {% endfor %}
+                <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
+                <button class="btn" type="button" id='cancel'>Cancel</button>
             </div>
             <div class = "tab-pane active" id = "{{block.blockType.tough_name}}-raw">
                 <form class="rawtextform" action="{% url 'tough.views.ajax_save' job_id=job_id input_type='raw' %}" method="POST">

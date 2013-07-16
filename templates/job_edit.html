@@ -172,7 +172,7 @@ function showInputArea(id){
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='incon' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "margin:10px 10px 2px 10px">Upload an INCON File</a>
             <p><b>Last INCON upload:</b></p>
             <p>{{incon_last_uploaded}}</p>
-            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='sinks_sources' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "margin:10px 10px 2px 10px">Upload SINKS&SOURCES</a>
+            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='sinks_sources' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "font-size:10px; margin:10px 10px 2px 10px">Upload SINKS&SOURCES</a>
             <p><b>Last SINKS&SOURCES upload:</b></p>
             <p>{{sinks_sources_last_uploaded}}</p>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='infile' %}" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload an Input File</a>

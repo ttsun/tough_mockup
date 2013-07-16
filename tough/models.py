@@ -325,12 +325,10 @@ class Job(models.Model):
         return blockschanged
 
     def search_block_references(self, blocktype):
-        import ipdb; ipdb.set_trace()
         if (self.block_set.filter(blockType__tough_name = blocktype).count() != 0):
             b = self.block_set.get(blockType__tough_name = blocktype)
             return b
         elif (QualifiedBlockRef.objects.filter(name = blocktype).count() != 0):
-            import ipdb; ipdb.set_trace()
             block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.tough_name
             b = self.block_set.get(blockType__tough_name = block_type_name)
             return b

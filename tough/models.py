@@ -862,4 +862,3 @@ class QualifiedBlockRef(models.Model):
 class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
-    val = models.CharField(max_length=255)

@@ -160,7 +160,7 @@ def parse_file_for_block_vars(input_file):
     varnameregex = '(?<=\s{2})\w+'
     blocktitleregex = '(?<=>>>)\w+'
     blockendregex = '(?<=<<<)\w+'
-    varvalregex = '(?<=[=]).+(?=[,\s])'
+    varvalregex = '(?<=[=]).+(?=[,\s!])'
     blocking = False
     for line in lines:
         if(re.search(blocktitleregex, line) != None):

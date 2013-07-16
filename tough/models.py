@@ -267,7 +267,8 @@ class Job(models.Model):
         block = ""
         infiletitleregex = '(?<=<).+'
         blocktitleregex = '(?<=>>>)\w+'
-        # (?=[A-Z]).
+        rocksblocktitleregex = '(ROCKS)'
+        rocksblockendregex = '(!)'
         blockendregex = '(?<=<<<)\w+'
         blocking = False
         blocktype = ""
@@ -288,6 +289,11 @@ class Job(models.Model):
                     return "blockception"
                 blocktype = re.search(blocktitleregex, line).group(0).lower()
                 blocking = True
+            elif (re.search(rocksblocktitleregex, line) != None):
+                if(blocking == True):
+                    return "rockblockception"
+                blocktype = "rocks"
+                blocking = True
             if (blocking == True):      
                 block += line + '\n'
             if(re.search(blockendregex, line) != None):
@@ -303,17 +309,29 @@ class Job(models.Model):
                         blockschanged.append(blocktype)
                 blocking = False
                 block = ""
+            elif (re.match(rockblockendregex, line) != None and blocktype == "rocks"):
+                if(blocking == False):
+                    return "too many exclaims"
+                b = self.search_block_references(blocktype = blocktype)
+                b.content = block
+                b.save()
+                blockschanged.append(blocktype)
+                blocking = False
+                block = ""
+                
         b = self.block_set.get(blockType__tough_name="extras")
         b.content = unparsed
         b.save()
         return blockschanged
 
     def search_block_references(self, blocktype):
+        import ipdb; ipdb.set_trace()
         if (self.block_set.filter(blockType__tough_name = blocktype).count() != 0):
             b = self.block_set.get(blockType__tough_name = blocktype)
             return b
         elif (QualifiedBlockRef.objects.filter(name = blocktype).count() != 0):
-            block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.name
+            import ipdb; ipdb.set_trace()
+            block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.tough_name
             b = self.block_set.get(blockType__tough_name = block_type_name)
             return b
         else:

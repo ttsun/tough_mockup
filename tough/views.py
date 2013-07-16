@@ -515,7 +515,7 @@ def delete_job(request, job_id):
         j.del_dir()
     j.delete()
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps({"success": True}))
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
     else:
         return redirect("tough.views.jobs")
 

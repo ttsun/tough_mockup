@@ -309,7 +309,7 @@ class Job(models.Model):
                         blockschanged.append(blocktype)
                 blocking = False
                 block = ""
-            elif (re.match(rockblockendregex, line) != None and blocktype == "rocks"):
+            elif (re.match(rocksblockendregex, line) != None and blocktype == "rocks"):
                 if(blocking == False):
                     return "too many exclaims"
                 b = self.search_block_references(blocktype = blocktype)

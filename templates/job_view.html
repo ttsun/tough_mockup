@@ -44,13 +44,20 @@
 							if(file.name==".."){
 								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
 							}else{								
-								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a> <a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>ZIP</a></td>");
+								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
 							}
 						}else{
 							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-file'></i>"+file.name+"</a></td>");
 						}
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
+						if(file.is_folder == false){
+							curr_entry.append("<td><a class = 'view' href = ''><i class='icon-eye-open'></i>View</a></td>");
+						}else{
+							if(file.name != ".."){
+								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download ZIP</a></td>");
+							}
+						}
 					}
 					$(".folder").click(function(e){
 						e.preventDefault();
@@ -108,6 +115,7 @@
 						<th>File Name</th>
 						<th>Size</th>
 						<th>Last Modified</th>
+						<th>Options</th>
 					</tr>
 				</thead>
 				<tbody id="file_list">

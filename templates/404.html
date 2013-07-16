@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{%block head %}
+    <meta charset="UTF-8">
+    <title>Page Does Not Exist</title>
+    <style type="text/css">
+        body{
+            background-color: #EEEEEE;
+        }
+        .bigtext{
+            text-align: center;
+            font-size: 50px;
+        }
+        p{
+            text-align: center;
+            font-size: 24px;
+            padding:50px;
+        }
+        #home{
+            text-decoration: none;
+            color: black;
+        }
+        #home:hover{
+            opacity:0.5;
+        }
+        #tear{
+            color:blue;
+        }
+    </style>
+{%endblock head%}
+
+{%block content%}
+    <h1 class = "bigtext">Error 404: TOUGH luck</h1>
+    <p>
+        Sorry, this page does not exist. Check to see your job was not consumed by Hopper, or click <a href="/" id = "home">here</a> to return to the homepage.
+    </p>
+    <p class = "bigtext">
+        <strong>:<span id = "tear">'</span>(</strong>
+    </p>
+{% endblock %}

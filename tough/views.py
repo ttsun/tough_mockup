@@ -547,7 +547,7 @@ def run_job(request, job_id):
 def ajax_run_job(request, job_id):
     j = Job.objects.get(id=job_id)
     # Run the job
-    if j.nova_state == 'toberun':
+    if j.state == 'toberun':
         # import pdb;pdb.set_trace()
         try:
             j.submit()

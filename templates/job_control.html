@@ -128,7 +128,7 @@
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
-                                <td class="state">{{job.nova_state}}</td>
+                                <td class="state">{{job.state}}</td>
                                 <td>
                                     <div class="btn-group">
                                         <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
@@ -161,7 +161,7 @@
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
-                                <td class="state">{{job.nova_state}}</td>
+                                <td class="state">{{job.state}}</td>
                                 <td>
                                     <div class="btn-group">
                                         <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>

@@ -101,7 +101,7 @@ class NoahUser(AbstractBaseUser):
             job.check_exists()
 
         #get the list of jobs listed in the database as running and update them.
-        dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
+        dbrunning = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
         for runningjob in dbrunning: runningjob.update();
         #get the updated list 
         all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
@@ -116,16 +116,16 @@ class NoahUser(AbstractBaseUser):
         }
         
         """
-        toberun = Job.objects.filter(user=self.id, nova_state='toberun')
+        toberun = Job.objects.filter(user=self.id, state='toberun')
         #get the list of jobs listed in the database as running and update them.
-        dbrunning = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
+        dbrunning = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
 
         # for runningjob in dbrunning: runningjob.update();
 
         #get the updated list of running jobs
-        running = Job.objects.filter(user=self.id).filter(nova_state__in=['submitted', 'started'])
+        running = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
         #get completed and aborted and sort together by time submitted
-        complete = Job.objects.filter(user=self.id).filter(nova_state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
+        complete = Job.objects.filter(user=self.id).filter(state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
 
         return {'toberun': toberun, 'running': running, 'complete': complete}
 
@@ -183,7 +183,7 @@ class Job(models.Model):
                          ('aborted', 'started and no longer running but did not run to completion'),
                          ('completed', 'completed or stopped'),
                          )
-    nova_state = models.CharField(max_length=1, choices=NOVA_STATE_CHOICES, default='toberun')
+    state = models.CharField(max_length=1, choices=NOVA_STATE_CHOICES, default='toberun')
 
     # Defaults to tough.pbs
     jobfile = models.CharField(max_length=256, blank=True, default="tough.pbs")
@@ -267,7 +267,8 @@ class Job(models.Model):
         block = ""
         infiletitleregex = '(?<=<).+'
         blocktitleregex = '(?<=>>>)\w+'
-        # (?=[A-Z]).
+        rocksblocktitleregex = '(ROCKS)'
+        rocksblockendregex = '(!)'
         blockendregex = '(?<=<<<)\w+'
         blocking = False
         blocktype = ""
@@ -288,6 +289,11 @@ class Job(models.Model):
                     return "blockception"
                 blocktype = re.search(blocktitleregex, line).group(0).lower()
                 blocking = True
+            elif (re.search(rocksblocktitleregex, line) != None):
+                if(blocking == True):
+                    return "rockblockception"
+                blocktype = "rocks"
+                blocking = True
             if (blocking == True):      
                 block += line + '\n'
             if(re.search(blockendregex, line) != None):
@@ -303,17 +309,29 @@ class Job(models.Model):
                         blockschanged.append(blocktype)
                 blocking = False
                 block = ""
+            elif (re.match(rockblockendregex, line) != None and blocktype == "rocks"):
+                if(blocking == False):
+                    return "too many exclaims"
+                b = self.search_block_references(blocktype = blocktype)
+                b.content = block
+                b.save()
+                blockschanged.append(blocktype)
+                blocking = False
+                block = ""
+                
         b = self.block_set.get(blockType__tough_name="extras")
         b.content = unparsed
         b.save()
         return blockschanged
 
     def search_block_references(self, blocktype):
+        import ipdb; ipdb.set_trace()
         if (self.block_set.filter(blockType__tough_name = blocktype).count() != 0):
             b = self.block_set.get(blockType__tough_name = blocktype)
             return b
         elif (QualifiedBlockRef.objects.filter(name = blocktype).count() != 0):
-            block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.name
+            import ipdb; ipdb.set_trace()
+            block_type_name = QualifiedBlockRef.objects.get(name = blocktype).blockType.tough_name
             b = self.block_set.get(blockType__tough_name = block_type_name)
             return b
         else:
@@ -554,7 +572,7 @@ class Job(models.Model):
         self.time_submitted=datetime.utcnow().replace(tzinfo=utc)
         #self.time_started=NULL
         #self.time_completed=NULL
-        self.nova_state = 'submitted'
+        self.state = 'submitted'
         self.save()
         return self
     
@@ -603,7 +621,7 @@ class Job(models.Model):
             if response['status']=='404':
                 # We should be OK - the job is simply no longer in the Q, so we assume it is complete for nova's purposes
                 self.status=u'C'
-                self.nova_state='completed'
+                self.state='completed'
                 if (not self.time_started or self.time_started == None):
                     time_started_obj = self.get_timestamp('started')
                     if time_started_obj != None:
@@ -612,7 +630,7 @@ class Job(models.Model):
                 if (not self.time_completed or self.time_completed == None):
                     time_completed_obj = self.get_timestamp('completed')
                     if time_completed_obj == None:
-                        self.nova_state = 'aborted'
+                        self.state = 'aborted'
                     else:
                          self.time_completed = time_completed_obj
                  
@@ -651,11 +669,11 @@ class Job(models.Model):
                     except:
                         print 'completed job in queue with no time_completed, assuming aborted'
                 if self.time_completed: 
-                    self.nova_state = 'completed'
+                    self.state = 'completed'
                 else:
-                    self.nova_state = 'aborted'
+                    self.state = 'aborted'
             else:
-                self.nova_state = 'started'  
+                self.state = 'started'  
 
         self.save()
         return self

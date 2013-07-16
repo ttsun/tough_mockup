@@ -265,6 +265,7 @@ def combine_inputs(job):
 @login_required
 def job_view(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
+    j.update()
     return render_to_response('job_view.html',
                               {"jobname": j.jobname, "job_id": j.pk, "jobdir": j.jobdir, "job": j},
                               context_instance=RequestContext(request))

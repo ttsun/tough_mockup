@@ -66,8 +66,6 @@ function getjobfiles(){
 }
 
 $(document).ready(function(){    
-    $("#reqblocksheader").siblings().slideUp();
-    $("#opblocksheader").siblings().slideUp();
     $("#compset").removeClass("inputarea").addClass("inputareaactive");
     current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();
@@ -108,7 +106,7 @@ $(document).ready(function(){
             $(this).text("Show");
         }
    });
-
+   $("#optoggle").click();
    $("#sidebar a:not(#submit_job, .popup, .showhide)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
@@ -136,19 +134,19 @@ function showInputArea(id){
 <div class = "row-fluid">
     <div class = "span2 well" id = "sidebar">
         {% if job_id %}
-        <ul id="jobdetails" class = "nav nav-list">
-            <li class = "nav-header">Job Details | <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit</a></small></li>
-                <li><b>Machine:</b> {{job.machine|capfirst}}</li>
-                <li><b>Project:</b> {{job.project.name|capfirst}}</li>
-                <li><b>Job Name:</b> {{job_name|capfirst}}</li>
-        </ul>
+            <ul id="jobdetails" class = "nav nav-list">
+                <li class = "nav-header">Job Details | <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit</a></small></li>
+                    <li><strong>Machine:</strong> {{job.machine|capfirst}}</li>
+                    <li><strong>Project:</strong> {{job.project.name|capfirst}}</li>
+                    <li><strong>Job Name:</strong> {{job_name|capfirst}}</li>
+            </ul>
         {% endif %}
         <ul class = "nav nav-list">
             <li class = "nav-header">Required Information</li>
             <li id = "batchselect" class = "blockchoice active"><a href="#compset" id = "batch" >Computational Settings</a></a>
         </ul>
         <ul id = "reqblocks" class = "nav nav-list">
-            <li class = "nav-header" id = "reqblocksheader">Required Blocks | <small class="showhidearea"><a class="showhide" id = "show">Show</a></small></li>
+            <li class = "nav-header" id = "reqblocksheader">Required Blocks | <small class="showhidearea"><a class="showhide" id = "reqtoggle">Hide</a></small></li>
             {% for block in job.get_title_block%}
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
                     {% if not block.is_empty %} <i class="icon-ok"></i>{% endif %}</a></li>
@@ -159,7 +157,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         <ul id = "opblocks" class="nav nav-list">
-            <li class = "nav-header" id = "opblocksheader"> Optional Blocks | <small class="showhidearea"><a class="showhide" id = "show">Show</a></small></li>
+            <li class = "nav-header" id = "opblocksheader"> Optional Blocks | <small class="showhidearea"><a class="showhide" id = "optoggle">Show</a></small></li>
             {% for block in job.get_op_blocks %}
                 <li class="blockchoice"><a href="#{{block.blockType.tough_name}}">{{block.blockType.name|capfirst}}
                     {% if not block.is_empty %}<i class="icon-ok"></i>{% endif %}</a></li>
@@ -167,33 +165,38 @@ function showInputArea(id){
         </ul>
         {% if job_id %}
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" style = "margin:10px 10px 2px 10px">Upload a MESH File</a>
-            <p><b>Last MESH upload:</b></p>
+            <p>
+                <strong>Last MESH upload:</strong>
+            </p>
             <p>{{mesh_last_uploaded}}</p>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='incon' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "margin:10px 10px 2px 10px">Upload an INCON File</a>
-            <p><b>Last INCON upload:</b></p>
+            <p>
+                <strong>Last INCON upload:</strong>
+            </p>
             <p>{{incon_last_uploaded}}</p>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='sinks_sources' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "font-size:10px; margin:10px 10px 2px 10px">Upload SINKS&SOURCES</a>
-            <p><b>Last SINKS&SOURCES upload:</b></p>
+            <p>
+                <strong>Last SINKS&SOURCES upload:</strong>
+            </p>
             <p>{{sinks_sources_last_uploaded}}</p>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='infile' %}" id = "upload_input" class = "popup btn btn-small btn-primary span10" style = "margin:10px">Upload an Input File</a>
             <a href = "{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class = "btn btn-success btn-large span11">SUBMIT</a>
         {% endif %}
     </div>
     {% if job_id %}
-    <div class = "span10 inputarea" id = "compset">
-        <h2>Computational Settings</h2>
-        {% include "batch_form.html" %}
-    </div>
-    {% for block in job.get_title_block %}
-        {% include "block_input.html" %}
+        <div class = "span10 inputarea" id = "compset">
+            <h2>Computational Settings</h2>
+            {% include "batch_form.html" %}
+        </div>
+        {% for block in job.get_title_block %}
+            {% include "block_input.html" %}
         {% endfor %}
-    {% for block in job.get_req_blocks%}
-        {% include "block_input.html" %}
-    {% endfor %}
-    {% for block in job.get_op_blocks%}
-        {% include "block_input.html" %}
-    {% endfor %}
+        {% for block in job.get_req_blocks%}
+            {% include "block_input.html" %}
+        {% endfor %}
+        {% for block in job.get_op_blocks%}
+            {% include "block_input.html" %}
+        {% endfor %}
     {% endif %}
-
 </div>
 {% endblock content %}    

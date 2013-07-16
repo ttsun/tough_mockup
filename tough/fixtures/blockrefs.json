@@ -196,7 +196,7 @@
     "model": "tough.qualifiedblockref", 
     "fields": {
         "blockType": 28, 
-        "name": "time_discretization data"
+        "name": "time_discretization_data"
     }
 },
 {
@@ -204,7 +204,7 @@
     "model": "tough.qualifiedblockref", 
     "fields": {
         "blockType": 29, 
-        "name": "nr_iteration data"
+        "name": "nr_iteration_data"
     }
 },
 {

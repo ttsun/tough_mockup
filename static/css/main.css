@@ -20,3 +20,6 @@
 .nav-list li{
 	word-wrap: break-word;
 }
+.loader{
+    display:none;
+}

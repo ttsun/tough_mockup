@@ -47,12 +47,12 @@
 		</ul>
 	</div>
 	<div class = "span10">
-		<h2>{{jobname}}</h2>
+		<h1>{{jobname}}</h1>
 		<h2>Job Information</h2>
-		<p><b>System: </b>Hopper</p>
-		<p><b>Job Directory: </b>{{jobdir}}</p>
-		<p><b>Job Status: </b>{{job.nova_state}}</p>
-		<p><b>Number of Processors: </b>{{job.numprocs}}</p>
+		<p><strong>System:</strong> Hopper</p>
+		<p><strong>Job Directory:</strong> {{jobdir}}</p>
+		<p><strong>Job Status:</strong> {{job.state | capfirst}}</p>
+		<p><strong>Number of Processors:</strong> {{job.numprocs}}</p>
 		<h2>Files</h2>
 		<table class = "table table-hover table-striped">
 			<thead>

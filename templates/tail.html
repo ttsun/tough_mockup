@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/alertify.bootstrap.css"/>
 	<script type = "text/javascript">
 		var currentLine;
-
+		var intervalID;
 		function tail(){
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
 				if(data.success){
@@ -29,17 +29,21 @@
 			console.log("starting line: " + currentLine);
 			$("#tail").click(function(e){
 				e.preventDefault();
-				// if ($(this).text == "Tail File"){
+				console.log($(this).text());
+				if ($(this).text() == "Auto Update On"){
 					tail();
-					setInterval(function(){
+					intervalID = setInterval(function(){
 						tail();
 					}, 2000);
 					$(this).removeClass("btn-primary");
-					$(this).addClass("btn-warning");
-					$(this).text = "Stop Tailing";
-				// } else {
-
-				// }
+					$(this).addClass("btn-danger");
+					$(this).text("Auto Update Off");
+				} else {
+					clearInterval(intervalID);
+					$(this).removeClass("btn-danger");
+					$(this).addClass("btn-primary");
+					$(this).text("Auto Update On");
+				}
 			});
 		})
 

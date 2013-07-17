@@ -87,9 +87,7 @@ def jobs(request):
 @login_required
 def rebuild_job(request, job_id):
     j = get_object_or_404(Job, pk = job_id)
-    j.create_dir()
-    j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
-    j.save()
+    j.rebuild()
     j.block_set.get(blockType__tough_name = "mesh").reset_block_upload_times()
     j.block_set.get(blockType__tough_name = "incon").reset_block_upload_times()
     j.block_set.get(blockType__tough_name = "sinks_sources").reset_block_upload_times()

@@ -230,6 +230,16 @@ class Job(models.Model):
         b.content = contents
         b.save()
 
+    def rebuild(self):
+        self.create_dir()
+        self.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
+        self.state = 'toberun'
+        self.pbsjob_id = ""
+        self.time_submitted = None
+        self.time_started = None
+        self.time_completed = None
+        self.save()
+
     def put_file(self, filename, contents, *args, **kwargs):
         """
         >>> j.put_file("myfile", "#my contents\nhello world\n")

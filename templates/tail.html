@@ -68,6 +68,9 @@
 			text-align:center;
 			float:right;
 		}
+		#info{
+			float:left;
+		}
 		pre{
 			margin:10px 50px;
 		}
@@ -76,6 +79,10 @@
 <body>
 	<div class="navbar">
 		<div class="navbar-inner">
+			<div id="info">
+				AutoScroll: On |
+				Auto Update: Off
+			</div>
 			<div id="button-container">				
 				<a id="scrollBot" class="btn" href="#">AutoScroll Off</a>
 				<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/tail/{{filepath}}/">Auto Update On</a>

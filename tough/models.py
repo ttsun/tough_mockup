@@ -866,6 +866,11 @@ class Block(models.Model):
     def is_empty(self):
         return len(self.content) <= 0
 
+    def reset_block_upload_times(self):
+        self.last_uploaded = None
+        self.save()
+        return
+
 class QualifiedBlockRef(models.Model):
     blockType = models.ForeignKey(BlockType)
     name = models.CharField(max_length=255)

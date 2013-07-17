@@ -90,11 +90,13 @@ def rebuild_job(request, job_id):
     j.create_dir()
     j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
     j.save()
+    j.block_set.get(blockType__tough_name = "mesh").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name = "incon").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name = "sinks_sources").reset_block_upload_times()
     messages.success(request, "%s successfully rebuilt at %s" % (j.jobname, j.jobdir))
     if request.is_ajax():
         return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
     return redirect("/job/job_setup/%d/" % j.pk)
-
 
 @login_required
 def create_job(request, job_id=None, type="new"):

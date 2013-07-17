@@ -375,8 +375,9 @@ class Job(models.Model):
     def tail_file(self, filepath, fromlinenumber):
         url = '/command/' + self.machine
         fullpath = self.jobdir + "/" + filepath
-        newtcommand = {'executable': '/usr/bin/tail -n ' + fullpath}
+        newtcommand = {'executable': '/usr/bin/tail +188819 ' + fullpath}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
+        import ipdb; ipdb.set_trace()
         if response['status'] != '200':
             raise IOError(content)
         return content

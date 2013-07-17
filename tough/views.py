@@ -43,14 +43,14 @@ def tail_file(request, job_id, filepath):
         return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
     current_line = int(request.GET.get("curr"))
     content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
-    newcontent = json.loads(content)['output']
+    newcontent = unicode(json.loads(content)['output'], errors="ignore")
     newline = len(newcontent.split('\n')) + current_line - 1
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
 
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
-    content = job.get_file(filename = filepath)
+    content = unicode(job.get_file(filename = filepath), errors='ignore')
     totallines = content.split('\n')
     current_line = len(totallines)
     # current_line = re.search('(\n)', content).lastindex + 1

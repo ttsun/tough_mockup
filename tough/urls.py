@@ -48,3 +48,7 @@ urlpatterns = patterns('',
     url(r'^ajax/job/(?P<job_id>\d+)/file/(?P<directory>.+)/$', 'tough.views.ajax_get_job_dir'),
     url(r'^ajax/job/(?P<job_id>\d+)/file/$', 'tough.views.ajax_get_job_dir'),
 )
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^404/$', TemplateView.as_view(template_name="404.html")),
+    )

@@ -39,10 +39,11 @@ def report_error(request):
 def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
-    if not request.GET.get("curr", False):
+    if not request.GET.get("curr"):
         return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
-    content = job.tail_file(filepath = filepath, fromlinenumber = request.GET.get("curr"))
-    newline = re.search('(\n)', content).lastindex + 1 + current_line
+    current_line = int(request.GET.get("curr"))
+    content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
+    newline = len(content.split('\n')) + current_line
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": content, "current_line":newline}), content_type="application/json")
 
 def view_file(request, job_id, filepath):

@@ -33,7 +33,6 @@ def newt_request(url, req_method, params=None, cookie_str=None):
         body=None
     logger.debug("NEWT: %s %s"%(req_method,full_url))
     response, content = conn.request(full_url, req_method, body=body, headers=headers)
-    # import ipdb; ipdb.set_trace()
     # raise Exception(response)
 
     logger.debug("NEWT response: %s"%response.status)

@@ -12,19 +12,19 @@
 	<script type = "text/javascript">
 		var tailing = false;
 		var currentLine;
+		var datacontent;
 
 		function tail(){
 			console.log(currentLine);
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
 				if(data.success){
 					$("#currentcontent").append(data['new_content']);
-
+					datacontent = data;
 				}
 			});
 		}
 		$(document).ready(function(){
 			currentLine = $("#current_line").val();
-			console.log(currentLine);
 			$("#tail").click(function(e){
 				e.preventDefault();
 				tailing = true;
@@ -44,7 +44,7 @@
 	<h1>File</h1>
 	<p>Maybe this should use bootstrap</p>
 	<div id = "content">
-		<pre = "currentcontent">{{file_content}}</pre>
+		<pre id= "currentcontent">{{file_content}}</pre>
 	</div>
 </body>
 </html>

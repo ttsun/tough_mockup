@@ -54,7 +54,7 @@
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a class = 'view' target='_blank' href = '/job/{{job.pk}}/view/"+dir+file.name+"'><i class='icon-eye-open'></i>View</a></td>");
+							curr_entry.append("<td><a class = 'view' target='_blank' href = '/job/{{job.pk}}/view/"+dir+file.name+"/'><i class='icon-eye-open'></i>View</a></td>");
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download ZIP</a></td>");

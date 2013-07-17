@@ -50,7 +50,7 @@
 			top:0;
 			left:0;
 			right:0;
-			opacity:0.5;
+			opacity:0.6;
 			transition: opacity 0.5s;
 			--webkit-transition: opacity 0.5s;
 			-moz-transition: opacity 0.5s;			
@@ -70,9 +70,19 @@
 		}
 		#info{
 			float:left;
+			padding:7px;
 		}
 		pre{
 			margin:10px 50px;
+		}
+		#content{
+			margin-top:50px;
+		}
+		#updateDur{
+			height:24px !important;
+			margin:0;
+			text-align:center;
+			padding:0;
 		}
 	</style>
 </head>
@@ -80,8 +90,9 @@
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div id="info">
-				AutoScroll: On |
-				Auto Update: Off
+				AutoScroll: <span id="scrollStat">On</span> |
+				Auto Update: <span id="updateStat">Off</span> | 
+				Update Duration: <input type="number" min="1" id="updateDur" class="span1" value="2"> sec 
 			</div>
 			<div id="button-container">				
 				<a id="scrollBot" class="btn" href="#">AutoScroll Off</a>
@@ -90,6 +101,8 @@
 		</div>
 		<input type = "hidden" id = "current_line" value = "{{current_line}}" />
 	</div>
-	<pre id= "currentcontent">{{file_content}}</pre>
+	<div id="content">
+		<pre id= "currentcontent">{{file_content}}</pre>
+	</div>
 </body>
 </html>

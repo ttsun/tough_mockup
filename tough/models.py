@@ -684,8 +684,11 @@ class Job(models.Model):
                     self.state = 'aborted'
             else:
                 self.state = 'started'
-                delta = str(datetime.utcnow().replace(tzinfo=utc) - self.time_started)
-                self.timeuse = delta[:delta.rfind(".")]
+                try:
+                    delta = str(datetime.utcnow().replace(tzinfo=utc) - self.time_started)
+                    self.timeuse = delta[:delta.rfind(".")]
+                except Exception:
+                    pass
 
         self.save()
         return self

@@ -19,6 +19,7 @@
 					currentLine = data['current_line'];
 					console.log("currentLine:" + currentLine);
 					console.log("new data: " + data['new_content']);
+					window.scrollTo(0, $(window).height());
 				}
 			});
 		}
@@ -32,7 +33,7 @@
 					tail();
 					setInterval(function(){
 						tail();
-					}, 15000);
+					}, 2000);
 					$(this).removeClass("btn-primary");
 					$(this).addClass("btn-warning");
 					$(this).text = "Stop Tailing";
@@ -43,18 +44,45 @@
 		})
 
 	</script>
+	<style type="text/css">
+		.navbar{
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			opacity:0.5;
+			transition: opacity 0.5s;
+			--webkit-transition: opacity 0.5s;
+			-moz-transition: opacity 0.5s;			
+			transition-delay: 2s;
+			-webkit-transition-delay: 2s; /* Safari */
+		}
+		.navbar:hover{
+			opacity:1;
+			transition: opacity 0.5s;
+			--webkit-transition: opacity 0.5s;
+			-moz-transition: opacity 0.5s;
+		}
+		#button-container{
+			width:300px;
+			text-align:center;
+			float:right;
+		}
+		pre{
+			margin:10px 50px;
+		}
+	</style>
 </head>
 <body>
 	<div class="navbar">
-		<div class="navbar-inner row-fluid">
-			<a id="tail" class="btn btn-primary span2 offset9" href="/job/status/{{job_id}}/tail/{{filepath}}/">Tail File</a>
+		<div class="navbar-inner">
+			<div id="button-container">				
+				<a id="scrollBot" class="btn" href="#">AutoScroll Off</a>
+				<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/tail/{{filepath}}/">Auto Update On</a>
+			</div>
 		</div>
 		<input type = "hidden" id = "current_line" value = "{{current_line}}" />
 	</div>
-	<h1>File</h1>
-	<p>Maybe this should use bootstrap</p>
-	<div id = "content">
-		<pre id= "currentcontent">{{file_content}}</pre>
-	</div>
+	<pre id= "currentcontent">{{file_content}}</pre>
 </body>
 </html>

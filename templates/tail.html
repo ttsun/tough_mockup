@@ -10,25 +10,35 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/alertify.css"/>
 	<link rel="stylesheet" type="text/css" href="/static/css/alertify.bootstrap.css"/>
 	<script type = "text/javascript">
-		var tailing = false;
 		var currentLine;
-		var datacontent;
 
 		function tail(){
-			console.log(currentLine);
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
 				if(data.success){
 					$("#currentcontent").append(data['new_content']);
-					datacontent = data;
+					currentLine = data['current_line'];
+					console.log("currentLine:" + currentLine);
+					console.log("new data: " + data['new_content']);
 				}
 			});
 		}
+
 		$(document).ready(function(){
 			currentLine = $("#current_line").val();
+			console.log("starting line: " + currentLine);
 			$("#tail").click(function(e){
 				e.preventDefault();
-				tailing = true;
-				setInterval(tail(), 30000);
+				// if ($(this).text == "Tail File"){
+					tail();
+					setInterval(function(){
+						tail();
+					}, 15000);
+					$(this).removeClass("btn-primary");
+					$(this).addClass("btn-warning");
+					$(this).text = "Stop Tailing";
+				// } else {
+
+				// }
 			});
 		})
 

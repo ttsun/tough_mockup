@@ -96,9 +96,7 @@ $(document).ready(function(){
 
    $(".showhide").click(function(e){
         e.preventDefault();
-        console.log("showhide clicked");
         if ($(this).parent().parent().siblings().is(":hidden")){
-            console.log("display none");
             $(this).parent().parent().siblings().slideDown();
             $(this).text("Hide");
         } else {

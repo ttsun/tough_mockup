@@ -140,7 +140,7 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted by supercomputer. Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
+                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted (likely eaten by the <a href = "https://www.nersc.gov/users/data-and-file-systems/file-systems/global-scratch/">scratch monster</a>). Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
                                 <td><a href="{% url 'tough.views.rebuild_job' job_id=job.pk%}" class="btn cp">Rebuild</a>
                             </tr>
                             {% endif %}
@@ -173,7 +173,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted by supercomputer. Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
+                                <td class="rebuild" colspan = "5"><i class = "icon-trash"></i> | <strong><em>{{job.jobname}}</em></strong> was deleted (likely eaten by the <a href = "https://www.nersc.gov/users/data-and-file-systems/file-systems/global-scratch/">scratch monster</a>). Rebuilding will retreive past blocks, but not MESH or INCON files.</td>
                                 <td><a href="{% url 'tough.views.rebuild_job' job_id=job.pk%}" class="btn cp">Rebuild</a></td>
                             </tr>
                             {% endif %}

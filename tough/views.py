@@ -39,14 +39,20 @@ def report_error(request):
 def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
-    content = job.get_file(filename = filepath)
-    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "file_url": file_url, "file_content": content}), content_type="application/json")
+    if not request.GET.get("curr", False):
+        return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
+    content = job.tail_file(filepath = filepath, fromlinenumber = request.GET.get("curr"))
+    newline = re.search('(\n)', content).lastindex + 1 + current_line
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": content, "current_line":newline}), content_type="application/json")
 
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
     content = job.get_file(filename = filepath)
-    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "file_url": file_url, "file_content": content}, context_instance=RequestContext(request))
+    totallines = content.split('\n')
+    current_line = len(totallines)
+    # current_line = re.search('(\n)', content).lastindex + 1
+    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line}, context_instance=RequestContext(request))
 
 
 def submit(request, job_id):

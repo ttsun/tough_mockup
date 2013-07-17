@@ -247,7 +247,7 @@ class Job(models.Model):
         if response['status']!='200':
             raise Exception(content)
         return simplejson.loads(content)
- 
+        
        
     def upload_files(self, uploaded_file, filename):
         path = self.jobdir
@@ -372,7 +372,15 @@ class Job(models.Model):
             raise IOError(content)
         return content
     
-    
+    def tail_file(self, filepath, fromlinenumber):
+        url = '/command/' + self.machine
+        fullpath = self.jobdir + "/" + filepath
+        newtcommand = {'executable': '/usr/bin/tail -n ' + fullpath}
+        response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
+        if response['status'] != '200':
+            raise IOError(content)
+        return content
+
     def get_zip(self, directory):
         """
         >>>j.get_zip()

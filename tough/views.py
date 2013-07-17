@@ -44,7 +44,8 @@ def tail_file(request, job_id, filepath):
     current_line = int(request.GET.get("curr"))
     content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
     newline = len(content.split('\n')) + current_line
-    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": content, "current_line":newline}), content_type="application/json")
+    newcontent = json.loads(content)
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent['output'], "current_line":newline}), content_type="application/json")
 
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)

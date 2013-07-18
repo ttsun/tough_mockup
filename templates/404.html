@@ -7,6 +7,14 @@
         body{
             background-color: #EEEEEE;
         }
+        footer{
+            position:fixed;
+            bottom:0;
+            right:0;
+            left:0;
+            text-align:center;
+            padding:0 2em;
+        }
         .content .bigtext{
             text-align: center;
             font-size: 50px;
@@ -32,9 +40,6 @@
         .icon{
             width:40px;
         }
-        footer{
-            text-align:center;
-        }
         #references{
             text-align:left;
         }
@@ -42,24 +47,26 @@
 {%endblock head%}
 
 {%block content%}
-    <div class="row-fluid content">
-        <h1 class = "bigtext">Error 404: TOUGH luck</h1>
-        <p>
-            Sorry, this page does not exist. Your page may have been consumed by the <a target="_blank" href="https://www.nersc.gov/users/data-and-file-systems/file-systems/global-scratch/">scratch monster</a><sup>[1][2]</sup> on Hopper, or <a href="/" id = "home">click here</a> to return to the homepage.   
-        </p>     
-        <p class = "bigtext">
-            <strong>:<span id = "tear">'</span>(</strong>
-        </p>
-    </div>
-    <footer>
-        <div id="references">
-            <ol>
-                <li>fictional monster </li>
-                <li>see "Purging"</li>
-            </ol>
+    <div id = "wrap">
+        <div class="row-fluid content">
+            <h1 class = "bigtext">Error 404: TOUGH luck</h1>
+            <p>
+                Sorry, this page does not exist. Your page may have been consumed by the <a target="_blank" href="https://www.nersc.gov/users/data-and-file-systems/file-systems/global-scratch/">scratch monster</a><sup>[1][2]</sup> on Hopper, or <a href="/" id = "home">click here</a> to return to the homepage.   
+            </p>     
+            <p class = "bigtext">
+                <strong>:<span id = "tear">'</span>(</strong>
+            </p>
         </div>
-        <p>
-            &copy; Team Albatross<img src="/static/img/albatross.png" class="icon" alt="">, 2013. All rights reserved 
-        </p>
-    </footer>
+        <footer>
+            <div id="references">
+                <ol>
+                    <li>fictional monster </li>
+                    <li>see "Purging"</li>
+                </ol>
+            </div>
+            <p>
+                &copy; Team Albatross<img src="/static/img/albatross.png" class="icon" alt="">, 2013. All rights reserved 
+            </p>
+        </footer>
+    </div>
 {% endblock %}

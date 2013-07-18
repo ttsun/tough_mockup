@@ -99,9 +99,7 @@ def jobs(request):
 @login_required
 def rebuild_job(request, job_id):
     j = get_object_or_404(Job, pk = job_id)
-    j.create_dir()
-    j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
-    j.save()
+    j.rebuild()
     j.block_set.get(blockType__tough_name = "mesh").reset_block_upload_times()
     j.block_set.get(blockType__tough_name = "incon").reset_block_upload_times()
     j.block_set.get(blockType__tough_name = "sinks_sources").reset_block_upload_times()
@@ -328,8 +326,10 @@ def import_file(request, job_id, file_type):
     form = ImportBlockForm(data=request.POST, user = j.user, job_id=job_id)
     if form.is_valid():
         job_from = form.cleaned_data['jobchoice']
-        content_from = job_from.get_file(filename = file_type)
-        j.put_file(filename = file_type, contents = content_from)
+        j.import_file(filename = file_type, from_job_id = job_from.pk)
+        b = j.block_set.get(blockType__tough_name = file_type)
+        b.last_uploaded = datetime.utcnow().replace(tzinfo=utc)
+        b.save()
         messages.success(request, file_type.upper() + " was successfully imported from " + job_from.jobname + " and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     else:

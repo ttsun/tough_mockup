@@ -65,7 +65,7 @@
     "fields": {
         "description": "List of the flow connections between the individual blocks", 
         "ordering": 4, 
-        "required": 1, 
+        "required": 3, 
         "tough_name": "conne", 
         "default_content": "", 
         "name": "connections"

@@ -429,9 +429,20 @@ def create_project(request):
             return redirect("tough.views.jobs")
     else:
         form = ProjectForm(user=request.user, instance = None)
-    return render_to_response("popup_form_base.html", {"form": form, "form_action": reverse("tough.views.create_project"), "form_title": "Create Project"}, context_instance=RequestContext(request))
+    return render_to_response("popup_form_base.html", {"form": form, "form_action": reverse("tough.views.create_project"), "form_title": "Create Project", "msg_success":"Project successfully created!"}, context_instance=RequestContext(request))
 
-
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, pk = project_id)
+    if request.POST.get('deljobs', False):
+        for job in project.job_set.all():
+            job.delete()
+            job.del_dir()
+    else:
+        for job in project.job_set.all():
+            job.project = None
+    project.delete()
+    import ipdb; ipdb.set_trace()
+    return HttpResponse(simplejson.dumps({"success":True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
 
 def info_edit(request, job_id):
     job = get_object_or_404(Job, pk=job_id)

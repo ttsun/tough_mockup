@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Tail File</title>
+	<title>{{title}}</title>
 	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<script src="/static/js/jquery.js"></script>
 	<script src="/static/js/bootstrap.min.js"></script>
@@ -12,14 +12,22 @@
 	<script type = "text/javascript">
 		var currentLine;
 		var intervalID;
+		var autoScroll = true;
+		var tailing = false;
+		var updateDuration = 2000;
+
 		function tail(){
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
 				if(data.success){
-					$("#currentcontent").append(data['new_content']);
-					currentLine = data['current_line'];
+					if(data['current_line']!=currentLine){
+						$("#currentcontent").append(data['new_content']);
+						currentLine = data['current_line'];
+					}
 					console.log("currentLine:" + currentLine);
 					console.log("new data: " + data['new_content']);
-					window.scrollTo(0, $(window).height());
+					if(autoScroll){
+						window.scrollTo(0, $(window).height());
+					}
 				}
 			});
 		}
@@ -30,22 +38,48 @@
 			$("#tail").click(function(e){
 				e.preventDefault();
 				console.log($(this).text());
-				if ($(this).text() == "Auto Update On"){
+				if (tailing){
+					tailing = false;
+					intervalID = clearInterval(intervalID);
+					$("#updateStat").text("Off").removeClass("off").addClass("on");					
+					$(this).removeClass("btn-danger");
+					$(this).addClass("btn-primary");
+					$(this).text("Auto Update On");					
+				} else {
 					tail();
+					tailing = true;
 					intervalID = setInterval(function(){
 						tail();
-					}, 2000);
+					}, updateDuration);
+					$("#updateStat").text("On").removeClass("on").addClass("off");
 					$(this).removeClass("btn-primary");
 					$(this).addClass("btn-danger");
 					$(this).text("Auto Update Off");
-				} else {
-					clearInterval(intervalID);
-					$(this).removeClass("btn-danger");
-					$(this).addClass("btn-primary");
-					$(this).text("Auto Update On");
 				}
 			});
-		})
+			$("#scrollBot").click(function(e){
+				e.preventDefault();
+				if(autoScroll){
+					autoScroll = false;
+					$(this).text("AutoScroll On");
+					$("#scrollStat").text("Off").removeClass("on").addClass("off");
+				}else{
+					autoScroll = true;
+					$(this).text("AutoScroll Off");
+					$("#scrollStat").text("On").removeClass("off").addClass("on");
+				}
+				return false;
+			});
+			$("#updateDur").change(function(){
+				updateDuration = parseInt($(this).val())*1000;
+				if(tailing){
+					intervalID = clearInterval(intervalID);
+					intervalID = setInterval(function(){
+						tail();
+					}, updateDuration);
+				}
+			});
+		});
 
 	</script>
 	<style type="text/css">
@@ -78,6 +112,7 @@
 		}
 		pre{
 			margin:10px 50px;
+			font-size:0.8em;
 		}
 		#content{
 			margin-top:50px;
@@ -88,14 +123,20 @@
 			text-align:center;
 			padding:0;
 		}
+		.on{
+			color:green;
+		}
+		.off{
+			color:red;
+		}
 	</style>
 </head>
 <body>
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div id="info">
-				AutoScroll: <span id="scrollStat">On</span> |
-				Auto Update: <span id="updateStat">Off</span> | 
+				AutoScroll: <span id="scrollStat" class="on">On</span> |
+				Auto Update: <span id="updateStat" class="off">Off</span> | 
 				Update Duration: <input type="number" min="1" id="updateDur" class="span1" value="2"> sec 
 			</div>
 			<div id="button-container">				

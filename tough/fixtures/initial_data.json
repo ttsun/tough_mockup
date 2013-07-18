@@ -53,7 +53,7 @@
     "fields": {
         "description": "List of the grid blocks", 
         "ordering": 3, 
-        "required": 1, 
+        "required": 3, 
         "tough_name": "eleme", 
         "default_content": "", 
         "name": "elements"
@@ -281,7 +281,7 @@
     "fields": {
         "description": "optional; one data record for more flexible initialization ", 
         "ordering": 5, 
-        "required": 0, 
+        "required": 3, 
         "tough_name": "start", 
         "default_content": "", 
         "name": "Start"

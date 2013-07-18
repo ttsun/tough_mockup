@@ -49,12 +49,12 @@
 								curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/"+dir+file.name+"/' data-dir='"+dir+file.name+"/'><i class='icon-folder-close'></i>"+file.name+"</a></td>");
 							}
 						}else{
-							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-file'></i>"+file.name+"</a></td>");
+							curr_entry.append("<td><a class = 'view file' target='_blank' href = '/job/{{job.pk}}/view/"+dir+file.name+"/'><i class='icon-file'></i>"+file.name+"</a></td>");
 						}
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a class = 'view' target='_blank' href = '/job/{{job.pk}}/view/"+dir+file.name+"/'><i class='icon-eye-open'></i>View</a></td>");
+							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-download-alt'></i>Download File</a></td>");
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download ZIP</a></td>");

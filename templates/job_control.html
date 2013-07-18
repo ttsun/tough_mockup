@@ -59,6 +59,39 @@
                     }
                 );
             });
+
+            $(".deletemultiple").click(function(e){
+                e.preventDefault;
+                var url = '/job/del/selected/'
+                var selectedjobs = new Array();
+                var checkedjobs = $('input[name=jobcheck]:checked');
+                $(checkedjobs).each(function(){
+                    selectedjobs.push($(this).attr('id'));
+                });
+                console.log(selectedjobs);
+                Alertify.dialog.confirm("Are you sure you want to delete these jobs? This operation is irreversable", 
+                    function(){
+                        Alertify.dialog.confirm("Do you want to delete the associated job files?", 
+                            function(){
+                                $.post(url, {files: true, job_ids: JSON.stringify(selectedjobs)}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }, 
+                            function(){
+                                $.post(url, {job_ids:selectedjobs}, function(data){
+                                    window.location.reload();
+                                    return false;
+                                });
+                            }
+                        );
+                    }, 
+                    function(){
+                        return false;
+                    }
+                );
+            });
+
             $("#projectbar a").click(function(e){
                 e.preventDefault();
                 if($(this).parent(".disabled").length == 0){
@@ -105,6 +138,7 @@
             </ul>
         </div>
         <div class = "span10">
+            <btn class="btn deletemultiple">Delete</btn>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -124,7 +158,7 @@
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
                             <tr>
-                                <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}">{{job.jobname}}</label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
@@ -157,7 +191,7 @@
                     {% for job in user.get_orphan_jobs %}
                         {% if job.exists %}
                             <tr>
-                                <td class="name"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}">{{job.jobname}}</label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
@@ -166,7 +200,6 @@
                                     <div class="btn-group">
                                         <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
                                         <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
-                                        <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
                                         <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>
                                 </td>

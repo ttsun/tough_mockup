@@ -554,6 +554,23 @@ def delete_job(request, job_id):
     else:
         return redirect("tough.views.jobs")
 
+@login_required
+def delete_jobs_selected(request):
+    job_idslist = simplejson.loads(request.POST['job_ids'])
+    import ipdb; ipdb.set_trace()
+    if request.POST.get("files", False):
+        for job_id in job_idslist:
+            job = get_object_or_404(Job, pk = job_id)
+            job.del_dir()
+            job.delete()
+    else:
+        for job_id in job_idslist:
+            job = get_object_or_404(Job, pk = job_id)
+            job.dete()
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+    else:
+        return redirect("tough.views.jobs")
 
 @login_required
 def rename_job(request, job_id):

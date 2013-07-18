@@ -169,8 +169,6 @@ def parse_file_for_block_vars(input_file):
             blocking = True
         if(blocking == True and (b.required==0 or b.required==1)):
             if(re.search(varnameregex, line) != None):
-                if(re.search(varvalregex,line) != None):
-                    var_val = re.search(varvalregex,line).group(0)
                 var_name = re.search(varnameregex,line).group(0).lower()
                 block_var = BlockVariable(blockType = b, var_name = var_name)
                 block_var.save()

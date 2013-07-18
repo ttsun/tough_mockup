@@ -423,6 +423,10 @@ class Job(models.Model):
 
         return content
     
+    def get_selected_zip(self, directory, selected_files):
+        url = '/command/' + self.machine
+
+
     def import_file(self, filename, from_job_id):
         from_job = Job.objects.get(pk = from_job_id)
         url = '/command/' + self.machine

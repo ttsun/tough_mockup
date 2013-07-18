@@ -1,51 +1,77 @@
+<script type="text/javascript">
+    function parse_vars_for_vals(content,blockType){
+        var blocktitleregex = new RegExp("\>\>\>HYDRATE");
+        var blockendregex = /<<<END/;
+        var varvalregex = /(?<=[=]).+(?=[,\s{1}])/;
+        var varnameregex = /(?<=\s{2})\w+/;
+        var lines = content.split("\n");
+        var blocking = False;
+        for (line in lines){
+            if(blocking == True){
+                if(line.search(varnameregex) > 0){
+                    var name = line.match(varnameregex);
+                    $("#" + name).val(line.match(varvalregex));
+                }
+            } else{
+                if(line.search(blocktitleregex) > 0){
+                    blocking = True;
+                }
+                else if(line.search(blockendregex) > 0){
+                    break;
+                }
+            }
+        }
+    }
+</script>
 <div class = "span10 inputarea" id = "{{block.blockType.tough_name}}">
-        <ul class = "nav nav-tabs">
-            <li><a href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
-            <li class = "active"><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
-            <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
-        </ul>
-        <div class = "tab-content">
-            <div class = "tab-pane" id = "{{block.blockType.tough_name}}-guided">
-                {% for var in block.blockType.blockvariable_set.all %}
-                    <p>
-                        {{var.var_name}}: <input type = "text"/>
+    <ul class = "nav nav-tabs">
+        <li><a href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
+        <li class = "active"><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
+        <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
+    </ul>
+    <div class = "tab-content">
+        <div class = "tab-pane" id = "{{block.blockType.tough_name}}-guided">
+            {% for var in block.blockType.blockvariable_set.all %}
+                <p>
+                    {{var.var_name}}: <input type = "text" id = "{{var.var_name}}"/>
 
-                    </p>
+                </p>
+            {% endfor %}
+            <button class = "btn" onclick = "parse_vars_for_vals({{block.content}},{{block.blockType.tough_name}})">Sync</button>
+            <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
+            <button class="btn" type="button" id='cancel'>Cancel</button>
+        </div>
+        <div class = "tab-pane active" id = "{{block.blockType.tough_name}}-raw">
+            <form class="rawtextform" action="{% url 'tough.views.ajax_save' job_id=job_id input_type='raw' %}" method="POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
+                {%for field in block.get_raw_input_form %}
+                <div class = "control-group">
+                    <div class = "control">
+                    {{ field }}
+                    </div>
+                </div>
                 {% endfor %}
-                <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
-                <button class="btn" type="button" id='cancel'>Cancel</button>
-            </div>
-            <div class = "tab-pane active" id = "{{block.blockType.tough_name}}-raw">
-                <form class="rawtextform" action="{% url 'tough.views.ajax_save' job_id=job_id input_type='raw' %}" method="POST">
-                    {% csrf_token %}
-                    <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
-                    {%for field in block.get_raw_input_form %}
-                    <div class = "control-group">
-                        <div class = "control">
-                        {{ field }}
-                        </div>
+            <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
+            <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
+            <button class="btn" type="button" id='cancel'>Cancel</button>
+            </form>
+        </div>
+        <div class = "tab-pane" id = "{{block.blockType.tough_name}}-import">
+            <form class="importblockform" action="{% url 'tough.views.ajax_save' job_id=job_id input_type='import' %}" method="POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
+                <div class = "control-group">
+                    {% for field in block.get_import_form %}
+                    <div class = "control">
+                        {{field}}
                     </div>
                     {% endfor %}
+                </div>
                 <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
-                <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
+                <input class="btn btn-primary" type="submit" id='saveimportblock' value="Save"/>
                 <button class="btn" type="button" id='cancel'>Cancel</button>
-                </form>
-            </div>
-            <div class = "tab-pane" id = "{{block.blockType.tough_name}}-import">
-                <form class="importblockform" action="{% url 'tough.views.ajax_save' job_id=job_id input_type='import' %}" method="POST">
-                    {% csrf_token %}
-                    <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
-                    <div class = "control-group">
-                        {% for field in block.get_import_form %}
-                        <div class = "control">
-                            {{field}}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
-                    <input class="btn btn-primary" type="submit" id='saveimportblock' value="Save"/>
-                    <button class="btn" type="button" id='cancel'>Cancel</button>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
+</div>

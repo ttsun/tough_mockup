@@ -161,7 +161,6 @@ def parse_file_for_block_vars(input_file):
     blocktitleregex = '(?<=>>>)\w+'
     blockendregex = '(?<=<<<)\w+'
     namelistregex = '(?<=&)\w+(?=\s)'
-    # varvalregex = '(?<=[=]).+(?=[,\s{1}])'
     blocking = False
     for line in lines:
         if(re.search(blocktitleregex, line) != None):

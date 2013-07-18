@@ -59,6 +59,17 @@
                     }
                 );
             });
+            
+            $(".project_header").click(function(e){
+                e.preventDefault();
+                if ($(this).parent().parent().siblings().is(":hidden")){
+                    $(this).parent().parent().siblings().show();    
+                    $(this).removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                } else {
+                    $(this).parent().parent().siblings().hide();
+                    $(this).removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                }
+            })
             $("#projectbar a").click(function(e){
                 e.preventDefault();
                 if($(this).parent(".disabled").length == 0){
@@ -119,7 +130,7 @@
                 {% for project in user.get_projects %}
                     <tbody id="project-{{project.pk}}" class = "project">
                         <tr class="project-name">
-                            <th colspan="6"><strong>{{project.name}} |</strong><a href="{% url 'tough.views.project_view' project_id=project.pk %}"><small> Edit</small></a></th>
+                            <th colspan="6"><i class = "icon-chevron-down project_header"></i> <strong>{{project.name}} |</strong><a href="{% url 'tough.views.project_view' project_id=project.pk %}"><small> Edit</small></a></th>
                         </tr>   
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
@@ -151,7 +162,7 @@
                 <tbody id="project-ungrouped" class = "project">
                     {% if user.get_orphan_jobs %}
                     <tr class="project-name">
-                        <th colspan="6">Ungrouped</th>
+                        <th colspan="6"><i class = "icon-chevron-down project_header"></i>  </i>Ungrouped</th>
                     </tr>
                     {% endif %}
                     {% for job in user.get_orphan_jobs %}

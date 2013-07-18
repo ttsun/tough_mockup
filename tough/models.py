@@ -130,7 +130,9 @@ class NoahUser(AbstractBaseUser):
         return {'toberun': toberun, 'running': running, 'complete': complete}
 
     def get_recent_jobs(self):
-        jobs_list = Job.objects.filter(user=self.id).order_by('-time_last_updated')[:5]
+        for job in Job.objects.filter(user=self.id):
+            job.check_exists
+        jobs_list = Job.objects.filter(user=self.id).exclude(exists=False).order_by('-time_last_updated')[:5]
         return jobs_list
 
     def get_projects(self):
@@ -420,7 +422,17 @@ class Job(models.Model):
         util.newt_request('/command/'+self.machine, "POST", {"executable": "/bin/rm /tmp/"+zipfilename}, cookie_str=cookie_str)
 
         return content
-        
+    
+    def import_file(self, filename, from_job_id):
+        from_job = Job.objects.get(pk = from_job_id)
+        url = '/command/' + self.machine
+        frompath = from_job.jobdir + "/" + filename
+        topath = self.jobdir 
+        newtcommand = {'executable': '/bin/cp ' + frompath + " " + topath}
+        response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
+        if response['status'] != '200':
+            raise IOError(content)
+        return content
         
     def del_dir(self, *args, **kwargs):
         """

@@ -156,10 +156,11 @@ def parse_file_for_block_vars(input_file):
     lines = input_file.split("\n")
     var_name = ""
     blockType = ""
-    var_val = ""
+    name_list = ""
     varnameregex = '(?<=\s{2})\w+'
     blocktitleregex = '(?<=>>>)\w+'
     blockendregex = '(?<=<<<)\w+'
+    namelistregex = '(?<=&)\w+(?=\s)'
     # varvalregex = '(?<=[=]).+(?=[,\s{1}])'
     blocking = False
     for line in lines:
@@ -168,9 +169,11 @@ def parse_file_for_block_vars(input_file):
             b = QualifiedBlockRef.objects.get(name = blockType).blockType
             blocking = True
         if(blocking == True and (b.required==0 or b.required==1)):
+            if(re.search(namelistregex,line) != None):
+                name_list = re.search(namelistregex,line).group(0).lower()
             if(re.search(varnameregex, line) != None):
                 var_name = re.search(varnameregex,line).group(0).lower()
-                block_var = BlockVariable(blockType = b, var_name = var_name)
+                block_var = BlockVariable(blockType = b, var_name = var_name, name_list = name_list)
                 block_var.save()
         if(re.search(blockendregex,line) != None):
             blocking = False

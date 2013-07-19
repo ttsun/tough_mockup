@@ -555,7 +555,7 @@ def ajax_get_job_info(request, job_id):
         jobdone = True
     elif j.state == 'started':
         jobdone = False
-        timeuse = (datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
+        timeuse = datetime(datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
     else:
         if j.state == 'aborted':
             jobdone = True
@@ -613,6 +613,9 @@ def rename_job(request, job_id):
     j.save()
     return redirect('tough.views.view_job', job_id=j.id)
 
+@login_required
+def ajax_get_zip_selected(request, job_id):
+    files = request.GET.get['files']
 
 @login_required
 def ajax_get_zip(request, job_id, directory=""):

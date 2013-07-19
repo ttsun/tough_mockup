@@ -2,8 +2,13 @@
 {% load file_filters %}
 {% block head %}
 	<script type="text/javascript">
+	var current_folder = "";
+	var intervalID;
 		$(document).ready(function(){
 			getFolder("");
+			setInterval(function(){
+				refreshInfo(current_folder);
+			}, 15000);
 			$("#deljob").click(function(e){
                 e.preventDefault();
                 var url = $(this).attr("href");
@@ -11,7 +16,6 @@
                     function(){
                         Alertify.dialog.confirm("Do you want to delete the associated job files?", 
                             function(){
-                                console.log(url);
                                 $.post(url, {"files": true}, function(data){
                                     window.location.href=data.redirect;
                                     return false;
@@ -31,7 +35,20 @@
                 );
             });			
 		});
-
+		
+		function refreshInfo(){
+			getFolder(current_folder);
+			$.get("{% url 'tough.views.ajax_get_job_time_info' job_id=job.pk %}", function(data){
+				if (data.success){	
+					$("#time_submitted").text(data['time_submitted']);
+					$("#time_started").text(data['time_started']);
+					$("#time_completed").text(data['time_completed']);
+					if (data['time_used'] != null){
+						$("#time_used").text(data['time_used']);
+					}
+				}
+			});
+		}
 		function getFolder(dir){
 			$("#file_list").html("");
 			$(".loader").show();
@@ -64,6 +81,7 @@
 					$(".folder").click(function(e){
 						e.preventDefault();
 						getFolder($(this).attr("data-dir"));
+						current_folder = ($(this).attr("data-dir"))
 						return false;
 					});
 					$(".view").click(function(e){
@@ -98,19 +116,19 @@
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}
-					<p><strong>Time Submitted:</strong> {{job.time_submitted}}</p>
+					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, f A"}}</span></p>
 				{% endif %}
 				{% if job.time_started %}
-					<p><strong>Time Started:</strong> {{job.time_started}}</p>
+					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started}}</span></p>
 				{% endif %}
 				{% if job.time_completed %}
-					<p><strong>Time Completed:</strong> {{job.time_completed}}</p>
+					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed}}</span></p>
 				{% endif %}
 				{% if job.project %}
 					<p><strong>Project:</strong> {{job.project.name}}</p>
 				{% endif %}
 				{% if job.timeuse %}
-					<p><strong>Time Elapsed:</strong> {{job.timeuse}}</p>
+					<p><strong>Time Elapsed: </strong><span id = "time_used">{{job.timeuse}}</span></p>
 				{% endif %}
 			</div>
 		</div>

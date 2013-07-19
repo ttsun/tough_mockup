@@ -14,12 +14,13 @@ import re
 import os
 from datetime import *
 from dateutil.tz import *
-from django.utils.timezone import utc
+from django.utils.timezone import utc, localtime
 import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.html import escape
 from tough.templatetags.file_filters import *
+import settings
 
 def home(request):
     return render_to_response("home.html", {},
@@ -520,6 +521,7 @@ def get_file(request, job_id, filename):
 @login_required
 def ajax_get_job_dir(request, job_id, directory=""):
     job = get_object_or_404(Job, pk=job_id)
+    # import ipdb; ipdb.set_trace()
     try:
         ls = job.get_dir(dir=job.jobdir+"/"+directory)
     except IOError, ex:
@@ -539,6 +541,30 @@ def ajax_get_job_dir(request, job_id, directory=""):
     listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
     return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
+@login_required
+def ajax_get_job_time_info(request, job_id):
+    j = get_object_or_404(Job, pk = job_id)
+    if j.state == 'completed':
+        timeuse = str(j.time_completed-j.time_started)
+        time_completed = localtime(j.time_completed).strftime("%b %d, %Y, %I:%M %p")
+        time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
+        time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
+    elif j.state == 'aborted':
+        timeuse = None
+        time_completed = None
+        time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
+        time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
+    else:
+        if j.state == 'toberun':
+            time_submitted = None
+            time_started = None
+            timeuse = None
+        else:
+            time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
+            time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
+            timeuse = datetime.utcnow().replace(tzinfo = utc) - time_started
+        time_completed = None
+    return HttpResponse(simplejson.dumps({"success":True, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
 
 @login_required
 def ajax_mkdir(request, machine, directory):

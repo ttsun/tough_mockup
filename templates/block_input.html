@@ -1,6 +1,6 @@
 <script type="text/javascript">
     function parse_vars_for_vals(content,blockType){
-        var blocktitleregex = new RegExp("\>\>\>HYDRATE");
+        var blocktitleregex = new RegExp("\>\>\>HYDRATE", "g");
         var blockendregex = /<<<END/;
         var varvalregex = /(?<=[=]).+(?=[,\s{1}])/;
         var varnameregex = /(?<=\s{2})\w+/;

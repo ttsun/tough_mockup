@@ -31,7 +31,7 @@
             margin-top:0;
         }
         .joboptions{
-
+            width: 50px;
         }
     </style>
     <script type="text/javascript">
@@ -169,11 +169,11 @@
         <div class = "span10">
             <div class = "row-fluid" id = "optionbuttons" style = "margin-bottom: 10px">
                 <div class = "btn-group span2 row-fluid optionbuttons" id="multiplejoboptions">
-                    <button class="btn joboptions deletemultiple"><i class="icon-trash"></i></button>
+                    <a class="btn joboptions deletemultiple">     <i class="icon-trash">     </i></a>
                 </div>
                 <div id="singlejoboptions" class = "btn-group offset1 span4 row-fluid optionbuttons">
-                    <a href="" class="btn cp popup" id="copybutton">Copy</a>
-                    <a href="" class="btn mv popup" id="movebutton">Move</a>
+                    <a href="" class="btn cp popup joboptions" id="copybutton">     <img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px">     </a>
+                    <a href="" class="btn mv popup joboptions" id="movebutton">     <i class="icon-share-alt"></i>     </a>
                 </div>
             </div>
             <table class="table table-hover">

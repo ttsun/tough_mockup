@@ -12,6 +12,7 @@ from dateutil.parser import parse
 from dateutil import tz
 from django.utils.timezone import utc
 from django.template.response import TemplateResponse
+import simplejson
 
 logger = logging.getLogger(__name__)
 
@@ -33,27 +34,24 @@ def login_view(request):
     elif request.user.is_authenticated():
         logger.debug("authenticated user")
         # Expires in 3 hours          
-        u=NoahUser.objects.get(username=request.user)
+        u = NoahUser.objects.get(username=request.user)
         
-        n=util.NewtCookie(u.cookie)        
-        expires=n.expires
+        n = simplejson.loads(u.cookie)
         # valid_for=datetime.strptime(expires,'%a, %d-%b-%Y %H:%M:%S %Z')
 
         # Time in UTC
-        exp_time_utc = parse(expires)
-        # for Django 1.3, Convert to local time because Django doesn't understand timezones
-       # valid_for = exp_time_utc.astimezone(tz.tzlocal()).replace(tzinfo=None)
+        exp_time_utc = parse(n["expires"])
         valid_for = exp_time_utc.astimezone(tz.tzlocal()).replace(tzinfo=utc)
  
         request.session.set_expiry(valid_for)
-        # Add NEWT Cookie in case we need it
         response.set_cookie('newt_sessionid', 
-                            value=n.newt_sessionid, 
-                            max_age=n.max_age, 
-                            expires=n.expires, 
-                            path=n.path, 
-                            domain=n.domain,
-                            secure=n.secure)
+                            value=n['newt_sessionid'], 
+                            max_age=n['max_age'], 
+                            expires=n['expires'], 
+                            path=n['path'], 
+                            domain=n['domain'],
+                            secure=n['secure'])
+        request.session['newt_sessionid'] = n['newt_sessionid']
     else:
         logger.error('NoahUser failed to authenticate and is not anonymous.')
 
@@ -64,8 +62,8 @@ def login_view(request):
 def logout_view(request):
     u=get_object_or_404(NoahUser, username=request.user)
 
-    response, content=util.newt_request('/auth', 'DELETE', cookie_str=u.cookie)
-    if response.status!=200:
+    response, content = util.newt_request('/auth', 'DELETE', cookie_str=u.cookie)
+    if response.status_code != 200:
         logger.warning("NEWT logout failed: %s. Continuing NOVA logout"%content)
     
 

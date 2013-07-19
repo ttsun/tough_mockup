@@ -5,7 +5,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "eos_name", 
-        "val": " 'HYDRATE-EQUILIBRIUM'"
+        "name_list": "basic_eos_parameter_definitions"
     }
 },
 {
@@ -14,7 +14,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "number_of_components", 
-        "val": " 2,        "
+        "name_list": "basic_eos_parameter_definitions"
     }
 },
 {
@@ -23,7 +23,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "number_of_equations", 
-        "val": " 3           "
+        "name_list": "basic_eos_parameter_definitions"
     }
 },
 {
@@ -32,7 +32,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "coordinate_system", 
-        "val": " 'Cylindrical'"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -41,7 +41,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "num_characters_in_element_name", 
-        "val": " 5"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -50,7 +50,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "max_number_of_elements", 
-        "val": " 48000"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -59,7 +59,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "max_number_of_connections", 
-        "val": " 110000"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -68,7 +68,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "max_number_of_sources_and_sinks", 
-        "val": " 200"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -77,7 +77,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "max_number_of_geologic_media", 
-        "val": " 12"
+        "name_list": "system_size_specifications"
     }
 },
 {
@@ -86,7 +86,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "porosity_perm_dependence_f", 
-        "val": " .FALSE.,   ! DEFAULT value:"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -95,7 +95,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "scaled_capillary_pressure_f", 
-        "val": " .FALSE.,   ! DEFAULT value:"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -104,7 +104,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "reversible_porosity_change_f", 
-        "val": " .TRUE.,    ! Activated only when solid phases (ice or hydrate) are involved"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -113,7 +113,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "accounting_for_diffusion_f", 
-        "val": " .FALSE.,    ! Default value:"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -122,7 +122,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "active_connections_only_f", 
-        "val": " .FALSE.,   ! Determines if the active connections are to be identified; Default value:"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -131,7 +131,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "boundaries_in_matrix_f", 
-        "val": " .FALSE.,   ! Determines the treatment of the inactive elements; Default value:"
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -140,7 +140,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "equilibration_run_f", 
-        "val": " .FALSE. "
+        "name_list": "simulation_specifications"
     }
 },
 {
@@ -149,7 +149,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "coupled_geochemistry_f", 
-        "val": " .FALSE.,       ! DEFAULT value:"
+        "name_list": "coupled_processes"
     }
 },
 {
@@ -158,7 +158,7 @@
     "fields": {
         "blockType": 12, 
         "var_name": "coupled_geomechanics_f", 
-        "val": " .FALSE.,       ! DEFAULT value: .FALSE. "
+        "name_list": "coupled_processes"
     }
 },
 {
@@ -167,7 +167,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "number_hydrate_forming_gases", 
-        "val": " 1,"
+        "name_list": "hydrate_composition"
     }
 },
 {
@@ -175,8 +175,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_component_gas_names", 
-        "val": " 'CH4',      ! Name of hydrate-forming gas in composite hydrates "
+        "var_name": "hydrate_component_gas_names(1)", 
+        "name_list": "hydrate_composition"
     }
 },
 {
@@ -184,8 +184,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_hydration_number", 
-        "val": " 6.0d0,      ! Hydration number of this specific gas hydrate"
+        "var_name": "gas_hydration_number(1)", 
+        "name_list": "hydrate_composition"
     }
 },
 {
@@ -193,8 +193,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_mole_fraction_in_hydrate", 
-        "val": " 1.0d0       ! Mole fraction of the specific gas hydrate in the composite"
+        "var_name": "gas_mole_fraction_in_hydrate(1)", 
+        "name_list": "hydrate_composition"
     }
 },
 {
@@ -203,7 +203,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_thermcond_equation_option", 
-        "val": " 'CONSTANT'"
+        "name_list": "hydrate_thermcond_equation"
     }
 },
 {
@@ -212,7 +212,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_thermcond_numcoeff", 
-        "val": " 1, "
+        "name_list": "hydrate_thermcond_equation"
     }
 },
 {
@@ -220,8 +220,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_thermcond_coeff", 
-        "val": " 4.5d-1 "
+        "var_name": "hydrate_thermcond_coeff(0)", 
+        "name_list": "hydrate_thermcond_equation"
     }
 },
 {
@@ -230,7 +230,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_specheat_equation_option", 
-        "val": " 'CONSTANT'"
+        "name_list": "hydrate_specheat_equation"
     }
 },
 {
@@ -239,7 +239,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_specheat_numcoeff", 
-        "val": " 1, "
+        "name_list": "hydrate_specheat_equation"
     }
 },
 {
@@ -247,8 +247,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_specheat_coeff", 
-        "val": " 2.1d3"
+        "var_name": "hydrate_specheat_coeff(0)", 
+        "name_list": "hydrate_specheat_equation"
     }
 },
 {
@@ -257,7 +257,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_density_equation_option", 
-        "val": " 'CONSTANT'"
+        "name_list": "hydrate_density_equation"
     }
 },
 {
@@ -266,7 +266,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "hydrate_density_numcoeff", 
-        "val": " 1, "
+        "name_list": "hydrate_density_equation"
     }
 },
 {
@@ -274,8 +274,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_density_coeff", 
-        "val": " 9.2d2"
+        "var_name": "hydrate_density_coeff(0)", 
+        "name_list": "hydrate_density_equation"
     }
 },
 {
@@ -284,7 +284,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "flag_inhibitorpresent", 
-        "val": " .FALSE."
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -293,7 +293,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "maxium_t_shift", 
-        "val": " 2.0d0"
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -302,7 +302,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "inhibitor_molefraction_at_maxt_shift", 
-        "val": " 1.335d-2"
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -311,7 +311,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "inhibitor_mw", 
-        "val": " 58.448d0"
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -320,7 +320,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "inhibitor_density", 
-        "val": " 2.6d3"
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -329,7 +329,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "inhibitor_dissolution_enth", 
-        "val": " 6.6479d4"
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -337,8 +337,8 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_specheat_coeff", 
-        "val": " 41.293d0, 3.3607d-2, -1.3927d-5"
+        "var_name": "inhibitor_specheat_coeff(0", 
+        "name_list": "hydrate_inhibitor_data"
     }
 },
 {
@@ -347,7 +347,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "type_of_dissociation_reaction", 
-        "val": " 'EQUILIBRIUM', ! ... Options: 'EQUILIBRIUM' or"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -356,7 +356,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "compositional_t_shift", 
-        "val": " 0.0d0,"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -365,7 +365,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "dissociation_pth_equation_option", 
-        "val": " 2"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -374,7 +374,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "activation_energy", 
-        "val": " 8.1d4,  ! ... For kinetic dissociation"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -383,7 +383,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "intrinsic_rate_constant", 
-        "val": " 3.6d4,  ! ... For kinetic dissociation"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -392,7 +392,7 @@
     "fields": {
         "blockType": 4, 
         "var_name": "area_factor", 
-        "val": " 1.0d0,  ! ... For kinetic dissociation"
+        "name_list": "dissociation_reaction_data"
     }
 },
 {
@@ -401,7 +401,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "max_number_of_timesteps", 
-        "val": " 100,      ! Maximum number of time"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -410,7 +410,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "time_at_simulation_beginning", 
-        "val": " 0.0d0,    ! Time at the beginning of the"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -419,7 +419,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "time_at_simulation_end", 
-        "val": " 8.64e5,   ! Time at the end of the"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -428,7 +428,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "initial_timestep", 
-        "val": " 1.0e-1,   ! Initial time step size"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -437,7 +437,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "maximum_timestep", 
-        "val": " 4.23E+4,  ! Maximum time step size"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -446,7 +446,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "dt_reduction_factor", 
-        "val": " 2.0d0,    ! Reduction factor for cutting"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -455,7 +455,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "dt_increase_factor", 
-        "val": " 2.0d0,    ! Factor by which DT is increased when convergence is attained within <criterion_for_Dt_increase>"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -464,7 +464,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "units_of_time", 
-        "val": " 'sec',    ! = <min>, <hrs>, or <days>; Default is"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -473,7 +473,7 @@
     "fields": {
         "blockType": 28, 
         "var_name": "num_of_user_defined_timesteps", 
-        "val": " 0         ! Number of the user-specified"
+        "name_list": "time_discretization_data"
     }
 },
 {
@@ -482,7 +482,7 @@
     "fields": {
         "blockType": 17, 
         "var_name": "matrixsolver_option", 
-        "val": " 3,        ! MatrixSolver = 1 for direct,  2 for DSLUBC, 3 for"
+        "name_list": "solver_specifications"
     }
 },
 {
@@ -491,7 +491,7 @@
     "fields": {
         "blockType": 17, 
         "var_name": "max_cgiterationratio", 
-        "val": " 1.0d-2,  "
+        "name_list": "solver_specifications"
     }
 },
 {
@@ -500,7 +500,7 @@
     "fields": {
         "blockType": 17, 
         "var_name": "cg_convergence_crit", 
-        "val": " 1.0d-9   "
+        "name_list": "solver_specifications"
     }
 },
 {
@@ -509,7 +509,7 @@
     "fields": {
         "blockType": 17, 
         "var_name": "z_preprocessing", 
-        "val": " 'Z1',     ! ... Options = Z0, Z1, Z2,"
+        "name_list": "solver_specifications"
     }
 },
 {
@@ -518,7 +518,7 @@
     "fields": {
         "blockType": 17, 
         "var_name": "o_preprocessing", 
-        "val": " 'O0'      ! ... Options = O0, O1, O2,"
+        "name_list": "solver_specifications"
     }
 },
 {
@@ -527,7 +527,7 @@
     "fields": {
         "blockType": 29, 
         "var_name": "max_number_of_nr_iterations", 
-        "val": " 10,     ! Maximum number of Newtonian"
+        "name_list": "nr_iteration_data"
     }
 },
 {
@@ -536,7 +536,7 @@
     "fields": {
         "blockType": 29, 
         "var_name": "criterion_for_dt_increase", 
-        "val": " 5,      ! If NR convergence attained in fewer iterations than this number, then Dt is doubled on the next"
+        "name_list": "nr_iteration_data"
     }
 },
 {
@@ -545,7 +545,7 @@
     "fields": {
         "blockType": 29, 
         "var_name": "relative_convergence_criterion", 
-        "val": " 2.5d-5, ! Convergence criterion #1 for relative error of Newtonian"
+        "name_list": "nr_iteration_data"
     }
 },
 {
@@ -554,7 +554,7 @@
     "fields": {
         "blockType": 29, 
         "var_name": "absolute_convergence_criterion", 
-        "val": " 1.0d0,  ! Convergence criterion #2 for absolute error of Newtonian"
+        "name_list": "nr_iteration_data"
     }
 },
 {
@@ -563,7 +563,7 @@
     "fields": {
         "blockType": 29, 
         "var_name": "nr_solution_weighing_factor", 
-        "val": " 1.0d0   ! Weighing factor of most recent Newton-Raphson solution in updating primary"
+        "name_list": "nr_iteration_data"
     }
 },
 {
@@ -572,7 +572,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_amount_of_output", 
-        "val": " 1,       ! Option determining the amount of"
+        "name_list": "output_options"
     }
 },
 {
@@ -581,7 +581,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_format_of_output", 
-        "val": " 'BOTH',  ! = Determining the format of the output (standard T+, plotting-package, or"
+        "name_list": "output_options"
     }
 },
 {
@@ -590,7 +590,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_nriterationinfo", 
-        "val": " 1,       ! = MOP( 1): Determining the printout amount after each NR"
+        "name_list": "output_options"
     }
 },
 {
@@ -599,7 +599,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_cyclinginfo", 
-        "val": " 0,       ! = MOP( 2): Determining the printout amount in the simulation cycling"
+        "name_list": "output_options"
     }
 },
 {
@@ -608,7 +608,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_jacobianinfo", 
-        "val": " 0,       !ndk = MOP( 3): Determining the printout amount in the subroutine setting up the"
+        "name_list": "output_options"
     }
 },
 {
@@ -617,7 +617,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_sourcesinkinfo", 
-        "val": " 0,       !ndk = MOP( 4): Determining the printout amount in the source/sink"
+        "name_list": "output_options"
     }
 },
 {
@@ -626,7 +626,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_eosinfo", 
-        "val": " 3,       ! = MOP( 5): Determining the printout amount in the equation-of-state"
+        "name_list": "output_options"
     }
 },
 {
@@ -635,7 +635,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "option_print_solverinfo", 
-        "val": " 0,       ! = MOP( 6): Determining the printout amount in the linear equation"
+        "name_list": "output_options"
     }
 },
 {
@@ -644,7 +644,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "flag_print_input_data", 
-        "val": " .FALSE., ! = MOP( 7): Flag determining whether the inputs will be printed in the output"
+        "name_list": "output_options"
     }
 },
 {
@@ -653,7 +653,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "output_printfrequency", 
-        "val": " 100,      ! Print-outs every <output_PrintFrequency> time"
+        "name_list": "output_options"
     }
 },
 {
@@ -662,7 +662,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "frequency_of_storing_save_file", 
-        "val": " 1,     ! Frequency of storing the SAVE"
+        "name_list": "output_options"
     }
 },
 {
@@ -671,7 +671,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "number_specified_output_times", 
-        "val": " 1        ! Number of provided print-out times"
+        "name_list": "output_options"
     }
 },
 {
@@ -680,7 +680,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "printouttime", 
-        "val": "  8.64d7,   ! Listing of the user-specified times ar which printouts are"
+        "name_list": "specified_output_times"
     }
 },
 {
@@ -689,7 +689,7 @@
     "fields": {
         "blockType": 30, 
         "var_name": "units_of_time", 
-        "val": " 'sec'"
+        "name_list": "specified_output_times"
     }
 },
 {
@@ -698,7 +698,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "upstream_weighting_factor", 
-        "val": " 1.0d0,   ! Upstream weighting"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -707,7 +707,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "implicitness_weighting_factor", 
-        "val": " 1.0d0,   ! Weighting factor determining the level of"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -716,7 +716,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "derivative_increment", 
-        "val": " 1.0d-8   ! Increment for estimation of numerical"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -725,7 +725,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "accelaration_of_gravity", 
-        "val": " 9.806d0, ! Acceleration of"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -734,7 +734,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "p_overshoot", 
-        "val": " 1.0d-5, "
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -743,7 +743,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "t_overshoot", 
-        "val": " 1.0d-5, "
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -752,7 +752,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "s_overshoot", 
-        "val": " 1.0d-5, "
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -761,7 +761,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "option_thermal_conductivity", 
-        "val": " 0,       ! Option describing the method for computing the thermal cond. of composite"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -770,7 +770,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "option_upstream_weighting", 
-        "val": " 0,       ! Option describing the method of upstream weighting of mobilities and"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -779,7 +779,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "option_interface_density", 
-        "val": " 0,       ! Option describing the method of estimation of the interface"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -788,7 +788,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "option_producedfluidcomposition", 
-        "val": " 0,       ! Option describing the method of estimation of the interface"
+        "name_list": "computational_parameters"
     }
 },
 {
@@ -797,7 +797,7 @@
     "fields": {
         "blockType": 31, 
         "var_name": "flag_check_initial_conditions", 
-        "val": " .TRUE.   ! Flag for checking the accuracy/correctness/feasibility of assigned initial"
+        "name_list": "computational_parameters"
     }
 }
 ]

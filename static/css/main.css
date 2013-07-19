@@ -23,3 +23,14 @@
 .loader{
     display:none;
 }
+.dropdown-menu li{
+    padding-left:10px;
+}
+footer{
+    text-align:center;
+    font-size:0.8em;
+    padding:0.5em 2em;
+}
+.icon{
+    width:30px;
+}

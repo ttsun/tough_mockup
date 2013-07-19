@@ -195,8 +195,9 @@ class Job(models.Model):
     user = models.ForeignKey(NoahUser)
     jobdir = models.CharField(max_length=1024)
     dir_name = models.CharField(max_length=1024)
-    machine = models.CharField(max_length=256)
+    machine = models.CharField(max_length=254)
     exists = models.BooleanField(blank = True, default = True)
+    executable = models.CharField(max_length=254, default="t+hydrate-hopper.debug")
 
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
@@ -741,7 +742,8 @@ class Job(models.Model):
                                 "num_procs": self.numprocs,
                                 "max_walltime": self.maxwalltime,
                                 "email_notifications": self.emailnotifications.split(","),
-                                "nodemem": self.nodemem},)
+                                "nodemem": self.nodemem,
+                                "executable": self.executable})
 
     def get_file_upload_form(self):
         return FileUploadForm()
@@ -849,8 +851,16 @@ class TimeSelectorField(forms.Field):
                 raise ValidationError("Invalid value: %d" % x)
         return value
 
+EXE_CHOICES = (
+    ("t+hydrate-hopper.debug", "Regular"),
+    ("t+hydrate-hopper.debug", "Debug"),
+    ("t+hydrate-hopper.debug", "Optimized"),
+    ("t+hydrate-hopper.debug", "Magical"),
+)
+
 
 class CompSettingsForm(forms.Form):
+    executable = forms.ChoiceField(choices=EXE_CHOICES)
     queue = forms.ChoiceField(choices=QUEUE_CHOICES)
     num_procs = forms.IntegerField()
     max_walltime = TimeSelectorField()

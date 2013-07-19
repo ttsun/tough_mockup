@@ -38,6 +38,7 @@ def report_error(request):
                               context_instance=RequestContext(request))
 
 
+@login_required
 def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
@@ -50,6 +51,7 @@ def tail_file(request, job_id, filepath):
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
 
 
+@login_required
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
@@ -60,6 +62,16 @@ def view_file(request, job_id, filepath):
     return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
 
 
+@login_required
+def preview_input(request, job_id):
+    j = Job.objects.get(id=job_id)
+    finalinput = combine_inputs(j)
+    response = HttpResponse(finalinput, content_type="text/plain")
+    response['Content-Disposition'] = 'filename=' + j.jobname + "_preview"
+    return response
+
+
+@login_required
 def submit(request, job_id):
     j = Job.objects.get(id=job_id)
     finalinput = ''
@@ -368,7 +380,8 @@ def ajax_save(request, job_id, input_type):
                 content += '#PBS -V\n\n'
                 content += 'cd $PBS_O_WORKDIR\n\n'
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
+                j.executable = form.cleaned_data['executable']
+                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/%s %s \n" %(j.numprocs, j.executable, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             elif input_type == 'raw':

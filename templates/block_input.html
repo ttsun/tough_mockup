@@ -5,7 +5,7 @@
         for (x in lines){
             line = lines[x];
             if(line.search(varregex) > 0){
-                var name = line.match(varregex)[1].lower();
+                var name = line.match(varregex)[1].toLowerCase();
                 console.log(name);
                 $("#" + name).val(line.match(varregex)[2]);
             }

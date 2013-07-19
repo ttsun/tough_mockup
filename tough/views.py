@@ -12,6 +12,7 @@ import tough.util as util
 import json
 import re
 import os
+import random
 from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
@@ -48,7 +49,12 @@ def tail_file(request, job_id, filepath):
     content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
     newcontent = json.loads(content)['output']
     newline = len(newcontent.split('\n')) + current_line - 1
-    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
+    graph_data = []
+    # for line in newcontent.split("\n"):
+    for x in range(0, int(random.random()*5)+1):
+        graph_data.append([random.random()*100, random.random()*100])
+
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline, "graph_data":graph_data}), content_type="application/json")
 
 
 @login_required

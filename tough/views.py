@@ -557,7 +557,6 @@ def delete_job(request, job_id):
 @login_required
 def delete_jobs_selected(request):
     job_idslist = simplejson.loads(request.POST['job_ids'])
-    import ipdb; ipdb.set_trace()
     if request.POST.get("files", False):
         for job_id in job_idslist:
             job = get_object_or_404(Job, pk = job_id)

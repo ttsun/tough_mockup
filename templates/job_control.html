@@ -30,9 +30,13 @@
         .span2.well{
             margin-top:0;
         }
+        .joboptions{
+
+        }
     </style>
     <script type="text/javascript">
         $(document).ready(function(){
+            $(".optionbuttons").css('visibility', 'hidden');
             $(".del").click(function(e){
                 e.preventDefault();
                 var url = $(this).attr("href");
@@ -59,7 +63,23 @@
                     }
                 );
             });
-
+            $(".jobcheck").click(function(e){
+                console.log("checkbox clicked");
+                switch ($('input[name=jobcheck]:checked').length){
+                    case 0:
+                        $(".optionbuttons").css('visibility', 'hidden');
+                        break;
+                    case 1:
+                        $(".optionbuttons").css('visibility', 'visible');
+                        $("#copybutton").attr("href", "/job/copy/" + $(this).attr("id") + "/");
+                        $("#movebutton").attr("href","/job/move/" + $(this).attr("id") + "/" );
+                        break;
+                    case 2:
+                        $("#multiplejoboptions").css('visibility', 'visible');
+                        $("#singlejoboptions").css('visibility', 'hidden');
+                        break;
+                }
+            });
             $(".deletemultiple").click(function(e){
                 e.preventDefault;
                 var url = '/job/del/selected/'
@@ -138,7 +158,15 @@
             </ul>
         </div>
         <div class = "span10">
-            <btn class="btn deletemultiple">Delete</btn>
+            <div class = "row-fluid" id = "optionbuttons" style = "margin-bottom: 10px">
+                <div class = "btn-group span4 row-fluid optionbuttons" id="multiplejoboptions">
+                    <button class="btn joboptions deletemultiple"><i class="icon-trash"></i></button>
+                </div>
+                <div id="singlejoboptions" class = "btn-group span4 offset1 row-fluid optionbuttons">
+                    <a href="" class="btn cp popup" id="copybutton">Copy</a>
+                    <a href="" class="btn mv popup" id="movebutton">Move</a>
+                </div>
+            </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -158,16 +186,13 @@
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}">{{job.jobname}}</label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
                                 <td class="state">{{job.state}}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
-                                        <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
-                                        <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
                                         <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>
                                 </td>
@@ -191,15 +216,13 @@
                     {% for job in user.get_orphan_jobs %}
                         {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}">{{job.jobname}}</label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
                                 <td class="state">{{job.state}}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
-                                        <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
                                         <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>
                                 </td>

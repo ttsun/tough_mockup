@@ -30,8 +30,9 @@
         .span2.well{
             margin-top:0;
         }
-        .joboptions{
-
+        #optionbuttons{
+            margin-bottom:10px;
+            display:none;
         }
     </style>
     <script type="text/javascript">
@@ -64,10 +65,11 @@
                 );
             });
             $(".jobcheck").click(function(e){
+                $("#optionbuttons").slideDown();
                 console.log("checkbox clicked");
                 switch ($('input[name=jobcheck]:checked').length){
                     case 0:
-                        $(".optionbuttons").css('visibility', 'hidden');
+                        $("#optionbuttons").slideUp();
                         break;
                     case 1:
                         $(".optionbuttons").css('visibility', 'visible');
@@ -167,11 +169,11 @@
             </ul>
         </div>
         <div class = "span10">
-            <div class = "row-fluid" id = "optionbuttons" style = "margin-bottom: 10px">
-                <div class = "btn-group span2 row-fluid optionbuttons" id="multiplejoboptions">
+            <div class = "row-fluid" id = "optionbuttons">
+                <div class = "btn-group optionbuttons" id="multiplejoboptions">
                     <button class="btn joboptions deletemultiple"><i class="icon-trash"></i></button>
                 </div>
-                <div id="singlejoboptions" class = "btn-group offset1 span4 row-fluid optionbuttons">
+                <div id="singlejoboptions" class = "btn-group optionbuttons">
                     <a href="" class="btn cp popup" id="copybutton">Copy</a>
                     <a href="" class="btn mv popup" id="movebutton">Move</a>
                 </div>

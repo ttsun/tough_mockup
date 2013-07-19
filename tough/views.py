@@ -15,11 +15,13 @@ import os
 from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
+from django.utils.timezone import localtime as djangolocaltime
 import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.html import escape
 from tough.templatetags.file_filters import *
+import settings
 
 def home(request):
     return render_to_response("home.html", {},
@@ -521,6 +523,7 @@ def get_file(request, job_id, filename):
 @login_required
 def ajax_get_job_dir(request, job_id, directory=""):
     job = get_object_or_404(Job, pk=job_id)
+    # import ipdb; ipdb.set_trace()
     try:
         ls = job.get_dir(dir=job.jobdir+"/"+directory)
     except IOError, ex:
@@ -540,6 +543,25 @@ def ajax_get_job_dir(request, job_id, directory=""):
     listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
     return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
+@login_required
+def ajax_get_job_info(request, job_id):
+    j = get_object_or_404(Job, pk = job_id)
+    time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
+    time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
+    time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
+    if j.state == 'completed':
+        timeuse = str(j.time_completed-j.time_started)
+        jobdone = True
+    elif j.state == 'started':
+        jobdone = False
+        timeuse = (datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
+    else:
+        if j.state == 'aborted':
+            jobdone = True
+        else:
+            jobdone = False
+        timeuse = None
+    return HttpResponse(simplejson.dumps({"success":True, "job_done": jobdone, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
 
 @login_required
 def ajax_mkdir(request, machine, directory):

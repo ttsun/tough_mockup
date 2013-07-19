@@ -410,7 +410,6 @@ class Job(models.Model):
         fullpath = self.jobdir + "/" + filepath
         newtcommand = {'executable': '/usr/bin/tail +' + str(fromlinenumber) + " " + fullpath}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
-
         if response.status_code != 200:
             raise IOError(content)
         return response.text

@@ -14,7 +14,8 @@ import re
 import os
 from datetime import *
 from dateutil.tz import *
-from django.utils.timezone import utc, localtime
+from django.utils.timezone import utc
+from django.utils.timezone import localtime as djangolocaltime
 import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -531,29 +532,24 @@ def ajax_get_job_dir(request, job_id, directory=""):
     return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
 @login_required
-def ajax_get_job_time_info(request, job_id):
+def ajax_get_job_info(request, job_id):
     j = get_object_or_404(Job, pk = job_id)
+    time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
+    time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
+    time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
     if j.state == 'completed':
         timeuse = str(j.time_completed-j.time_started)
-        time_completed = localtime(j.time_completed).strftime("%b %d, %Y, %I:%M %p")
-        time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
-        time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
-    elif j.state == 'aborted':
-        timeuse = None
-        time_completed = None
-        time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
-        time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
+        jobdone = True
+    elif j.state == 'started':
+        jobdone = False
+        timeuse = (datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
     else:
-        if j.state == 'toberun':
-            time_submitted = None
-            time_started = None
-            timeuse = None
+        if j.state == 'aborted':
+            jobdone = True
         else:
-            time_submitted = localtime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p")
-            time_started = localtime(j.time_started).strftime("%b %d, %Y, %I:%M %p")
-            timeuse = datetime.utcnow().replace(tzinfo = utc) - time_started
-        time_completed = None
-    return HttpResponse(simplejson.dumps({"success":True, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
+            jobdone = False
+        timeuse = None
+    return HttpResponse(simplejson.dumps({"success":True, "job_done": jobdone, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
 
 @login_required
 def ajax_mkdir(request, machine, directory):

@@ -7,14 +7,44 @@
     margin:5px;
 }
 </style>
+<script type = "text/javascript">
+$(document).ready(function(){
+    $("#deleteproject").click(function(e){
+        e.preventDefault();
+        var url = $(this).attr("href");
+                Alertify.dialog.confirm("Are you sure you want to delete this project? This operation is irreversable", 
+                    function(){
+                        Alertify.dialog.confirm("Do you want to delete the associated jobs?", 
+                            function(){
+                                console.log(url);
+                                $.post(url, {"deljobs": true}, function(data){
+                                    window.location = data['redirect'];
+                                    return false;
+                                });
+                            }, 
+                            function(){
+                                $.post(url, function(data){
+                                    window.location = data['redirect'];
+                                    return false;
+                                });
+                            }
+                        );
+                    }, 
+                    function(){
+                        return false;
+                    }
+                );
+    });
+})  
+</script>
 {% endblock head %}
 {% block content %}
     <div class = "row-fluid">
         <div class = "span2 well">
             <ul class = "nav nav-list">
                 <li class="nav-header">Options</li>
-                <a href="{% url 'tough.views.edit_project' project_id=project.pk %}" class = "popup btn btn-small btn-primary span10" >Edit Information</a>
-                <a href="#" class = "popup btn btn-small btn-primary span10">Delete Project</a>
+                <a href="{% url 'tough.views.edit_project' project_id=project.pk %}" class = "popup span10" >Edit Information</a>
+                <a id = "deleteproject" href="{% url 'tough.views.delete_project' project_id=project.pk %}" class = "span10">Delete Project</a>
             </ul>
         </div>
         <div class = "span10">

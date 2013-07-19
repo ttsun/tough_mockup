@@ -23,3 +23,6 @@
 .loader{
     display:none;
 }
+.dropdown-menu li{
+    padding-left:10px;
+}

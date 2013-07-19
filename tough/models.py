@@ -410,6 +410,7 @@ class Job(models.Model):
         fullpath = self.jobdir + "/" + filepath
         newtcommand = {'executable': '/usr/bin/tail +' + str(fromlinenumber) + " " + fullpath}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
+
         if response.status_code != 200:
             raise IOError(content)
         return response.text
@@ -921,3 +922,5 @@ class QualifiedBlockRef(models.Model):
 class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
+    name_list = models.TextField(max_length=255)
+    

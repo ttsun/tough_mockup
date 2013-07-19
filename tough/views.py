@@ -15,11 +15,13 @@ import os
 from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
+from django.utils.timezone import localtime as djangolocaltime
 import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.html import escape
 from tough.templatetags.file_filters import *
+import settings
 
 def home(request):
     return render_to_response("home.html", {},
@@ -47,25 +49,14 @@ def tail_file(request, job_id, filepath):
     newline = len(newcontent.split('\n')) + current_line - 1
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
 
-def view_file(request, job_id, filepath):
-    import requests
-    job = get_object_or_404(Job, pk=job_id)
-    file_url = job.jobdir +"/"+ filepath
 
-    newtcookie = util.NewtCookie(request.user.cookie).__dict__
-    cookies = {
-        "newt_sessionid": newtcookie['newt_sessionid'].__str__(),
-        "expires": newtcookie['expires'].__str__(),
-        "domain": newtcookie['domain'].__str__(),
-        "max_age": newtcookie['max_age'].__str__(),
-        "path": newtcookie['path'].__str__(),
-        "secure": newtcookie['secure'].__str__()
-    }
-    content = requests.get("https://newt.nersc.gov/newt/file/hopper"+file_url+"?view=read", cookies=cookies).text
-    # content = unicode(content, encoding="utf-8")
+def view_file(request, job_id, filepath):
+    job = get_object_or_404(Job, pk=job_id)
+    file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
+    response, content = util.newt_request(file_url, "GET", cookie_str=request.user.cookie)
+    content = response.text
     totallines = content.split('\n')
     current_line = len(totallines)
-    # current_line = re.search('(\n)', content).lastindex + 1
     return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
 
 
@@ -520,6 +511,7 @@ def get_file(request, job_id, filename):
 @login_required
 def ajax_get_job_dir(request, job_id, directory=""):
     job = get_object_or_404(Job, pk=job_id)
+    # import ipdb; ipdb.set_trace()
     try:
         ls = job.get_dir(dir=job.jobdir+"/"+directory)
     except IOError, ex:
@@ -539,12 +531,31 @@ def ajax_get_job_dir(request, job_id, directory=""):
     listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
     return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
 
+@login_required
+def ajax_get_job_info(request, job_id):
+    j = get_object_or_404(Job, pk = job_id)
+    time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
+    time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
+    time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
+    if j.state == 'completed':
+        timeuse = str(j.time_completed-j.time_started)
+        jobdone = True
+    elif j.state == 'started':
+        jobdone = False
+        timeuse = (datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
+    else:
+        if j.state == 'aborted':
+            jobdone = True
+        else:
+            jobdone = False
+        timeuse = None
+    return HttpResponse(simplejson.dumps({"success":True, "job_done": jobdone, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
 
 @login_required
 def ajax_mkdir(request, machine, directory):
     cookie_str = request.user.cookie
     response, content = util.newt_request('/command/'+machine, 'POST', params={'executable': '/bin/mkdir -p ' + directory}, cookie_str=cookie_str)
-    if response['status'] != '200':
+    if response.status_code != 200:
         raise Exception(response)
 
     contentjson = JSONDecoder().decode(content)

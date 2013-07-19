@@ -380,7 +380,8 @@ def ajax_save(request, job_id, input_type):
                 content += '#PBS -V\n\n'
                 content += 'cd $PBS_O_WORKDIR\n\n'
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
-                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug %s \n" %(j.numprocs, j.jobname)
+                j.executable = form.cleaned_data['executable']
+                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/%s %s \n" %(j.numprocs, j.executable, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             elif input_type == 'raw':

@@ -43,7 +43,7 @@ def parse_file_for_block_vars(input_file):
     var_name = ""
     blockType = ""
     name_list = ""
-    varnameregex = '(?<=\s{2})\w+'
+    varnameregex = '(?<=\s{2})[\w\(\)\d]+'
     blocktitleregex = '(?<=>>>)\w+'
     blockendregex = '(?<=<<<)\w+'
     namelistregex = '(?<=&)\w+(?=\s)'

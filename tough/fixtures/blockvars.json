@@ -175,7 +175,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_component_gas_names", 
+        "var_name": "hydrate_component_gas_names(1)", 
         "name_list": "hydrate_composition"
     }
 },
@@ -184,7 +184,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_hydration_number", 
+        "var_name": "gas_hydration_number(1)", 
         "name_list": "hydrate_composition"
     }
 },
@@ -193,7 +193,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_mole_fraction_in_hydrate", 
+        "var_name": "gas_mole_fraction_in_hydrate(1)", 
         "name_list": "hydrate_composition"
     }
 },
@@ -220,7 +220,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_thermcond_coeff", 
+        "var_name": "hydrate_thermcond_coeff(0)", 
         "name_list": "hydrate_thermcond_equation"
     }
 },
@@ -247,7 +247,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_specheat_coeff", 
+        "var_name": "hydrate_specheat_coeff(0)", 
         "name_list": "hydrate_specheat_equation"
     }
 },
@@ -274,7 +274,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_density_coeff", 
+        "var_name": "hydrate_density_coeff(0)", 
         "name_list": "hydrate_density_equation"
     }
 },
@@ -337,7 +337,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_specheat_coeff", 
+        "var_name": "inhibitor_specheat_coeff(0", 
         "name_list": "hydrate_inhibitor_data"
     }
 },

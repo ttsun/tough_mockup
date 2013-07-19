@@ -30,8 +30,13 @@
         .span2.well{
             margin-top:0;
         }
+
         .joboptions{
             width: 50px;
+        }
+        #optionbuttons{
+            margin-bottom:10px;
+            display:none;
         }
     </style>
     <script type="text/javascript">
@@ -64,10 +69,11 @@
                 );
             });
             $(".jobcheck").click(function(e){
+                $("#optionbuttons").slideDown();
                 console.log("checkbox clicked");
                 switch ($('input[name=jobcheck]:checked').length){
                     case 0:
-                        $(".optionbuttons").css('visibility', 'hidden');
+                        $("#optionbuttons").slideUp();
                         break;
                     case 1:
                         $(".optionbuttons").css('visibility', 'visible');

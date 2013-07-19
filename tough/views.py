@@ -36,6 +36,7 @@ def report_error(request):
                               context_instance=RequestContext(request))
 
 
+@login_required
 def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
@@ -48,6 +49,7 @@ def tail_file(request, job_id, filepath):
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
 
 
+@login_required
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
@@ -58,6 +60,16 @@ def view_file(request, job_id, filepath):
     return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
 
 
+@login_required
+def preview_input(request, job_id):
+    j = Job.objects.get(id=job_id)
+    finalinput = combine_inputs(j)
+    response = HttpResponse(finalinput, content_type="text/plain")
+    response['Content-Disposition'] = 'filename=' + j.jobname + "_preview"
+    return response
+
+
+@login_required
 def submit(request, job_id):
     j = Job.objects.get(id=job_id)
     finalinput = ''

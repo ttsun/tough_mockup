@@ -47,25 +47,14 @@ def tail_file(request, job_id, filepath):
     newline = len(newcontent.split('\n')) + current_line - 1
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
 
-def view_file(request, job_id, filepath):
-    import requests
-    job = get_object_or_404(Job, pk=job_id)
-    file_url = job.jobdir +"/"+ filepath
 
-    newtcookie = util.NewtCookie(request.user.cookie).__dict__
-    cookies = {
-        "newt_sessionid": newtcookie['newt_sessionid'].__str__(),
-        "expires": newtcookie['expires'].__str__(),
-        "domain": newtcookie['domain'].__str__(),
-        "max_age": newtcookie['max_age'].__str__(),
-        "path": newtcookie['path'].__str__(),
-        "secure": newtcookie['secure'].__str__()
-    }
-    content = requests.get("https://newt.nersc.gov/newt/file/hopper"+file_url+"?view=read", cookies=cookies).text
-    # content = unicode(content, encoding="utf-8")
+def view_file(request, job_id, filepath):
+    job = get_object_or_404(Job, pk=job_id)
+    file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
+    response, content = util.newt_request(file_url, "GET", cookie_str=request.user.cookie)
+    content = response.text
     totallines = content.split('\n')
     current_line = len(totallines)
-    # current_line = re.search('(\n)', content).lastindex + 1
     return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
 
 
@@ -533,7 +522,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
 def ajax_mkdir(request, machine, directory):
     cookie_str = request.user.cookie
     response, content = util.newt_request('/command/'+machine, 'POST', params={'executable': '/bin/mkdir -p ' + directory}, cookie_str=cookie_str)
-    if response['status'] != '200':
+    if response.status_code != 200:
         raise Exception(response)
 
     contentjson = JSONDecoder().decode(content)

@@ -18,27 +18,22 @@ class NEWTBackend:
         url="/auth"
         params={'username': username, 'password': password}
 
-        response, content=util.newt_request(url, 'POST', params=params)
-
-
-        auth_dict=JSONDecoder().decode(content)
+        response, content = util.newt_request(url, 'POST', params=params)
 
         # If the user was logged in:
-        if auth_dict['auth']:
+        if response.json()['auth']:
             
             try:
                 user = NoahUser.objects.get(username=username)
                 logger.debug("Got existing user")
-                user.cookie = response['set-cookie']
-                user.save()
+                user.set_cookie(cookie_str=response.headers['set-cookie'])
             except NoahUser.DoesNotExist:
                 logger.debug("New user")
                 # Create a new user.
                 try:
                     user = NoahUser(username=username)
                     # TODO: remove once other interfaces are ready
-                    user.cookie = response['set-cookie']
-                    user.save()
+                    user.set_cookie(cookie_str=response.headers['set-cookie'])
                 except Exception, e:
                     logger.warning('NoahUser creation failed: '+str(e))
               

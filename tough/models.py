@@ -18,6 +18,7 @@ from django.forms import widgets
 import re
 from django.utils.dateparse import parse_datetime
 import pytz
+import simplejson
 
 logger = logging.getLogger(__name__)
 logger.setLevel(getattr(settings, 'LOG_LEVEL', logging.DEBUG))
@@ -72,7 +73,7 @@ class NoahUser(AbstractBaseUser):
         cmd = '/usr/bin/groups %s' % self.username
         response, content = util.newt_request(checkurl, 'POST', params={'executable': cmd}, cookie_str=cookie_str)
         result = simplejson.loads(content)
-        if response['status'] != '200':
+        if response.status_code != 200:
             raise Exception(content)
         if "osp" in result['output']:
             return True
@@ -137,6 +138,26 @@ class NoahUser(AbstractBaseUser):
 
     def get_projects(self):
         return self.project_set.all() | Project.objects.filter(creator=self)
+
+    def set_cookie(self, cookie_str):
+        cookie = {}
+        for x in cookie_str.split(";"):
+            x = x.strip()
+            arr = x.split("=", 1)
+            arr[0] = arr[0].lower().replace("-", "_")
+            if len(arr) == 2:
+                cookie.update({str(arr[0]): str(arr[1])})
+            elif len(arr) == 1:
+                cookie.update({str(arr[0]): "True"})
+        self.cookie = simplejson.dumps(cookie)
+        self.save()
+
+    def get_cookie(self):
+        cookie_dict = simplejson.loads(self.cookie)
+        cookies = {}
+        for x in cookie_dict:
+            cookies.update({str(x): str(cookie_dict[x])})
+        return cookies
 
 
 
@@ -217,7 +238,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/command/' + self.machine
         response, content = util.newt_request(url, 'POST', params={'executable': '/bin/mkdir -p ' + self.jobdir}, cookie_str=cookie_str)
-        if response['status']!='200':            
+        if response.status_code != 200:            
             import ipdb; ipdb.set_trace()
             raise Exception(response)
         
@@ -256,7 +277,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'PUT', params=contents, cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(content)
         return simplejson.loads(content)
         
@@ -361,7 +382,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'DELETE', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(content)
         return simplejson.loads(content)        
         
@@ -380,7 +401,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/%s?view=read' % (self.machine, path, filename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise IOError(content)
         return content
     
@@ -389,9 +410,9 @@ class Job(models.Model):
         fullpath = self.jobdir + "/" + filepath
         newtcommand = {'executable': '/usr/bin/tail +' + str(fromlinenumber) + " " + fullpath}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
-        if response['status'] != '200':
+        if response.status_code != 200:
             raise IOError(content)
-        return content
+        return response.text
 
     def get_zip(self, directory):
         """
@@ -409,12 +430,12 @@ class Job(models.Model):
         newtcommand = {'executable': '/bin/tar -cvzf /tmp/' + zipfilename + " -C " + directory[:directory.rfind("/")] + " " + directory[directory.rfind("/")+1:]}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=cookie_str)
 
-        if response['status'] != '200':
+        if response.status_code != 200:
             raise IOError(content)
         #fetch the newly created zip
         url = '/file/%s/%s?view=read' % (self.machine, "/tmp/"+zipfilename)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise IOError(content)
 
         # Removes files created in temp folder
@@ -430,7 +451,7 @@ class Job(models.Model):
         topath = self.jobdir 
         newtcommand = {'executable': '/bin/cp ' + frompath + " " + topath}
         response, content = util.newt_request(url, 'POST', params=newtcommand, cookie_str=self.user.cookie)
-        if response['status'] != '200':
+        if response.status_code != 200:
             raise IOError(content)
         return content
         
@@ -449,7 +470,7 @@ class Job(models.Model):
         url = '/command/%s/' % (self.machine)    
 
         response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/rm -rf %s"'%path }, cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(response)        
 
         content=simplejson.loads(content)
@@ -473,7 +494,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s' % (self.machine, path)
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise IOError(content)
             
         dir_info=simplejson.loads(content)
@@ -490,7 +511,7 @@ class Job(models.Model):
         url = '/command/%s/' % (self.machine)
 
         response, content = util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
-        if response['status'] != '200':
+        if response.status_code != 200:
             raise Exception(response)
 
         content=simplejson.loads(content)
@@ -537,7 +558,7 @@ class Job(models.Model):
         url = '/command/%s/' % (self.machine)
         
         response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/cp %s %s"'%(filestr, path) }, cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(response)        
         
         content=simplejson.loads(content)
@@ -588,7 +609,7 @@ class Job(models.Model):
 
         response, content = util.newt_request(url, 'POST', params=params, cookie_str=cookie_str)
         # raise Exception(content)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(content)
 
         job_info=simplejson.loads(content)
@@ -611,7 +632,7 @@ class Job(models.Model):
         url = '/queue/%s/%s' % (self.machine, self.pbsjob_id)
 
         response, content = util.newt_request(url, 'DELETE', cookie_str=cookie_str)
-        if response['status']!='200':
+        if response.status_code != 200:
             raise Exception(content)
 
         output=simplejson.loads(content)
@@ -625,7 +646,7 @@ class Job(models.Model):
         url = '/file/%s/%s' % (self.machine, self.jobdir)
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
-        if (response['status'] != '200'):
+        if (response.status_code != 200):
             self.exists = False
             self.save()
         else:
@@ -646,8 +667,8 @@ class Job(models.Model):
         
         response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         # import ipdb; ipdb.set_trace()
-        if response['status']!='200':
-            if response['status']=='404':
+        if response.status_code != 200:
+            if response.status_code == 404:
                 # We should be OK - the job is simply no longer in the Q, so we assume it is complete for nova's purposes
                 self.status = u'C'
                 self.state = 'completed'

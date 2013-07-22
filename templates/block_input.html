@@ -1,17 +1,22 @@
-<script type="text/javascript">
-</script>
+{% load var_filters %}
+
 <div class = "span10 inputarea" id = "{{block.blockType.tough_name}}">
     <ul class = "nav nav-tabs">
-        <li><a href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
+        <li ><a onclick = "parse_raw_for_varvals('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
         <li class = "active"><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
         <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
     </ul>
     <div class = "tab-content">
         <div class = "tab-pane" id = "{{block.blockType.tough_name}}-guided">
-            {% for var in block.blockType.blockvariable_set.all %}
+            {% for namelist in block.blockType.get_name_list_dict.keys %}
                 <p>
-                    {{var.var_name}}: <input type = "text" id = "{{var.var_name}}"/>
-                    Comments: <input type = "text" id = "{{var.var_name}}-comments" class = "comments"/>
+                    <h4>{{namelist}}</h4>
+                    {% for var in namelist|get_vars:block %}
+                    <p>
+                        {{var.var_name}}: <input data-namelist = "{{var.name_list}}" type = "text" id = "{{var.var_name}}" class = "varvals"/>
+                        Comments: <input type = "text" id = "{{var.var_name}}-comments" class = "comments"/>
+                    </p>
+                    {% endfor %}
                 </p>
             {% endfor %}
             <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>

@@ -65,7 +65,9 @@ def view_file(request, job_id, filepath):
     content = response.text
     totallines = content.split('\n')
     current_line = len(totallines)
-    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
+    graph_options_list = totallines[0].split()
+    graph_options = zip(range(len(graph_options_list)), graph_options_list)
+    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options}, context_instance=RequestContext(request))
 
 
 @login_required

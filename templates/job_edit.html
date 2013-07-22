@@ -56,7 +56,7 @@ var jobfiles;
 var job_id;
 
 function parse_raw_for_varvals(blockname){
-    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\.\:]*)/;
+    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([(\!\s)\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,]*)/;
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
     for (x in lines){
         line = lines[x];

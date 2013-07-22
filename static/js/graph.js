@@ -45,4 +45,17 @@ svg.append("g")
 		.tickSize(-width, 0, 0)
 		.tickFormat(""));
 
+var chartBody = svg.append("g")
+	.attr("clip-path", "url(#clip)");
+
+function graphData(data){
+	if(clearData){
+		chartBody.selectAll(".line").remove();
+	}
+	chartBody.append("svg:path")
+	.datum(data)
+	.attr("class", "line")
+	.attr("d", line);
+	refresh();
+}
 	

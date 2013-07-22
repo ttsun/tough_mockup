@@ -55,8 +55,7 @@ def tail_file(request, job_id, filepath):
         graph_data.append([random.random()*100, random.random()*100])
 
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline, "graph_data":graph_data}), content_type="application/json")
-
-
+    
 @login_required
 def view_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)

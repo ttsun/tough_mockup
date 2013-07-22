@@ -33,10 +33,6 @@ svg.append("g")
 	.call(yAxis);
 
 svg.append("g")
-	.attr("class", "y axis")
-	.call(yAxis);
-
-svg.append("g")
 	.attr("class", "x grid")
 	.attr("transform", "translate(0, " + height + ")")
 	.call(make_x_axis()

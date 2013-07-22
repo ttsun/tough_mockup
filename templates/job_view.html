@@ -125,13 +125,13 @@
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}
-					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, f A"}}</span></p>
+					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_started %}
-					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started}}</span></p>
+					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_completed %}
-					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed}}</span></p>
+					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.project %}
 					<p><strong>Project:</strong> {{job.project.name}}</p>

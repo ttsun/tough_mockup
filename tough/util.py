@@ -60,7 +60,7 @@ def parse_file_for_block_vars(input_file):
             if(re.search(varnameregex, line) != None):
                 commented = False
                 var_name = re.search(varnameregex,line).group(0).lower()
-                if(re.search("!",var_name) != None):
+                if(re.search("!",re.search('.+(?==)',line).group(0)) != None):
                     commented = True
                 var_name = var_name.strip("! ")
                 block_var = BlockVariable(blockType = b, var_name = var_name, name_list = name_list, commented = commented)

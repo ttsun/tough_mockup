@@ -44,9 +44,9 @@ def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
     if not request.GET.get("curr"):
-        return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": False}), content_type="application/json")
     current_line = int(request.GET.get("curr"))
-    content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
+    content = job.tail_file(filepath=filepath, fromlinenumber=current_line)
     newcontent = json.loads(content)['output']
     newline = len(newcontent.split('\n')) + current_line - 1
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline}), content_type="application/json")
@@ -169,6 +169,26 @@ def rebuild_job(request, job_id):
         return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
     return redirect("/job/job_setup/%d/" % j.pk)
 
+
+@login_required
+def batch_move(request):
+    if request.method == "POST":
+        jobdir = request.POST['jobdir']
+        jobs = request.POST['jobs'].split(",")
+        for job_id in jobs:
+            job = Job.objects.get(pk=int(job_id.strip()))
+            job.move_dir(jobdir)
+            basename = os.path.basename(job.jobdir.rstrip("/"))
+            job.jobdir = os.path.join(jobdir, basename)
+            job.save()
+            messages.success(request, "%s successfully moved to %s" % (job.jobname, job.jobdir))
+        if request.is_ajax():
+            return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+        return redirect('tough.views.jobs')
+    else:
+        return render_to_response('batch_move_form.html', {"setup_type": "move", "jobs": request.GET.get("jobs", "")}, context_instance=RequestContext(request)) 
+
+
 @login_required
 def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
@@ -202,6 +222,7 @@ def create_job(request, job_id=None, type="new"):
             basename = os.path.basename(j.jobdir.rstrip('/'))
             j.jobdir = os.path.join(jobdir, basename)
             j.save()
+            messages.success(request, "%s successfully moved to %s" % (j.jobname, j.jobdir))
             return redirect('tough.views.jobs')
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name)
@@ -594,7 +615,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
             listing.append({
                 "name": f['name'],
                 "size": size_nice(f['size']),
-                "date": f['date'],
+                "date": djangolocaltime(f['date']).strftime("%b %d, %Y, %I:%M %p"),
                 "is_folder": f['perms'][0] == "d"
             })
     listing = sorted(listing, key=lambda f: f['name'].lower())

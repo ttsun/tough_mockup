@@ -55,19 +55,35 @@ var scratchdir;
 var jobfiles;
 var job_id;
 
-function parse_vars_for_vals(blockname){
-    var varregex = /(?:&[\w\d\(\)]){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\:\.]*)/;
+function parse_raw_for_varvals(blockname){
+    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\.\:]*)/;
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
     for (x in lines){
         line = lines[x];
-        if(line.search(varregex) > 0){
-            var name = line.match(varregex)[1].toLowerCase();
-            var comments = line.match(varregex)[3];
-            console.log(name);
-            $("#" + name.replace("(", "\\(").replace(")","\\)")).val(line.match(varregex)[2]);
+        console.log(line,line.search(varregex));
+        if(line.search(varregex) >= 0){
+            var name = line.match(varregex)[2].toLowerCase();
+            var comments = line.match(varregex)[4];
+            $("#" + name.replace("(", "\\(").replace(")","\\)")).val(line.match(varregex)[3]);
             $("#" + name.replace("(", "\\(").replace(")","\\)") + "-comments").val(comments);
         }
     }
+}
+
+function recreate_raw(blockname){
+    var samelist = false;
+    raw_text = ""
+    raw_text.append(">>>" + blockname.toUpperCase() + "\n");
+    for (input in $("#" + blockname + "-guided .varvals")){
+        var list_name = ""
+        if(samelist == true){
+            var varname = $("#" + blockname + "-guided .varvals")[input].attr('id');
+            var varval = $("#" + blockname + "-guided .varvals")[input];
+            var comment = $("#" + blockname + "-guided .comments")[input];
+            raw_text.append();
+        }
+    }
+    raw_text.append(">>>END of the " + blockname.toUpperCase() + " data block");
 }
 
 function setupBlocks(blockName){

@@ -576,7 +576,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
             listing.append({
                 "name": f['name'],
                 "size": size_nice(f['size']),
-                "date": f['date'],
+                "date": djangolocaltime(f['date']).strftime("%b %d, %Y, %I:%M %p"),
                 "is_folder": f['perms'][0] == "d"
             })
     listing = sorted(listing, key=lambda f: f['name'].lower())

@@ -70,7 +70,7 @@ function setupGraph(){
 		.attr("padding", graphpadding);
 
 	xScale = d3.scale.linear()
-	.domain([d3.min(graphdata[dataX], function(d){ return d[0] }), d3.max(graphdata[dataX], function(d){ return d[0] })])
+	.domain([d3.min(graphdata[dataX]), d3.max(graphdata[dataX])])
 	.range([0, graphwidth]);
 	// svg.append("svg:rect")
 	// 	.attr("width", width)
@@ -80,6 +80,7 @@ function setupGraph(){
 	xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
 	yAxis = d3.svg.axis().scale(y).orient("left");
+
 	svg.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(50, " + graphheight + ")")
@@ -109,7 +110,7 @@ function setupGraph(){
 
 }
 
-function graphData(data, index){
+function graphData(){
 	var tobegraphed = new Array();
 	for (index in dataY){
 		tobegraphed[0] = graphdata[dataX];
@@ -122,4 +123,27 @@ function graphData(data, index){
 	}
 }
 
+function rescaleY(){
+	var minsArray = new Array();
+	for (index in dataY){
+		minsArray.push(d3.min(graphdata[dataY[index]]));
+	}
+	console.log(minsArray);
+	minY = d3.min(minsArray);
+	var maxArray = new Array();
+	for (index in dataY){
+		maxsArray.push(d3.max(graphdata[dataY[index]]));
+	}
+	console.log(maxArray);
+	maxY = d3.max(maxArray);
+
+	yScale = d3.scale.linear()
+	.domain([minY, maxY])
+	.range([0, graphwidth]);
+	
+}
+
+function rescaleX(){
+
+}
 	

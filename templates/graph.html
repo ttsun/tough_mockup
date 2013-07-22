@@ -16,8 +16,6 @@
 		var intervalID;
 		var graphdata;
 		var graphoptions = {{graph_options|safe}};
-		var selectedX;
-		var selectedY;
 		var dataX;
 		var dataY = new Array();
 
@@ -61,7 +59,7 @@
 			})
 			$("#graph_submit").click(function(e){
 				$("#y_axis_select").show();
-				$("#y_axis_"+selectedX).hide();
+				$("#y_axis_"+dataX).hide();
 				setupGraph();
 			});
 			$("#tail").click(function(e){

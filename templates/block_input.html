@@ -1,4 +1,5 @@
 {% load var_filters %}
+
 <div class = "span10 inputarea" id = "{{block.blockType.tough_name}}">
     <ul class = "nav nav-tabs">
         <li ><a onclick = "parse_raw_for_varvals('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
@@ -19,7 +20,7 @@
                 </p>
             {% endfor %}
             <div>
-                Other comments: <textarea id = "{{block.blockType.tough_name}}-comments"> </textarea>
+                Other comments: <textarea id = "{{block.blockType.tough_name}}-comments" class = "others"> </textarea>
             </div>
             <input class="btn btn-primary" type="submit" id='saverawblock' value="Save"/>
             <button class="btn" type="button" id='cancel'>Cancel</button>

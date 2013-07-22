@@ -50,11 +50,22 @@ def tail_file(request, job_id, filepath):
     newcontent = json.loads(content)['output']
     newline = len(newcontent.split('\n')) + current_line - 1
     graph_data = []
-    # for line in newcontent.split("\n"):
-    for x in range(0, int(random.random()*5)+1):
-        graph_data.append([random.random()*100, random.random()*100])
 
-    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline, "graph_data":graph_data}), content_type="application/json")
+    # Files to be graphed are assumed to have columned data split by spaces and line breaks
+    # x_col = request.GET.get("x", 0)  # These can be set by get variables if necessary to specify
+    # y_col = request.GET.get("y", 1)  # the columns to be graphed
+    line_regex = re.compile("[\d\w\-\+\.]+")
+
+    for index, line in enumerate(newcontent.split("\n")):
+        if index == 0 and current_line == 1:
+            continue
+        row = line_regex.findall(line)
+        data = []
+        for datum in row:
+            data.append(float(datum))
+        graph_data.append(data)
+
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline, "graph_data": graph_data}), content_type="application/json")
 
 
 @login_required
@@ -451,7 +462,6 @@ def delete_project(request, project_id):
         for job in project.job_set.all():
             job.project = None
     project.delete()
-    import ipdb; ipdb.set_trace()
     return HttpResponse(simplejson.dumps({"success":True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
 
 def info_edit(request, job_id):

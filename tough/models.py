@@ -415,11 +415,12 @@ class Job(models.Model):
             raise IOError(content)
         return response.text
 
-    def get_zip(self, directory):
+    def get_zip(self, directory, **kwargs):
         """
         >>>j.get_zip()
         zip file of entire jobdir directory
         """
+        
         if directory:
             zipfilename = directory[directory.rfind("/")+1:] + ".tar.gz"
         else:
@@ -445,6 +446,10 @@ class Job(models.Model):
 
         return content
     
+    def get_selected_zip(self, directory, selected_files):
+        url = '/command/' + self.machine
+
+
     def import_file(self, filename, from_job_id):
         from_job = Job.objects.get(pk = from_job_id)
         url = '/command/' + self.machine

@@ -12,6 +12,7 @@ import tough.util as util
 import json
 import re
 import os
+import random
 from datetime import *
 from dateutil.tz import *
 from django.utils.timezone import utc
@@ -48,7 +49,23 @@ def tail_file(request, job_id, filepath):
     content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
     newcontent = json.loads(content)['output']
     newline = len(newcontent.split('\n')) + current_line - 1
-    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line":newline}), content_type="application/json")
+    graph_data = []
+
+    # Files to be graphed are assumed to have columned data split by spaces and line breaks
+    # x_col = request.GET.get("x", 0)  # These can be set by get variables if necessary to specify
+    # y_col = request.GET.get("y", 1)  # the columns to be graphed
+    line_regex = re.compile("[\d\w\-\+\.]+")
+
+    for index, line in enumerate(newcontent.split("\n")):
+        if index == 0 and current_line == 1:
+            continue
+        row = line_regex.findall(line)
+        data = []
+        for datum in row:
+            data.append(float(datum))
+        graph_data.append(data)
+
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline, "graph_data": graph_data}), content_type="application/json")
 
 
 @login_required
@@ -59,7 +76,9 @@ def view_file(request, job_id, filepath):
     content = response.text
     totallines = content.split('\n')
     current_line = len(totallines)
-    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
+    graph_options_list = totallines[0].split()
+    graph_options = zip(range(len(graph_options_list)), graph_options_list)
+    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -445,7 +464,6 @@ def delete_project(request, project_id):
         for job in project.job_set.all():
             job.project = None
     project.delete()
-    import ipdb; ipdb.set_trace()
     return HttpResponse(simplejson.dumps({"success":True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
 
 def info_edit(request, job_id):
@@ -555,7 +573,7 @@ def ajax_get_job_info(request, job_id):
         jobdone = True
     elif j.state == 'started':
         jobdone = False
-        timeuse = (datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
+        timeuse = datetime(datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
     else:
         if j.state == 'aborted':
             jobdone = True
@@ -589,6 +607,22 @@ def delete_job(request, job_id):
     else:
         return redirect("tough.views.jobs")
 
+@login_required
+def delete_jobs_selected(request):
+    job_idslist = simplejson.loads(request.POST['job_ids'])
+    if request.POST.get("files", False):
+        for job_id in job_idslist:
+            job = get_object_or_404(Job, pk = job_id)
+            job.del_dir()
+            job.delete()
+    else:
+        for job_id in job_idslist:
+            job = get_object_or_404(Job, pk = job_id)
+            job.dete()
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+    else:
+        return redirect("tough.views.jobs")
 
 @login_required
 def rename_job(request, job_id):
@@ -597,6 +631,9 @@ def rename_job(request, job_id):
     j.save()
     return redirect('tough.views.view_job', job_id=j.id)
 
+@login_required
+def ajax_get_zip_selected(request, job_id):
+    files = request.GET.get['files']
 
 @login_required
 def ajax_get_zip(request, job_id, directory=""):

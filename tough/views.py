@@ -44,9 +44,9 @@ def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
     if not request.GET.get("curr"):
-        return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success": False}), content_type="application/json")
     current_line = int(request.GET.get("curr"))
-    content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
+    content = job.tail_file(filepath=filepath, fromlinenumber=current_line)
     newcontent = json.loads(content)['output']
     newline = len(newcontent.split('\n')) + current_line - 1
     graph_data = []

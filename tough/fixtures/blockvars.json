@@ -4,8 +4,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "eos_name", 
-        "name_list": "basic_eos_parameter_definitions"
+        "var_name": " eos_name                   ", 
+        "name_list": "basic_eos_parameter_definitions", 
+        "commented": false
     }
 },
 {
@@ -13,8 +14,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "number_of_components", 
-        "name_list": "basic_eos_parameter_definitions"
+        "var_name": "                                 number_of_components       ", 
+        "name_list": "basic_eos_parameter_definitions", 
+        "commented": false
     }
 },
 {
@@ -22,8 +24,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "number_of_equations", 
-        "name_list": "basic_eos_parameter_definitions"
+        "var_name": "                                 number_of_equations        ", 
+        "name_list": "basic_eos_parameter_definitions", 
+        "commented": false
     }
 },
 {
@@ -31,8 +34,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "coordinate_system", 
-        "name_list": "system_size_specifications"
+        "var_name": " coordinate_system               ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -40,8 +44,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "num_characters_in_element_name", 
-        "name_list": "system_size_specifications"
+        "var_name": "                            num_characters_in_element_name  ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -49,8 +54,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "max_number_of_elements", 
-        "name_list": "system_size_specifications"
+        "var_name": "                            max_number_of_elements          ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -58,8 +64,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "max_number_of_connections", 
-        "name_list": "system_size_specifications"
+        "var_name": "                            max_number_of_connections       ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -67,8 +74,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "max_number_of_sources_and_sinks", 
-        "name_list": "system_size_specifications"
+        "var_name": "                            max_number_of_sources_and_sinks ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -76,8 +84,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "max_number_of_geologic_media", 
-        "name_list": "system_size_specifications"
+        "var_name": "                            max_number_of_geologic_media    ", 
+        "name_list": "system_size_specifications", 
+        "commented": false
     }
 },
 {
@@ -85,8 +94,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "porosity_perm_dependence_f", 
-        "name_list": "simulation_specifications"
+        "var_name": " porosity_perm_dependence_f   ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -94,8 +104,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "scaled_capillary_pressure_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           scaled_capillary_pressure_f  ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -103,8 +114,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "reversible_porosity_change_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           reversible_porosity_change_f ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -112,8 +124,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "accounting_for_diffusion_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           accounting_for_diffusion_f   ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -121,8 +134,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "active_connections_only_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           active_connections_only_f    ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -130,8 +144,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "boundaries_in_matrix_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           boundaries_in_matrix_f       ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -139,8 +154,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "equilibration_run_f", 
-        "name_list": "simulation_specifications"
+        "var_name": "                           equilibration_run_f          ", 
+        "name_list": "simulation_specifications", 
+        "commented": false
     }
 },
 {
@@ -148,8 +164,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "coupled_geochemistry_f", 
-        "name_list": "coupled_processes"
+        "var_name": " coupled_geochemistry_f  ", 
+        "name_list": "coupled_processes", 
+        "commented": false
     }
 },
 {
@@ -157,8 +174,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "! geochem_property_update", 
-        "name_list": "coupled_processes"
+        "var_name": "                 ! geochem_property_update ", 
+        "name_list": "coupled_processes", 
+        "commented": true
     }
 },
 {
@@ -166,8 +184,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "coupled_geomechanics_f", 
-        "name_list": "coupled_processes"
+        "var_name": "                   coupled_geomechanics_f  ", 
+        "name_list": "coupled_processes", 
+        "commented": false
     }
 },
 {
@@ -175,8 +194,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "! geomechanical_code_name", 
-        "name_list": "coupled_processes"
+        "var_name": "                 ! geomechanical_code_name ", 
+        "name_list": "coupled_processes", 
+        "commented": true
     }
 },
 {
@@ -184,8 +204,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "! geomech_property_update", 
-        "name_list": "coupled_processes"
+        "var_name": "                 ! geomech_property_update ", 
+        "name_list": "coupled_processes", 
+        "commented": true
     }
 },
 {
@@ -193,8 +214,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 12, 
-        "var_name": "! number_of_geomech_param", 
-        "name_list": "coupled_processes"
+        "var_name": "                 ! number_of_geomech_param ", 
+        "name_list": "coupled_processes", 
+        "commented": true
     }
 },
 {
@@ -202,8 +224,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "number_hydrate_forming_gases", 
-        "name_list": "hydrate_composition"
+        "var_name": "  number_hydrate_forming_gases    ", 
+        "name_list": "hydrate_composition", 
+        "commented": false
     }
 },
 {
@@ -211,8 +234,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_component_gas_names(1)", 
-        "name_list": "hydrate_composition"
+        "var_name": "                      hydrate_component_gas_names(1)  ", 
+        "name_list": "hydrate_composition", 
+        "commented": false
     }
 },
 {
@@ -220,8 +244,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_hydration_number(1)", 
-        "name_list": "hydrate_composition"
+        "var_name": "                      gas_hydration_number(1)         ", 
+        "name_list": "hydrate_composition", 
+        "commented": false
     }
 },
 {
@@ -229,8 +254,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_mole_fraction_in_hydrate(1)", 
-        "name_list": "hydrate_composition"
+        "var_name": "                      gas_mole_fraction_in_hydrate(1) ", 
+        "name_list": "hydrate_composition", 
+        "commented": false
     }
 },
 {
@@ -238,8 +264,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_thermcond_equation_option", 
-        "name_list": "hydrate_thermcond_equation"
+        "var_name": "  hydrate_thermcond_equation_option ", 
+        "name_list": "hydrate_thermcond_equation", 
+        "commented": false
     }
 },
 {
@@ -247,8 +274,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_thermcond_numcoeff", 
-        "name_list": "hydrate_thermcond_equation"
+        "var_name": "                             hydrate_thermcond_numcoeff        ", 
+        "name_list": "hydrate_thermcond_equation", 
+        "commented": false
     }
 },
 {
@@ -256,8 +284,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_thermcond_coeff(0)", 
-        "name_list": "hydrate_thermcond_equation"
+        "var_name": "                             hydrate_thermcond_coeff(0)        ", 
+        "name_list": "hydrate_thermcond_equation", 
+        "commented": false
     }
 },
 {
@@ -265,8 +294,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_specheat_equation_option", 
-        "name_list": "hydrate_specheat_equation"
+        "var_name": "   hydrate_specheat_equation_option ", 
+        "name_list": "hydrate_specheat_equation", 
+        "commented": false
     }
 },
 {
@@ -274,8 +304,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_specheat_numcoeff", 
-        "name_list": "hydrate_specheat_equation"
+        "var_name": "                             hydrate_specheat_numcoeff        ", 
+        "name_list": "hydrate_specheat_equation", 
+        "commented": false
     }
 },
 {
@@ -283,8 +314,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_specheat_coeff(0)", 
-        "name_list": "hydrate_specheat_equation"
+        "var_name": "                             hydrate_specheat_coeff(0)        ", 
+        "name_list": "hydrate_specheat_equation", 
+        "commented": false
     }
 },
 {
@@ -292,8 +324,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_density_equation_option", 
-        "name_list": "hydrate_density_equation"
+        "var_name": "    hydrate_density_equation_option ", 
+        "name_list": "hydrate_density_equation", 
+        "commented": false
     }
 },
 {
@@ -301,8 +334,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_density_numcoeff", 
-        "name_list": "hydrate_density_equation"
+        "var_name": "                             hydrate_density_numcoeff        ", 
+        "name_list": "hydrate_density_equation", 
+        "commented": false
     }
 },
 {
@@ -310,8 +344,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_density_coeff(0)", 
-        "name_list": "hydrate_density_equation"
+        "var_name": "                             hydrate_density_coeff(0)        ", 
+        "name_list": "hydrate_density_equation", 
+        "commented": false
     }
 },
 {
@@ -319,8 +354,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "flag_inhibitorpresent", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "      flag_inhibitorpresent       ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -328,8 +364,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "maxium_t_shift", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "                             maxium_t_shift              ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -337,8 +374,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_molefraction_at_maxt_shift", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "                             inhibitor_molefraction_at_maxt_shift ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -346,8 +384,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_mw", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "                             inhibitor_mw                ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -355,8 +394,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_density", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "                             inhibitor_density           ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -364,8 +404,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "inhibitor_dissolution_enth", 
-        "name_list": "hydrate_inhibitor_data"
+        "var_name": "                             inhibitor_dissolution_enth  ", 
+        "name_list": "hydrate_inhibitor_data", 
+        "commented": false
     }
 },
 {
@@ -373,8 +414,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "type_of_dissociation_reaction", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "  type_of_dissociation_reaction    ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -382,8 +424,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "compositional_t_shift", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "                             compositional_t_shift            ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -391,8 +434,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "dissociation_pth_equation_option", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "                             dissociation_pth_equation_option ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -400,8 +444,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "activation_energy", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "                            activation_energy            ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -409,8 +454,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "intrinsic_rate_constant", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "                            intrinsic_rate_constant      ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -418,8 +464,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "area_factor", 
-        "name_list": "dissociation_reaction_data"
+        "var_name": "                            area_factor                  ", 
+        "name_list": "dissociation_reaction_data", 
+        "commented": false
     }
 },
 {
@@ -427,8 +474,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "max_number_of_timesteps", 
-        "name_list": "time_discretization_data"
+        "var_name": "     max_number_of_timesteps        ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -436,8 +484,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "time_at_simulation_beginning", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              time_at_simulation_beginning   ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -445,8 +494,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "time_at_simulation_end", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              time_at_simulation_end         ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -454,8 +504,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "initial_timestep", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              initial_timestep               ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -463,8 +514,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "maximum_timestep", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              maximum_timestep               ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -472,8 +524,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "dt_reduction_factor", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              dt_reduction_factor            ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -481,8 +534,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "dt_increase_factor", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              dt_increase_factor             ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -490,8 +544,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "units_of_time", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              units_of_time                  ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -499,8 +554,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
-        "var_name": "num_of_user_defined_timesteps", 
-        "name_list": "time_discretization_data"
+        "var_name": "                              num_of_user_defined_timesteps  ", 
+        "name_list": "time_discretization_data", 
+        "commented": false
     }
 },
 {
@@ -508,8 +564,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
-        "var_name": "matrixsolver_option", 
-        "name_list": "solver_specifications"
+        "var_name": "  matrixsolver_option  ", 
+        "name_list": "solver_specifications", 
+        "commented": false
     }
 },
 {
@@ -517,8 +574,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
-        "var_name": "max_cgiterationratio", 
-        "name_list": "solver_specifications"
+        "var_name": "                        max_cgiterationratio ", 
+        "name_list": "solver_specifications", 
+        "commented": false
     }
 },
 {
@@ -526,8 +584,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
-        "var_name": "cg_convergence_crit", 
-        "name_list": "solver_specifications"
+        "var_name": "                        cg_convergence_crit  ", 
+        "name_list": "solver_specifications", 
+        "commented": false
     }
 },
 {
@@ -535,8 +594,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
-        "var_name": "z_preprocessing", 
-        "name_list": "solver_specifications"
+        "var_name": "                       z_preprocessing      ", 
+        "name_list": "solver_specifications", 
+        "commented": false
     }
 },
 {
@@ -544,8 +604,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
-        "var_name": "o_preprocessing", 
-        "name_list": "solver_specifications"
+        "var_name": "                       o_preprocessing      ", 
+        "name_list": "solver_specifications", 
+        "commented": false
     }
 },
 {
@@ -553,8 +614,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
-        "var_name": "max_number_of_nr_iterations", 
-        "name_list": "nr_iteration_data"
+        "var_name": "    max_number_of_nr_iterations    ", 
+        "name_list": "nr_iteration_data", 
+        "commented": false
     }
 },
 {
@@ -562,8 +624,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
-        "var_name": "criterion_for_dt_increase", 
-        "name_list": "nr_iteration_data"
+        "var_name": "                      criterion_for_dt_increase      ", 
+        "name_list": "nr_iteration_data", 
+        "commented": false
     }
 },
 {
@@ -571,8 +634,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
-        "var_name": "relative_convergence_criterion", 
-        "name_list": "nr_iteration_data"
+        "var_name": "                      relative_convergence_criterion ", 
+        "name_list": "nr_iteration_data", 
+        "commented": false
     }
 },
 {
@@ -580,8 +644,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
-        "var_name": "absolute_convergence_criterion", 
-        "name_list": "nr_iteration_data"
+        "var_name": "                      absolute_convergence_criterion ", 
+        "name_list": "nr_iteration_data", 
+        "commented": false
     }
 },
 {
@@ -589,8 +654,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
-        "var_name": "nr_solution_weighing_factor", 
-        "name_list": "nr_iteration_data"
+        "var_name": "                      nr_solution_weighing_factor    ", 
+        "name_list": "nr_iteration_data", 
+        "commented": false
     }
 },
 {
@@ -598,8 +664,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_amount_of_output", 
-        "name_list": "output_options"
+        "var_name": "               option_amount_of_output        ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -607,8 +674,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_format_of_output", 
-        "name_list": "output_options"
+        "var_name": "                              option_format_of_output        ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -616,8 +684,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_nriterationinfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_nriterationinfo   ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -625,8 +694,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_cyclinginfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_cyclinginfo       ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -634,8 +704,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_jacobianinfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_jacobianinfo      ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -643,8 +714,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_sourcesinkinfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_sourcesinkinfo    ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -652,8 +724,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_eosinfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_eosinfo           ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -661,8 +734,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "option_print_solverinfo", 
-        "name_list": "output_options"
+        "var_name": "                              option_print_solverinfo        ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -670,8 +744,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "flag_print_input_data", 
-        "name_list": "output_options"
+        "var_name": "                              flag_print_input_data          ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -679,8 +754,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "output_printfrequency", 
-        "name_list": "output_options"
+        "var_name": "                              output_printfrequency          ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -688,8 +764,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "frequency_of_storing_save_file", 
-        "name_list": "output_options"
+        "var_name": "                              frequency_of_storing_save_file ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -697,8 +774,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "number_specified_output_times", 
-        "name_list": "output_options"
+        "var_name": "                              number_specified_output_times  ", 
+        "name_list": "output_options", 
+        "commented": false
     }
 },
 {
@@ -706,8 +784,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "printouttime", 
-        "name_list": "specified_output_times"
+        "var_name": "       printouttime  ", 
+        "name_list": "specified_output_times", 
+        "commented": false
     }
 },
 {
@@ -715,8 +794,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
-        "var_name": "units_of_time", 
-        "name_list": "specified_output_times"
+        "var_name": "                              units_of_time ", 
+        "name_list": "specified_output_times", 
+        "commented": false
     }
 },
 {
@@ -724,8 +804,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "upstream_weighting_factor", 
-        "name_list": "computational_parameters"
+        "var_name": "     upstream_weighting_factor       ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -733,8 +814,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "implicitness_weighting_factor", 
-        "name_list": "computational_parameters"
+        "var_name": "                              implicitness_weighting_factor   ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -742,8 +824,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "derivative_increment", 
-        "name_list": "computational_parameters"
+        "var_name": "                              derivative_increment            ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -751,8 +834,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "accelaration_of_gravity", 
-        "name_list": "computational_parameters"
+        "var_name": "                              accelaration_of_gravity         ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -760,8 +844,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "p_overshoot", 
-        "name_list": "computational_parameters"
+        "var_name": "                              p_overshoot                     ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -769,8 +854,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "t_overshoot", 
-        "name_list": "computational_parameters"
+        "var_name": "                              t_overshoot                     ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -778,8 +864,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "s_overshoot", 
-        "name_list": "computational_parameters"
+        "var_name": "                              s_overshoot                     ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -787,8 +874,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "option_thermal_conductivity", 
-        "name_list": "computational_parameters"
+        "var_name": "                              option_thermal_conductivity     ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -796,8 +884,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "option_upstream_weighting", 
-        "name_list": "computational_parameters"
+        "var_name": "                              option_upstream_weighting       ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -805,8 +894,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "option_interface_density", 
-        "name_list": "computational_parameters"
+        "var_name": "                              option_interface_density        ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -814,8 +904,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "option_producedfluidcomposition", 
-        "name_list": "computational_parameters"
+        "var_name": "                              option_producedfluidcomposition ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 },
 {
@@ -823,8 +914,9 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
-        "var_name": "flag_check_initial_conditions", 
-        "name_list": "computational_parameters"
+        "var_name": "                              flag_check_initial_conditions   ", 
+        "name_list": "computational_parameters", 
+        "commented": false
     }
 }
 ]

@@ -905,6 +905,13 @@ class BlockType(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.tough_name.upper(), self.name)
 
+    def get_name_list_dict(self):
+        var_dict = {}
+        for var in self.blockvariable_set.all():
+            if not var_dict.has_key(var.name_list):
+                var_dict.update({var.name_list:[]})
+            var_dict[var.name_list].append(var)
+        return var_dict
 
 class Block(models.Model):
     blockType = models.ForeignKey(BlockType)
@@ -937,4 +944,3 @@ class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
     name_list = models.TextField(max_length=255)
-    

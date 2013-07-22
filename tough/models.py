@@ -519,10 +519,8 @@ class Job(models.Model):
         response, content = util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)
-
-        content=simplejson.loads(content)
-        if content['error'] != "":
-            raise Exception(content['error'])
+        if response.json()['error'] != "":
+            raise Exception(response.json()['error'])
 
         return content
         

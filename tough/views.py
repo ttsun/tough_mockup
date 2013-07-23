@@ -44,6 +44,59 @@ def tail_file(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
     file_url = job.jobdir + filepath
     if not request.GET.get("curr"):
+        return HttpResponse(simplejson.dumps({"success": False}), content_type="application/json")
+    current_line = int(request.GET.get("curr"))
+    content = job.tail_file(filepath=filepath, fromlinenumber=current_line)
+    newcontent = json.loads(content)['output']
+    newline = len(newcontent.split('\n')) + current_line - 1
+    return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline}), content_type="application/json")
+
+
+@login_required
+def view_file(request, job_id, filepath):
+    job = get_object_or_404(Job, pk=job_id)
+    file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
+    response, content = util.newt_request(file_url, "GET", cookie_str=request.user.cookie)
+    content = response.text
+    totallines = content.split('\n')
+    current_line = len(totallines)
+    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
+
+@login_required
+def view_graph(request, job_id, filepath):
+    job = get_object_or_404(Job, pk=job_id)
+    file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
+    content = job.tail_file(filepath = filepath, fromlinenumber = 0)
+    newcontent = json.loads(content)['output']
+    totallines = newcontent.split('\n')
+    if len(totallines) > 2:
+        graphable = True
+    else:
+        graphable = False
+    graph_options = simplejson.dumps(totallines[0].split())
+    graph_data = []
+    for x in range(len(totallines[0].split())):
+        graph_data.append([])
+
+    line_regex = re.compile("[\d\w\-\+\.]+")
+
+    for index, line in enumerate(newcontent.split("\n")):
+        if index == 0:
+            continue
+        for valindex, element in enumerate(line.split()):
+            graph_data[valindex].append(float(element))
+        # row = line_regex.findall(line)
+        # data = []
+        # for datum in row:
+        #     data.append(float(datum))
+        # graph_data.append(data)
+    return render_to_response("graph.html", {"success": True, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
+
+@login_required
+def update_graph(request, job_id, filepath):
+    job = get_object_or_404(Job, pk=job_id)
+    file_url = job.jobdir + filepath
+    if not request.GET.get("curr"):
         return HttpResponse(simplejson.dumps({"success":False}), content_type="application/json")
     current_line = int(request.GET.get("curr"))
     content = job.tail_file(filepath = filepath, fromlinenumber = current_line)
@@ -66,20 +119,6 @@ def tail_file(request, job_id, filepath):
         graph_data.append(data)
 
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline, "graph_data": graph_data}), content_type="application/json")
-
-
-@login_required
-def view_file(request, job_id, filepath):
-    job = get_object_or_404(Job, pk=job_id)
-    file_url = "/file/hopper" + job.jobdir + "/" + filepath + "?view=read"
-    response, content = util.newt_request(file_url, "GET", cookie_str=request.user.cookie)
-    content = response.text
-    totallines = content.split('\n')
-    current_line = len(totallines)
-    graph_options_list = totallines[0].split()
-    graph_options = zip(range(len(graph_options_list)), graph_options_list)
-    return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options}, context_instance=RequestContext(request))
-
 
 @login_required
 def preview_input(request, job_id):
@@ -130,6 +169,26 @@ def rebuild_job(request, job_id):
         return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
     return redirect("/job/job_setup/%d/" % j.pk)
 
+
+@login_required
+def batch_move(request):
+    if request.method == "POST":
+        jobdir = request.POST['jobdir']
+        jobs = request.POST['jobs'].split(",")
+        for job_id in jobs:
+            job = Job.objects.get(pk=int(job_id.strip()))
+            job.move_dir(jobdir)
+            basename = os.path.basename(job.jobdir.rstrip("/"))
+            job.jobdir = os.path.join(jobdir, basename)
+            job.save()
+            messages.success(request, "%s successfully moved to %s" % (job.jobname, job.jobdir))
+        if request.is_ajax():
+            return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+        return redirect('tough.views.jobs')
+    else:
+        return render_to_response('batch_move_form.html', {"setup_type": "move", "jobs": request.GET.get("jobs", "")}, context_instance=RequestContext(request)) 
+
+
 @login_required
 def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
@@ -163,6 +222,7 @@ def create_job(request, job_id=None, type="new"):
             basename = os.path.basename(j.jobdir.rstrip('/'))
             j.jobdir = os.path.join(jobdir, basename)
             j.save()
+            messages.success(request, "%s successfully moved to %s" % (j.jobname, j.jobdir))
             return redirect('tough.views.jobs')
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name)
@@ -555,7 +615,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
             listing.append({
                 "name": f['name'],
                 "size": size_nice(f['size']),
-                "date": f['date'],
+                "date": djangolocaltime(f['date']).strftime("%b %d, %Y, %I:%M %p"),
                 "is_folder": f['perms'][0] == "d"
             })
     listing = sorted(listing, key=lambda f: f['name'].lower())

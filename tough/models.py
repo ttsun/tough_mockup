@@ -5,7 +5,7 @@ import httplib2
 import requests
 import os
 from datetime import *
-from dateutil import parser
+from dateutil.parser import parse
 from dateutil.tz import *
 import simplejson
 import tough.util as util
@@ -498,13 +498,26 @@ class Job(models.Model):
             path=self.jobdir
         
         cookie_str=self.user.cookie
-        url = '/file/%s%s' % (self.machine, path)
-        response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        # url = '/file/%s%s' % (self.machine, path)
+        url = '/command/%s/' % self.machine
+        newt_command = "/bin/bash -c 'ls -a --full-time %s'" % path
+        # response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
+        response, content = util.newt_request(url, 'POST', {"executable": newt_command}, cookie_str=cookie_str)
         if response.status_code != 200:
             raise IOError(content)
-            
-        dir_info=simplejson.loads(content)
-        
+        temp = response.json()['output'].split("\n")[1:-1]
+        dir_info = []
+        for line in temp:
+            line = line.split()
+            dir_info.append({
+                "perms": line[0],
+                "links": line[1],
+                "owner": line[2],
+                "group": line[3],
+                "size": line[4],
+                "date": parse(" ".join(line[5:8])),
+                "name": " ".join(line[8:])
+            })
         return dir_info
         
     def move_dir(self, tgtdir, *args, **kwargs):
@@ -519,10 +532,8 @@ class Job(models.Model):
         response, content = util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)
-
-        content=simplejson.loads(content)
-        if content['error'] != "":
-            raise Exception(content['error'])
+        if response.json()['error'] != "":
+            raise Exception(response.json()['error'])
 
         return content
         

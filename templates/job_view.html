@@ -80,7 +80,7 @@
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-download-alt'></i>Download File</a></td>");
+							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-download-alt'></i>Download File</a><a class = 'graph file' target = '_blank' href = '/job/{{job.pk}}/graph/" + dir + file.name + "/'>Graph</a></td>");
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download .tar.gz</a></td>");
@@ -94,6 +94,11 @@
 						return false;
 					});
 					$(".view").click(function(e){
+						e.preventDefault();
+						window.open($(this).attr("href"), "", 'width=800,height=500,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1');
+						return false;
+					});
+					$(".graph").click(function(e){
 						e.preventDefault();
 						window.open($(this).attr("href"), "", 'width=800,height=500,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1');
 						return false;
@@ -125,13 +130,13 @@
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}
-					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, f A"}}</span></p>
+					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_started %}
-					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started}}</span></p>
+					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_completed %}
-					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed}}</span></p>
+					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed|date:"N j, Y, g:i A"}}</span></p>
 				{% endif %}
 				{% if job.project %}
 					<p><strong>Project:</strong> {{job.project.name}}</p>

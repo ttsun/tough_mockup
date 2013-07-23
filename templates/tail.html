@@ -41,7 +41,7 @@
 				if (tailing){
 					tailing = false;
 					intervalID = clearInterval(intervalID);
-					$("#updateStat").text("Off").removeClass("off").addClass("on");					
+					$("#updateStat").text("Off").removeClass("on").addClass("off");					
 					$(this).removeClass("btn-danger");
 					$(this).addClass("btn-primary");
 					$(this).text("Auto Update On");					
@@ -51,7 +51,7 @@
 					intervalID = setInterval(function(){
 						tail();
 					}, updateDuration);
-					$("#updateStat").text("On").removeClass("on").addClass("off");
+					$("#updateStat").text("On").removeClass("off").addClass("on");
 					$(this).removeClass("btn-primary");
 					$(this).addClass("btn-danger");
 					$(this).text("Auto Update Off");

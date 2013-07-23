@@ -78,12 +78,17 @@
                     case 1:
                         // $(".optionbuttons").css('visibility', 'visible');
                         $("#singlejoboptions").fadeIn();
-                        $("#copybutton").attr("href", "/job/copy/" + $(this).attr("id") + "/");
-                        $("#movebutton").attr("href","/job/move/" + $(this).attr("id") + "/" );
+                        $("#copybutton").attr("href", "/job/copy/" + $(this).attr("data-id") + "/");
+                        $("#movebutton").attr("href","/job/move/" + $(this).attr("data-id") + "/" );
                         break;
                     case 2:
-                        $("#multiplejoboptions").css('visibility', 'visible');
-                        $("#singlejoboptions").fadeOut();
+                        // $("#multiplejoboptions").css('visibility', 'visible');
+                        var selectedjobs = [];
+                        $('input[name=jobcheck]:checked').each(function(){
+                            selectedjobs.push($(this).attr('data-id'));
+                        });
+                        $("#movebutton").attr("href", "/ajax/move/?jobs=" + selectedjobs.join(','))
+                        // $("#singlejoboptions").fadeOut();
                         break;
                 }
             });
@@ -94,7 +99,7 @@
                 var selectedjobs = new Array();
                 var checkedjobs = $('input[name=jobcheck]:checked');
                 $(checkedjobs).each(function(){
-                    selectedjobs.push($(this).attr('id'));
+                    selectedjobs.push($(this).attr('data-id'));
                 });
                 console.log(selectedjobs);
                 Alertify.dialog.confirm("Are you sure you want to delete these jobs? This operation is irreversable", 
@@ -203,7 +208,7 @@
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id="{{job.pk}}"/><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
@@ -233,7 +238,7 @@
                     {% for job in user.get_orphan_jobs %}
                         {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>

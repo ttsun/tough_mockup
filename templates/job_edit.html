@@ -77,19 +77,40 @@ function parse_raw_for_varvals(blockname){
 }
 
 function recreate_raw(blockname){
+    var name_list = "";
     var samelist = false;
-    raw_text = ""
-    raw_text.append(">>>" + blockname.toUpperCase() + "\n");
-    for (input in $("#" + blockname + "-guided .varvals")){
-        var list_name = ""
-        if(samelist == true){
-            var varname = $("#" + blockname + "-guided .varvals")[input].attr('id');
-            var varval = $("#" + blockname + "-guided .varvals")[input];
-            var comment = $("#" + blockname + "-guided .comments")[input];
-            raw_text.append();
+    var num_indents = 0;
+    indents = "";
+    raw_text = "";
+    raw_text += ">>>" + blockname.toUpperCase() + "\n";
+    raw_text += $("#" + blockname + "-comments").html() + "\n";
+    for(var x = 0; x < $("#" + blockname + "-guided .varvals").length; x++){
+        samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
+        if(samelist == false){
+            name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
+            num_indents = name_list.length + 7;
+            indents = "";
+            for(var y = 0; y < num_indents; y++){
+                indents += " ";
+            }
+            if(name_list != ""){
+                raw_text += indents + "/" + "\n";
+            }
+            raw_text += "&" + name_list + "  ";
+            var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
         }
+        else{
+            var varname = indents + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
+        }
+        var varval = $($("#" + blockname + "-guided .varvals")[x]).val();
+        var comment = $($("#" + blockname + "-guided .comments")[x]).val();
+        if(comment){
+            comment = "! " + comment;
+        }
+        raw_text += varname + " = " + varval + ", " + comment + "\n";
     }
-    raw_text.append(">>>END of the " + blockname.toUpperCase() + " data block");
+    raw_text += ">>>END of the " + blockname.toUpperCase() + " data block";
+    $("#" + blockname + "-raw textarea").val(raw_text);
 }
 
 function setupBlocks(blockName){

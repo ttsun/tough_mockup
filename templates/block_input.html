@@ -3,7 +3,7 @@
 <div class = "span10 inputarea" id = "{{block.blockType.tough_name}}">
     <ul class = "nav nav-tabs">
         <li ><a onclick = "parse_raw_for_varvals('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
-        <li class = "active"><a href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
+        <li class = "active"><a onclick = "recreate_raw('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
         <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
     </ul>
     <div class = "tab-content">

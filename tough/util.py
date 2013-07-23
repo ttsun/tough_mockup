@@ -43,7 +43,8 @@ def parse_file_for_block_vars(input_file):
     var_name = ""
     blockType = ""
     name_list = ""
-    varnameregex = '(?<=\s{2})[\w\(\)\d]+'
+    commented = False
+    varnameregex = '(?<=\s{2})[(\!\s)\w\(\)\d]+(?==)'
     blocktitleregex = '(?<=>>>)\w+'
     blockendregex = '(?<=<<<)\w+'
     namelistregex = '(?<=&)\w+(?=\s)'
@@ -57,8 +58,12 @@ def parse_file_for_block_vars(input_file):
             if(re.search(namelistregex,line) != None):
                 name_list = re.search(namelistregex,line).group(0).lower()
             if(re.search(varnameregex, line) != None):
+                commented = False
                 var_name = re.search(varnameregex,line).group(0).lower()
-                block_var = BlockVariable(blockType = b, var_name = var_name, name_list = name_list)
+                if(re.search("!",re.search('.+(?==)',line).group(0)) != None):
+                    commented = True
+                var_name = var_name.strip("! ")
+                block_var = BlockVariable(blockType = b, var_name = var_name, name_list = name_list, commented = commented)
                 block_var.save()
         if(re.search(blockendregex,line) != None):
             blocking = False

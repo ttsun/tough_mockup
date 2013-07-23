@@ -935,3 +935,4 @@ class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
     name_list = models.TextField(max_length=255)
+    commented = models.BooleanField()

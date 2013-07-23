@@ -13,8 +13,13 @@
                     <h4>{{namelist}}</h4>
                     {% for var in namelist|get_vars:block %}
                     <p>
-                        {{var.var_name}}: <input data-namelist = "{{var.name_list}}" type = "text" id = "{{var.var_name}}" class = "varvals"/>
-                        Comments: <input type = "text" id = "{{var.var_name}}-comments" class = "comments"/>
+                        {% if var.commented %}
+                            {{var.var_name}}: <input data-namelist = "{{var.name_list}}" type = "text" id = "{{var.var_name}}" class = "varvals" disabled = "disabled"/>
+                            Comments: <input type = "text" id = "{{var.var_name}}-comments" class = "comments" disabled = "disabled"/>
+                        {% else %}
+                            {{var.var_name}}: <input data-namelist = "{{var.name_list}}" type = "text" id = "{{var.var_name}}" class = "varvals"/>
+                            Comments: <input type = "text" id = "{{var.var_name}}-comments" class = "comments"/>
+                        {% endif %}
                     </p>
                     {% endfor %}
                 </p>

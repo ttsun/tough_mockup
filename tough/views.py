@@ -585,7 +585,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
 
 @login_required
 def ajax_get_job_info(request, job_id):
-    j = get_object_or_404(Job, pk = job_id)
+    j = get_object_or_404(Job, pk=job_id)
     time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
     time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
     time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None

@@ -120,10 +120,6 @@ function setupBlocks(blockName){
     $("#reqblocks").children("li").last().html("<a href=\"#\"" + blockName + ">" + blockName + "</a>");
 }
 
-function showRawInput(blockName){
-
-}
-
 function getjobfiles(){
 
     $.ajax({
@@ -189,6 +185,11 @@ $(document).ready(function(){
             showInputArea($(this).attr("href"));
         }
     });
+   $(".saveguided").click(function(e){
+        e.preventDefault();
+        recreate_raw($(this).attr("data-blockname"));
+        $("#" + $(this).attr("data-blockname") + "-raw form").submit();
+   });
 });
 
 function showInputArea(id){

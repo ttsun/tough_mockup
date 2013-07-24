@@ -75,21 +75,18 @@ def view_graph(request, job_id, filepath):
         graphable = False
     graph_options = simplejson.dumps(totallines[0].split())
     graph_data = []
-    for x in range(len(totallines[0].split())):
-        graph_data.append([])
 
     line_regex = re.compile("[\d\w\-\+\.]+")
-
     for index, line in enumerate(newcontent.split("\n")):
         if index == 0:
             continue
-        for valindex, element in enumerate(line.split()):
-            graph_data[valindex].append(float(element))
-        # row = line_regex.findall(line)
-        # data = []
-        # for datum in row:
-        #     data.append(float(datum))
-        # graph_data.append(data)
+        if line == '':
+            continue
+        row = line_regex.findall(line)
+        data = []
+        for datum in row:
+            data.append(float(datum))
+        graph_data.append(data)
     return render_to_response("graph.html", {"success": True, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
 
 @login_required

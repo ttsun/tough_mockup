@@ -80,7 +80,7 @@
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-download-alt'></i>Download File</a><a class = 'graph file' target = '_blank' href = '/job/{{job.pk}}/graph/" + dir + file.name + "/'>Graph</a></td>");
+							curr_entry.append("<td><a class='file' href='/job/{{job.pk}}/file/"+dir+file.name+"/'><i class='icon-download-alt'></i>Download File</a>  <a class = 'graph file' target = '_blank' href = '/job/{{job.pk}}/graph/" + dir + file.name + "/'><i class='icon-pencil'></i>Graph</a></td>");
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download .tar.gz</a></td>");

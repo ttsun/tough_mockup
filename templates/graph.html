@@ -17,7 +17,18 @@
 		var graphdata;
 		var graphoptions = {{graph_options|safe}};
 		var dataX;
+		var dataXname;
 		var dataY = new Array();
+		var colorsY = new Array();
+		var tailing;
+		var colors = [
+					[0,'black'],
+					[0, 'blue'],
+					[0, 'green'],
+					[0, 'purple'],
+					[0, 'orange'],
+					[0, 'red']
+				]
 
 		function taildata(){
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
@@ -26,45 +37,71 @@
 						currentLine = data['current_line'];
 					}
 					graphdata.append(data['graph_data']);
+					rescaleY();
+					$(".line").remove();
+					graphdata();
 				}
 			});
 		}
 
 		$(document).ready(function(){
 			$("#y_axis_select").hide();
+			$("#y_axis_select_well").hide();
 			graphdata = {{graph_data}};
 			currentLine = 1;
 			var option;
+			tailing = false;
 			for (var x in graphoptions){
 				option = graphoptions[x];
-				$("#x_axis_select").append("<option value="+x+">"+option+"</option>");
+				$("#x_axis_select").append("<option value="+x+" id='"+option+"'>"+option+"</option>");
 			}
 			for (var y in graphoptions){
 				option = graphoptions[y];
-				$("#y_axis_select").append("<li id='y_axis_"+y+"'><label class='checkbox'><input class='y_axis_check' type='checkbox' value="+y+">"+option+"</input></label></li>");
+				$("#y_axis_select").append("<li id='y_axis_"+y+"'><label class='checkbox'><input class='y_axis_check' type='checkbox' value="+y+" data-color=''>"+option+"</input></label></li>");
 			}
 			$("#x_axis_select").change(function(e){
 				e.preventDefault();
 				dataX = $(this).val();
-
+				dataXname = $(this).children(":selected").attr("id");
 			});
 			$(".y_axis_check").click(function(e){
 				if($(this).is(":checked")){
 					dataY.push($(this).val());
-					console.log("clicked a not checked one");
+					for (var colorsindex = 0; colorsindex < colors.length; colorsindex++){
+						if (colors[colorsindex][0] == 0){
+							$(this).parent().css('color', colors[colorsindex][1]);
+							$(this).parent().attr("data-color", colorsindex);
+							colors[colorsindex][0] = 1;
+							colorsY.push(colors[colorsindex][1]);
+							break;
+						}
+						if(colorsindex == colors.length - 1){
+							return;
+						}	
+					}
+					rescaleY();
+					$(".line").remove();
+					graphData();
 				}else{
 					dataY.splice(dataY.indexOf($(this).val()), 1);
-					console.log("clicked a checked one");
+					colorsY.splice(colorsY.indexOf($(this).parent().attr("data-color")), 1);
+					colors[$(this).parent().attr("data-color")][0] = 0;
+					$(this).parent().css('color', 'grey');
+					$(".graph_"+$(this).val()).remove();
+					$(".line").remove();
+					rescaleY();
+					graphData();
 				}
 			})
 			$("#graph_submit").click(function(e){
+				$("#graph").children().remove();
+				$("#y_axis_select_well").show();
 				$("#y_axis_select").show();
 				$("#y_axis_"+dataX).hide();
 				setupGraph();
 			});
 			$("#tail").click(function(e){
 				e.preventDefault();
-				console.log($(this).text());
 				if (tailing){
 					tailing = false;
 					intervalID = clearInterval(intervalID);
@@ -127,12 +164,17 @@
 	}
 	#content{
 		margin-top:50px;
+		margin-left:20px;
+		margin-right:20px;
 	}
 	#updateDur{
 		height:24px !important;
 		margin:0;
 		text-align:center;
 		padding:0;
+	}
+	.plot{
+		opacity:0;
 	}
 	.on{
 		color:green;
@@ -145,7 +187,6 @@
 		stroke: black;
 		shape-rendering: crispEdges;
 	}
-
 	.axis text {
 		font-size: 11px;
 		stroke: black;
@@ -162,7 +203,18 @@
 	}
 	ul{
     list-style-type: none;
-}
+	}
+	.tailing{
+		margin:7px;
+		text-align:center;
+		float:right;
+	}
+	.checkbox{
+		color:grey;
+	}
+	.nav-header{
+		color:grey !important;
+	}
 	</style>
 </head>
 <body>
@@ -176,16 +228,17 @@
 					<option selected="selected">Select y axis</option>
 				</select> -->
 				<button class="btn btn-primary" id="graph_submit">Generate Graph</button>
-				<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/graph/{{filepath}}/">Auto Update On</a>	
+					<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/graph/{{filepath}}/">Auto Update On</a>	
 			</div>	
 		</div>
 	</div>
 	<div class = "row-fluid" id = "content">
-		<div class = "span2 offset1 well">
-			<ul id="y_axis_select">
+		<div class = "span3 well" id="y_axis_select_well">
+			<ul id="y_axis_select" class = "nav nav-list">
+				<li class = "nav-header">Y-axis:</li>
 			</ul>
 		</div>
-		<div id="graph" class = "span8 offset1">
+		<div id="graph" class = "span8">
 		</div>
 	</div>
 </body>

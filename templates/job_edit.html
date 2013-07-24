@@ -83,7 +83,7 @@ function recreate_raw(blockname){
     indents = "";
     raw_text = "";
     raw_text += ">>>" + blockname.toUpperCase() + "\n";
-    raw_text += $("#" + blockname + "-comments").html() + "\n";
+    raw_text += "! " + $("#" + blockname + "-comments").val() + "\n";
     for(var x = 0; x < $("#" + blockname + "-guided .varvals").length; x++){
         samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
         if(samelist == false){

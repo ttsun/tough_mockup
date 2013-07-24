@@ -60,7 +60,10 @@ var jobfiles;
 var job_id;
 
 function parse_raw_for_varvals(blockname){
-    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
+    if(blockname == "title" || blockname == "rocks"){
+        return;
+    }
+    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-\+]+)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
     $("#" + blockname + "-comments").html("");
     for (x in lines){
@@ -78,13 +81,18 @@ function parse_raw_for_varvals(blockname){
 }
 
 function recreate_raw(blockname){
+    if(blockname == "title" || blockname == "rocks"){
+        return;
+    }
     var name_list = "";
     var samelist = false;
     var num_indents = 0;
     indents = "";
     raw_text = "";
     raw_text += ">>>" + blockname.toUpperCase() + "\n";
-    raw_text += $("#" + blockname + "-comments").val() + "\n";
+    if($("#" + blockname + "-comments").val()){
+        raw_text += "! " + $("#" + blockname + "-comments").val() + "\n";
+    }
     for(var x = 0; x <= $("#" + blockname + "-guided .varvals").length; x++){
         if (x == $("#" + blockname + "-guided .varvals").length){
             indents = "";

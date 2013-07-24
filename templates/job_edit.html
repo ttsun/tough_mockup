@@ -84,20 +84,38 @@ function recreate_raw(blockname){
     raw_text = "";
     raw_text += ">>>" + blockname.toUpperCase() + "\n";
     raw_text += $("#" + blockname + "-comments").html() + "\n";
-    for(var x = 0; x < $("#" + blockname + "-guided .varvals").length; x++){
-        samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
-        if(samelist == false){
-            name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
-            num_indents = name_list.length + 7;
+    for(var x = 0; x <= $("#" + blockname + "-guided .varvals").length; x++){
+        if (x == $("#" + blockname + "-guided .varvals").length){
             indents = "";
             for(var y = 0; y < num_indents; y++){
                 indents += " ";
             }
+
             if(name_list != ""){
                 raw_text += indents + "/" + "\n";
             }
-            raw_text += "&" + name_list + "  ";
-            var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
+            break;
+        }
+        samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
+        if(samelist == false){
+            if(name_list == ""){
+                name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
+                num_indents = name_list.length + 7;
+                indents = "";
+                for(var y = 0; y < num_indents; y++){
+                    indents += " ";
+                }
+            } else {
+                name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
+                num_indents = name_list.length + 7;
+                indents = "";
+                for(var y = 0; y < num_indents; y++){
+                    indents += " ";
+                }
+                    raw_text += indents + "/" + "\n";
+            }
+                raw_text += "&" + name_list + "  ";
+                var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
         }
         else{
             var varname = indents + $($("#" + blockname + "-guided .varvals")[x]).attr('id');

@@ -69,6 +69,7 @@ function parse_raw_for_varvals(blockname){
     for (x in lines){
         line = lines[x];
         if(line.search(varregex) >= 0){
+            console.log("matched" + line.match(varregex)[2].toLowerCase().trim());
             var name = line.match(varregex)[2].toLowerCase().trim();
             var comments = line.match(varregex)[4];
             $("#" + name.replace("(", "\\(").replace(")","\\)")).val(line.match(varregex)[3]);

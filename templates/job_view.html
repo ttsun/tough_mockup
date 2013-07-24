@@ -113,6 +113,8 @@
 	<div class = "span2 well">
 		<ul class = "nav nav-list">
 			<li class="nav-header">Options</li>
+			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
+			<li><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit Info</a></li>
 		   	<li><a href = "{% url 'tough.views.create_job' 'copy' job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
 			<li><a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob">Delete Job</a></li>
 			<li><a href = "{%url 'tough.views.ajax_get_zip' job_id=job.pk %}">Download {{job.jobname}} as .tar.gz</a></li>

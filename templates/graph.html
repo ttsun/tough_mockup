@@ -36,10 +36,11 @@
 					if(data['current_line']!=currentLine){
 						currentLine = data['current_line'];
 					}
-					graphdata.append(data['graph_data']);
+					graphdata = graphdata.concat(data['graph_data']);
 					rescaleY();
+					rescaleX();
 					$(".line").remove();
-					graphdata();
+					graphData();
 				}
 			});
 		}
@@ -101,6 +102,7 @@
 				setupGraph();
 			});
 			$("#tail").click(function(e){
+				console.log("tailing clicked");
 				e.preventDefault();
 				if (tailing){
 					tailing = false;
@@ -110,11 +112,11 @@
 					$(this).addClass("btn-primary");
 					$(this).text("Auto Update On");					
 				} else {
-					tail();
+					taildata();
 					tailing = true;
 					intervalID = setInterval(function(){
-						tail();
-					}, updateDuration);
+						taildata();
+					}, 15000);
 					$("#updateStat").text("On").removeClass("on").addClass("off");
 					$(this).removeClass("btn-primary");
 					$(this).addClass("btn-danger");

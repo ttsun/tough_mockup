@@ -6,13 +6,19 @@
             text-align: center !important;
             background-color: #CCCCCC !important;
         }
-        tbody tr td{
-            width:260px;
-        }
         table{
             border-spacing: 0 !important;
         }
-        .job_id, .time, .state, .numprocs, .jobname{
+        .state, .numprocs{
+            width:80px;
+        }
+        .time{
+            width:210px;
+        }
+        .job_id, .time, .actions{
+            width:170px;
+        }
+        .job_id, .time, .state, .numprocs, .actions{
             text-align: center !important;
         }
         tr.project-name th{
@@ -38,10 +44,29 @@
             margin-bottom:10px;
             display:none;
         }
+        .pages a{
+            margin:0 2px;
+        }
+        .pages a.active{
+            color:black;
+            cursor:default;
+        }
+        .pages a.active:hover{
+            text-decoration:none;
+        }
+        .edit-btn{
+            float:right;
+            padding:0 10px;
+        }
+        .pages:before{
+            content:"Page: ";
+        }
     </style>
     <script type="text/javascript">
+        var MAX_ENTRIES = 5;
         $(document).ready(function(){
             // $(".optionbuttons").css('visibility', 'hidden');
+            setupPaging();
             $(".del").click(function(e){
                 e.preventDefault();
                 var url = $(this).attr("href");
@@ -126,12 +151,21 @@
             });
             $(".project_header").click(function(e){
                 e.preventDefault();
-                if ($(this).parent().parent().siblings().is(":hidden")){
-                    $(this).parent().parent().siblings().show();    
-                    $(this).removeClass("icon-chevron-right").addClass("icon-chevron-down");
-                } else {
+                if ($(this).hasClass("open")){
                     $(this).parent().parent().siblings().hide();
                     $(this).removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                    $(this).removeClass("open");
+                } else {
+                    var $page = $(this).siblings('.pages').children(".active");
+                    console.log($page)
+                    if($page.attr("data-page")!=-1){
+                        $("#"+$page.attr("data-id")).children("tr:not(.project-name)").hide();
+                        $("#"+$page.attr("data-id")).children(".page"+$page.attr("data-page")).show();
+                    }else{
+                        $("#"+$page.attr("data-id")).children("tr:not(.project-name)").show();
+                    }
+                    $(this).addClass("icon-chevron-down").removeClass("icon-chevron-right");
+                    $(this).addClass("open");
                 }
             });
             $("#projectbar a").click(function(e){
@@ -150,6 +184,46 @@
                 return false;
             });
         });
+    function setupPaging(){
+        $(".project").each(function(i){
+            var max_pages = Math.ceil($(this).children("tr:not(.project-name)").length/MAX_ENTRIES);
+            var $entries = $(this).children("tr:not(.project-name)");
+            var $pages = $(this).children("tr.project-name").find(".pages").html("");
+            // Writes out all the page numbers
+            // Sets page 1 to active
+            for(var x = 1; x<=max_pages; x++){
+                if(x == 1){
+                    $pages.append("<a href='#' data-page='"+x+"' class='page-link active' data-id='"+$(this).attr("id")+"'>"+x+"</a>");
+                }else{
+                    $pages.append("<a href='#' data-page='"+x+"' class='page-link' data-id='"+$(this).attr("id")+"'>"+x+"</a>");
+                }
+            }
+            if(max_pages > 1){
+                $pages.append("<a href='#' class='page-link' data-page='-1' data-id='"+$(this).attr("id")+"'>Show All</a>");
+            }
+
+            $entries.each(function(i){
+                $(this).addClass("page"+Math.ceil((i+1)/MAX_ENTRIES));
+            });
+            $entries.hide();
+            $(".page1").show();
+        });
+        $(".page-link").click(function(e){
+            e.preventDefault();
+            if($(this).hasClass("active")){
+                return false;
+            }
+            $(this).siblings("a.active").removeClass("active");
+            $(this).addClass("active");
+            if($(this).attr("data-page")!=-1){
+                $("#"+$(this).attr("data-id")).children("tr:not(.project-name)").hide();
+                $("#"+$(this).attr("data-id")).children(".page"+$(this).attr("data-page")).show();
+            }else{
+                $("#"+$(this).attr("data-id")).children("tr:not(.project-name)").show();
+            }
+            return false;
+        });
+    }
     </script>
 {% endblock head %}
 
@@ -185,25 +259,25 @@
                     <a class="btn joboptions deletemultiple" data-toggle="tooltip" title="Delete"><i class="icon-trash"></i></a>
                 </div>
                 <div id="singlejoboptions" class = "btn-group offset1 span4 row-fluid optionbuttons">
-                    <a href="" class="btn cp popup joboptions" id="copybutton" data-toggle="tooltip" title="Copy">     <img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px">     </a>
-                    <a href="" class="btn mv popup joboptions" id="movebutton" data-toggle="tooltip" title="Move">     <i class="icon-share-alt"></i>     </a>
+                    <a href="" class="btn cp popup joboptions" id="copybutton" data-toggle="tooltip" title="Copy"><img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px"></a>
+                    <a href="" class="btn mv popup joboptions" id="movebutton" data-toggle="tooltip" title="Move"><i class="icon-share-alt"></i></a>
                 </div>
             </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Job Name</th>
-                        <th>Processors</th>
-                        <th>PBS Job ID</th>
-                        <th>Time Queued</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th class="numprocs">Processors</th>
+                        <th class="job_id">PBS Job ID</th>
+                        <th class="time">Time Queued</th>
+                        <th class="state">Status</th>
+                        <th class="actions">Actions</th>
                     </tr>
                 </thead>
                 {% for project in user.get_projects %}
                     <tbody id="project-{{project.pk}}" class = "project">
                         <tr class="project-name">
-                            <th colspan="6"><i class = "icon-chevron-down project_header"></i> <strong>{{project.name}} |</strong><a href="{% url 'tough.views.project_view' project_id=project.pk %}"><small> Edit</small></a></th>
+                            <th colspan="6"><i class = "icon-chevron-down project_header open"></i> <strong>{{project.name}} |</strong> <span class="pages"></span><a class="edit-btn" href="{% url 'tough.views.project_view' project_id=project.pk %}"><small>Edit Project</small></a></th>
                         </tr>   
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
@@ -213,7 +287,7 @@
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
                                 <td class="state">{{job.state}}</td>
-                                <td>
+                                <td class="actions">
                                     <div class="btn-group">
                                         <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>
@@ -232,7 +306,7 @@
                 <tbody id="project-ungrouped" class = "project">
                     {% if user.get_orphan_jobs %}
                     <tr class="project-name">
-                        <th colspan="6"><i class = "icon-chevron-down project_header"></i>  </i>Ungrouped</th>
+                        <th colspan="6"><i class = "icon-chevron-down project_header open"></i>Ungrouped | <span class="pages"></span></th>
                     </tr>
                     {% endif %}
                     {% for job in user.get_orphan_jobs %}
@@ -243,7 +317,7 @@
                                 <td class="job_id">{{job.pbsjob_id}}</td>
                                 <td class="time">{{job.time_started}}</td>
                                 <td class="state">{{job.state}}</td>
-                                <td>
+                                <td class="actions">
                                     <div class="btn-group">
                                         <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>

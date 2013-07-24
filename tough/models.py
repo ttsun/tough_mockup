@@ -97,38 +97,18 @@ class NoahUser(AbstractBaseUser):
         """
         Return a list of all jobs
         """
-        all_jobs = Job.objects.filter(user=self.id)
-        for job in all_jobs:
-            job.check_exists()
-
-        #get the list of jobs listed in the database as running and update them.
-        dbrunning = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
-        for runningjob in dbrunning: runningjob.update();
-        #get the updated list 
         all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
+        # for job in all_jobs:
+        #     job.check_exists()
+
+        # get the list of jobs listed in the database as running and update them.
+        dbrunning = all_jobs.filter(state__in=['submitted', 'started'])
+        for runningjob in dbrunning: runningjob.update();
+
+        # get the updated list 
+        all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
+
         return all_jobs
-    
-    def get_jobs(self):
-        #appears to be only used in tests.py
-        """
-        Return a dict with jobs
-        {
-          {'toberun': [], 'running':[], 'complete': []}
-        }
-        
-        """
-        toberun = Job.objects.filter(user=self.id, state='toberun')
-        #get the list of jobs listed in the database as running and update them.
-        dbrunning = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
-
-        # for runningjob in dbrunning: runningjob.update();
-
-        #get the updated list of running jobs
-        running = Job.objects.filter(user=self.id).filter(state__in=['submitted', 'started'])
-        #get completed and aborted and sort together by time submitted
-        complete = Job.objects.filter(user=self.id).filter(state__in=['completed', 'aborted']).order_by('time_submitted').reverse()[:5]
-
-        return {'toberun': toberun, 'running': running, 'complete': complete}
 
     def get_recent_jobs(self):
         for job in Job.objects.filter(user=self.id):
@@ -713,14 +693,14 @@ class Job(models.Model):
                 raise Exception(content)
 
         # Decode JSON
-        job_info=simplejson.loads(content)
+        job_info = simplejson.loads(content)
         # Set queue, jobname, timeuse, status
-        self.queue=job_info['queue']
-        self.pbsjob_id=job_info['jobid']
-        self.timeuse=job_info['timeuse']
-        self.status=job_info['status']
+        self.queue = job_info['queue']
+        self.pbsjob_id = job_info['jobid']
+        self.timeuse = job_info['timeuse']
+        self.status = job_info['status']
         # Set time_last_updated
-        self.time_last_updated=datetime.utcnow().replace(tzinfo=utc)
+        self.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
 
         if (self.status in ['C', 'E', 'R', 'W', 'S']):
             if (not self.time_started or self.time_started == None): 
@@ -955,3 +935,4 @@ class BlockVariable(models.Model):
     blockType = models.ForeignKey(BlockType)
     var_name = models.CharField(max_length=255)
     name_list = models.TextField(max_length=255)
+    commented = models.BooleanField()

@@ -118,6 +118,18 @@
                 }
             });
             $(".joboptions").tooltip({delay:{show:400, hide:225}});
+            // $("#projectsearch").typeahead();
+            $("#projectmovelist").append
+            $(".dropdown-toggle").click(function(e){
+                e.preventDefault();
+                if($(this).siblings("ul").is(":visible")){
+                    console.log("the thingy is visible");
+                    $(this).siblings("ul").hide();
+                }else{
+                    console.log("the thingies are not visible");
+                    $(this).siblings("ul").show(); 
+                }
+            });
             $(".deletemultiple").click(function(e){
                 e.preventDefault;
                 var url = '/job/del/selected/'
@@ -148,6 +160,20 @@
                         return false;
                     }
                 );
+            });
+            $(".projectmoveoptions").click(function(e){
+                e.preventDefault();
+                var url = $(this).attr("href");
+                var selectedjobs = new Array();
+                var checkedjobs = $('input[name=jobcheck]:checked');
+                $(checkedjobs).each(function(){
+                    selectedjobs.push($(this).attr('data-id'));
+                });
+                console.log(selectedjobs);
+                $.post(url, {job_ids:JSON.stringify(selectedjobs)}, function(data){
+                    window.location.reload();
+                    return false;
+                });
             });
             $(".project_header").click(function(e){
                 e.preventDefault();
@@ -256,9 +282,23 @@
         </div>
         <div class = "span9">
             <div class = "row-fluid" id = "optionbuttons">
-                <div class = "btn-group span3 row-fluid optionbuttons" id="multiplejoboptions">
+                <div class = "btn-group span4 row-fluid optionbuttons" id="multiplejoboptions">
                     <a class="btn joboptions deletemultiple" data-toggle="tooltip" title="Delete"><i class="icon-trash"></i></a>
                     <a href="" class="btn mv popup joboptions" id="movebutton" data-toggle="tooltip" title="Move"><i class="icon-share-alt"></i></a>
+                    <div class = "btn-group">
+                        <a class="btn dropdown-toggle joboptions movetoproject" data-toggle="tooltip"  title="Project"><i class="icon-folder-close"></i> <span class="caret"></span></a>
+                        <ul class="dropdown-menu" id="projectmovelist">
+                           {#  <li><input id="projectsearch" type="text" class="input-medium search-query" data-provide="typeahead" data-source={{user.project_set.all.name}}></li> #}
+                            {% if user.get_projects.count > 0 %}
+                                {% for project in user.get_projects %}
+                                <li><a class = "projectmoveoptions" href = "{% url 'tough.views.change_project' to_project_id=project.pk %}">{{project.name}}</a></li>
+                                {% endfor %}
+                                <li><a class = "projectmoveoptions" href = "{% url 'tough.views.change_project' to_project_id=0 %}">None</a></li>
+                            {% else %}
+                                <li>You have no projects!</li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
                 <div id="singlejoboptions" class = "btn-group offset span4 row-fluid optionbuttons">
                     <a href="" class="btn cp popup joboptions" id="copybutton" data-toggle="tooltip" title="Copy"><img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px"></a>

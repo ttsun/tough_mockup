@@ -195,6 +195,27 @@ def batch_move(request):
 
 
 @login_required
+def change_project(request, to_project_id):
+    if request.method == 'POST':
+        job_ids = simplejson.loads(request.POST.get('job_ids'))
+        if int(to_project_id) == 0:
+            for job_id in job_ids:
+                j = get_object_or_404(Job, pk = job_id)
+                if j.project:  
+                    j.project.job_set.remove(j)
+                j.project = None
+                j.save()
+        else:
+            to_project = get_object_or_404(Project, pk = to_project_id)
+            for job_id in job_ids:
+                j = get_object_or_404(Job, pk = job_id)
+                if j.project:
+                    j.project.job_set.remove(j)
+                j.project = to_project
+                j.save()
+    return redirect("tough.views.jobs")
+
+@login_required
 def create_job(request, job_id=None, type="new"):
     if request.method == "POST":
         #create new job in database
@@ -690,7 +711,7 @@ def delete_jobs_selected(request):
     else:
         for job_id in job_idslist:
             job = get_object_or_404(Job, pk = job_id)
-            job.dete()
+            job.delete()
     if request.is_ajax():
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
     else:

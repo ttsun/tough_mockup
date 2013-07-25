@@ -516,6 +516,10 @@ class Job(models.Model):
 
         return content
         
+    def change_project(self, to_project):
+        self.project = to_project
+        return
+        
     def is_empty(self, srcdir):
         """
         Takes a directory name and tests if it is empty

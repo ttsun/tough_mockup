@@ -10,13 +10,13 @@
             border-spacing: 0 !important;
         }
         .state, .numprocs{
-            width:80px;
+            width:110px;
         }
         .time{
-            width:210px;
+            width:240px;
         }
         .job_id, .time, .actions{
-            width:170px;
+            width:200px;
         }
         .job_id, .time, .state, .numprocs, .actions{
             text-align: center !important;
@@ -113,7 +113,7 @@
                             selectedjobs.push($(this).attr('data-id'));
                         });
                         $("#movebutton").attr("href", "/ajax/move/?jobs=" + selectedjobs.join(','))
-                        // $("#singlejoboptions").fadeOut();
+                        $("#singlejoboptions").fadeOut();
                         break;
                 }
             });
@@ -254,45 +254,41 @@
                 {% endif %}
             </ul>
         </div>
-        <div class = "span10">
+        <div class = "span9">
             <div class = "row-fluid" id = "optionbuttons">
-                <div class = "btn-group span2 row-fluid optionbuttons" id="multiplejoboptions">
+                <div class = "btn-group span3 row-fluid optionbuttons" id="multiplejoboptions">
                     <a class="btn joboptions deletemultiple" data-toggle="tooltip" title="Delete"><i class="icon-trash"></i></a>
-                </div>
-                <div id="singlejoboptions" class = "btn-group offset1 span4 row-fluid optionbuttons">
-                    <a href="" class="btn cp popup joboptions" id="copybutton" data-toggle="tooltip" title="Copy"><img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px"></a>
                     <a href="" class="btn mv popup joboptions" id="movebutton" data-toggle="tooltip" title="Move"><i class="icon-share-alt"></i></a>
+                </div>
+                <div id="singlejoboptions" class = "btn-group offset span4 row-fluid optionbuttons">
+                    <a href="" class="btn cp popup joboptions" id="copybutton" data-toggle="tooltip" title="Copy"><img src="/static/img/copy-icon.png"/ style = "width:16px; height:16px"></a>
                 </div>
             </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Job Name</th>
+                        <th class="state">Status</th>
+                        <th class="time">Time Queued</th>
                         <th class="numprocs">Processors</th>
                         <th class="job_id">PBS Job ID</th>
-                        <th class="time">Time Queued</th>
-                        <th class="state">Status</th>
-                        <th class="actions">Actions</th>
+                        
                     </tr>
                 </thead>
                 {% for project in user.get_projects %}
                     <tbody id="project-{{project.pk}}" class = "project">
                         <tr class="project-name">
-                            <th colspan="6"><i class = "icon-chevron-down project_header open"></i> <strong>{{project.name}} |</strong> <span class="pages"></span><a class="edit-btn" href="{% url 'tough.views.project_view' project_id=project.pk %}"><small>Edit Project</small></a></th>
+                            <th colspan="5"><i class = "icon-chevron-down project_header open"></i> <strong>{{project.name}} |</strong> <span class="pages"></span><a class="edit-btn" href="{% url 'tough.views.project_view' project_id=project.pk %}"><small>Edit Project</small></a></th>
                         </tr>   
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id="{{job.pk}}"/><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id="{{job.pk}}"/><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a> | <a href = "{% url 'tough.views.job_view' job_id=job.pk %}"><small>Details</small></a></label></td>
+                                <td class="state">{{job.state}}</td>
+                                <td class="time">{{job.time_started}}</td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
-                                <td class="time">{{job.time_started}}</td>
-                                <td class="state">{{job.state}}</td>
-                                <td class="actions">
-                                    <div class="btn-group">
-                                        <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
-                                    </div>
-                                </td>
+                                
                             </tr>
                             {% else %}
                             <tr>
@@ -307,22 +303,18 @@
                 <tbody id="project-ungrouped" class = "project">
                     {% if user.get_orphan_jobs %}
                     <tr class="project-name">
-                        <th colspan="6"><i class = "icon-chevron-down project_header open"></i>Ungrouped | <span class="pages"></span></th>
+                        <th colspan="5"><i class = "icon-chevron-down project_header open"></i>Ungrouped | <span class="pages"></span></th>
                     </tr>
                     {% endif %}
                     {% for job in user.get_orphan_jobs %}
                         {% if job.exists %}
                             <tr>
-                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a></label></td>
+                                <td class="name"><label class = "checkbox"><input type = "checkbox" class = "jobcheck" name = "jobcheck" data-id = "{{job.pk}}"><a href="{% url 'tough.views.job_edit' job.pk %}">{{job.jobname}}</a> | <a href = "{% url 'tough.views.job_view' job_id=job.pk %}"><small>Details</small></a></label></td>
+                                <td class="state">{{job.state}}</td>
+                                <td class="time">{{job.time_started}}</td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
-                                <td class="time">{{job.time_started}}</td>
-                                <td class="state">{{job.state}}</td>
-                                <td class="actions">
-                                    <div class="btn-group">
-                                        <a href="{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
-                                    </div>
-                                </td>
+                                
                             </tr>
                         {% else %}
                             <tr>

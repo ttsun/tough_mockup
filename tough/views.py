@@ -116,12 +116,13 @@ def update_graph(request, job_id, filepath):
     for index, line in enumerate(newcontent.split("\n")):
         if index == 0 and current_line == 1:
             continue
+        if line == '':
+            continue
         row = line_regex.findall(line)
         data = []
         for datum in row:
             data.append(float(datum))
         graph_data.append(data)
-
     return HttpResponse(simplejson.dumps({"success": True, "job_id": job.pk, "filepath": filepath, "new_content": newcontent, "current_line": newline, "graph_data": graph_data}), content_type="application/json")
 
 @login_required

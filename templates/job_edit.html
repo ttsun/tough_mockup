@@ -60,12 +60,17 @@ var jobfiles;
 var job_id;
 
 function parse_raw_for_varvals(blockname){
-    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-]+)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
+    if(blockname == "title" || blockname == "rocks"){
+        return;
+    }
+    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-\+]*)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
-    $("#" + blockname + "-comments").html("");
+    $("#" + blockname + "-comments").val("");
     for (x in lines){
         line = lines[x];
+        console.log(line.search(varregex));
         if(line.search(varregex) >= 0){
+            console.log("matched" + line.match(varregex)[2].toLowerCase().trim());
             var name = line.match(varregex)[2].toLowerCase().trim();
             var comments = line.match(varregex)[4];
             $("#" + name.replace("(", "\\(").replace(")","\\)")).val(line.match(varregex)[3]);
@@ -77,27 +82,52 @@ function parse_raw_for_varvals(blockname){
 }
 
 function recreate_raw(blockname){
+    if(blockname == "title" || blockname == "rocks"){
+        return;
+    }
     var name_list = "";
     var samelist = false;
     var num_indents = 0;
     indents = "";
     raw_text = "";
     raw_text += ">>>" + blockname.toUpperCase() + "\n";
-    raw_text += $("#" + blockname + "-comments").html() + "\n";
-    for(var x = 0; x < $("#" + blockname + "-guided .varvals").length; x++){
-        samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
-        if(samelist == false){
-            name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
-            num_indents = name_list.length + 7;
+    if($("#" + blockname + "-comments").val()){
+        console.log("first comment if entered");
+        raw_text += "! " + $("#" + blockname + "-comments").val() + "\n";
+    }
+    console.log(raw_text);
+    for(var x = 0; x <= $("#" + blockname + "-guided .varvals").length; x++){
+        if (x == $("#" + blockname + "-guided .varvals").length){
             indents = "";
             for(var y = 0; y < num_indents; y++){
                 indents += " ";
             }
+
             if(name_list != ""){
                 raw_text += indents + "/" + "\n";
             }
-            raw_text += "&" + name_list + "  ";
-            var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
+            break;
+        }
+        samelist = (name_list == $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist'));
+        if(samelist == false){
+            if(name_list == ""){
+                name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
+                num_indents = name_list.length + 7;
+                indents = "";
+                for(var y = 0; y < num_indents; y++){
+                    indents += " ";
+                }
+            } else {
+                name_list = $($("#" + blockname + "-guided .varvals")[x]).attr('data-namelist');
+                num_indents = name_list.length + 7;
+                indents = "";
+                for(var y = 0; y < num_indents; y++){
+                    indents += " ";
+                }
+                    raw_text += indents + "/" + "\n";
+            }
+                raw_text += "&" + name_list + "  ";
+                var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
         }
         else{
             var varname = indents + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
@@ -105,6 +135,7 @@ function recreate_raw(blockname){
         var varval = $($("#" + blockname + "-guided .varvals")[x]).val();
         var comment = $($("#" + blockname + "-guided .comments")[x]).val();
         if(comment){
+            console.log("second comment if entered");
             comment = "! " + comment;
         }
         raw_text += varname + " = " + varval + ", " + comment + "\n";
@@ -176,7 +207,7 @@ $(document).ready(function(){
         }
    });
    $("#optoggle").click();
-   $("#sidebar a:not(#submit_job, .popup, .showhide, .btn)").click(function(e){
+   $("#sidebar a:not(#submit_job, .popup, .showhide, .btn, #viewoutput)").click(function(e){
         if($(this).parent("li[class~=disabled]").length == 0){
             e.preventDefault();
             $("form:visible").submit();
@@ -209,7 +240,7 @@ function showInputArea(id){
     <div class = "span2 well" id = "sidebar">
         {% if job_id %}
             <ul id="jobdetails" class = "nav nav-list">
-                <li class = "nav-header">Job Details | <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit</a></small></li>
+                <li class = "nav-header">Job Details | <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit</a> | <a id="viewoutput" href="{% url 'tough.views.job_view' job_id=job.pk %}">Info</a></small></li>
                     <li><strong>Machine:</strong> {{job.machine|capfirst}}</li>
                     <li><strong>Project:</strong> {{job.project.name|capfirst}}</li>
                     <li><strong>Job Name:</strong> {{job_name|capfirst}}</li>

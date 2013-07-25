@@ -234,7 +234,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "hydrate_component_gas_names(1)", 
+        "var_name": "hydrate_component_gas_names(0)", 
         "name_list": "hydrate_composition", 
         "commented": false
     }
@@ -244,7 +244,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_hydration_number(1)", 
+        "var_name": "hydrate_component_gas_names(1)", 
         "name_list": "hydrate_composition", 
         "commented": false
     }
@@ -254,7 +254,7 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
-        "var_name": "gas_mole_fraction_in_hydrate(1)", 
+        "var_name": "gas_hydration_number(0)", 
         "name_list": "hydrate_composition", 
         "commented": false
     }
@@ -264,13 +264,43 @@
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
+        "var_name": "gas_hydration_number(1)", 
+        "name_list": "hydrate_composition", 
+        "commented": false
+    }
+},
+{
+    "pk": 28, 
+    "model": "tough.blockvariable", 
+    "fields": {
+        "blockType": 4, 
+        "var_name": "gas_mole_fraction_in_hydrate(0)", 
+        "name_list": "hydrate_composition", 
+        "commented": false
+    }
+},
+{
+    "pk": 29, 
+    "model": "tough.blockvariable", 
+    "fields": {
+        "blockType": 4, 
+        "var_name": "gas_mole_fraction_in_hydrate(1)", 
+        "name_list": "hydrate_composition", 
+        "commented": false
+    }
+},
+{
+    "pk": 30, 
+    "model": "tough.blockvariable", 
+    "fields": {
+        "blockType": 4, 
         "var_name": "hydrate_thermcond_equation_option", 
         "name_list": "hydrate_thermcond_equation", 
         "commented": false
     }
 },
 {
-    "pk": 28, 
+    "pk": 31, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -280,7 +310,7 @@
     }
 },
 {
-    "pk": 29, 
+    "pk": 32, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -290,7 +320,7 @@
     }
 },
 {
-    "pk": 30, 
+    "pk": 33, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -300,7 +330,7 @@
     }
 },
 {
-    "pk": 31, 
+    "pk": 34, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -310,7 +340,7 @@
     }
 },
 {
-    "pk": 32, 
+    "pk": 35, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -320,7 +350,7 @@
     }
 },
 {
-    "pk": 33, 
+    "pk": 36, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -330,7 +360,7 @@
     }
 },
 {
-    "pk": 34, 
+    "pk": 37, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -340,7 +370,7 @@
     }
 },
 {
-    "pk": 35, 
+    "pk": 38, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -350,7 +380,7 @@
     }
 },
 {
-    "pk": 36, 
+    "pk": 39, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -360,7 +390,7 @@
     }
 },
 {
-    "pk": 37, 
+    "pk": 40, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -370,7 +400,7 @@
     }
 },
 {
-    "pk": 38, 
+    "pk": 41, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -380,7 +410,7 @@
     }
 },
 {
-    "pk": 39, 
+    "pk": 42, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -390,7 +420,7 @@
     }
 },
 {
-    "pk": 40, 
+    "pk": 43, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -400,7 +430,7 @@
     }
 },
 {
-    "pk": 41, 
+    "pk": 44, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -410,7 +440,7 @@
     }
 },
 {
-    "pk": 42, 
+    "pk": 45, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -420,7 +450,7 @@
     }
 },
 {
-    "pk": 43, 
+    "pk": 46, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -430,7 +460,7 @@
     }
 },
 {
-    "pk": 44, 
+    "pk": 47, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -440,7 +470,7 @@
     }
 },
 {
-    "pk": 45, 
+    "pk": 48, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -450,7 +480,7 @@
     }
 },
 {
-    "pk": 46, 
+    "pk": 49, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -460,7 +490,7 @@
     }
 },
 {
-    "pk": 47, 
+    "pk": 50, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 4, 
@@ -470,7 +500,7 @@
     }
 },
 {
-    "pk": 48, 
+    "pk": 51, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -480,7 +510,7 @@
     }
 },
 {
-    "pk": 49, 
+    "pk": 52, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -490,7 +520,7 @@
     }
 },
 {
-    "pk": 50, 
+    "pk": 53, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -500,7 +530,7 @@
     }
 },
 {
-    "pk": 51, 
+    "pk": 54, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -510,7 +540,7 @@
     }
 },
 {
-    "pk": 52, 
+    "pk": 55, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -520,7 +550,7 @@
     }
 },
 {
-    "pk": 53, 
+    "pk": 56, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -530,7 +560,7 @@
     }
 },
 {
-    "pk": 54, 
+    "pk": 57, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -540,7 +570,7 @@
     }
 },
 {
-    "pk": 55, 
+    "pk": 58, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -550,7 +580,7 @@
     }
 },
 {
-    "pk": 56, 
+    "pk": 59, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 28, 
@@ -560,7 +590,7 @@
     }
 },
 {
-    "pk": 57, 
+    "pk": 60, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
@@ -570,7 +600,7 @@
     }
 },
 {
-    "pk": 58, 
+    "pk": 61, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
@@ -580,7 +610,7 @@
     }
 },
 {
-    "pk": 59, 
+    "pk": 62, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
@@ -590,7 +620,7 @@
     }
 },
 {
-    "pk": 60, 
+    "pk": 63, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
@@ -600,7 +630,7 @@
     }
 },
 {
-    "pk": 61, 
+    "pk": 64, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 17, 
@@ -610,7 +640,7 @@
     }
 },
 {
-    "pk": 62, 
+    "pk": 65, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
@@ -620,7 +650,7 @@
     }
 },
 {
-    "pk": 63, 
+    "pk": 66, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
@@ -630,7 +660,7 @@
     }
 },
 {
-    "pk": 64, 
+    "pk": 67, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
@@ -640,7 +670,7 @@
     }
 },
 {
-    "pk": 65, 
+    "pk": 68, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
@@ -650,7 +680,7 @@
     }
 },
 {
-    "pk": 66, 
+    "pk": 69, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 29, 
@@ -660,7 +690,7 @@
     }
 },
 {
-    "pk": 67, 
+    "pk": 70, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -670,7 +700,7 @@
     }
 },
 {
-    "pk": 68, 
+    "pk": 71, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -680,7 +710,7 @@
     }
 },
 {
-    "pk": 69, 
+    "pk": 72, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -690,7 +720,7 @@
     }
 },
 {
-    "pk": 70, 
+    "pk": 73, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -700,7 +730,7 @@
     }
 },
 {
-    "pk": 71, 
+    "pk": 74, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -710,7 +740,7 @@
     }
 },
 {
-    "pk": 72, 
+    "pk": 75, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -720,7 +750,7 @@
     }
 },
 {
-    "pk": 73, 
+    "pk": 76, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -730,7 +760,7 @@
     }
 },
 {
-    "pk": 74, 
+    "pk": 77, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -740,7 +770,7 @@
     }
 },
 {
-    "pk": 75, 
+    "pk": 78, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -750,7 +780,7 @@
     }
 },
 {
-    "pk": 76, 
+    "pk": 79, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -760,7 +790,7 @@
     }
 },
 {
-    "pk": 77, 
+    "pk": 80, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -770,7 +800,7 @@
     }
 },
 {
-    "pk": 78, 
+    "pk": 81, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -780,7 +810,7 @@
     }
 },
 {
-    "pk": 79, 
+    "pk": 82, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -790,7 +820,7 @@
     }
 },
 {
-    "pk": 80, 
+    "pk": 83, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 30, 
@@ -800,7 +830,7 @@
     }
 },
 {
-    "pk": 81, 
+    "pk": 84, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -810,7 +840,7 @@
     }
 },
 {
-    "pk": 82, 
+    "pk": 85, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -820,7 +850,7 @@
     }
 },
 {
-    "pk": 83, 
+    "pk": 86, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -830,7 +860,7 @@
     }
 },
 {
-    "pk": 84, 
+    "pk": 87, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -840,7 +870,7 @@
     }
 },
 {
-    "pk": 85, 
+    "pk": 88, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -850,7 +880,7 @@
     }
 },
 {
-    "pk": 86, 
+    "pk": 89, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -860,7 +890,7 @@
     }
 },
 {
-    "pk": 87, 
+    "pk": 90, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -870,7 +900,7 @@
     }
 },
 {
-    "pk": 88, 
+    "pk": 91, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -880,7 +910,7 @@
     }
 },
 {
-    "pk": 89, 
+    "pk": 92, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -890,7 +920,7 @@
     }
 },
 {
-    "pk": 90, 
+    "pk": 93, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -900,7 +930,7 @@
     }
 },
 {
-    "pk": 91, 
+    "pk": 94, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 
@@ -910,7 +940,7 @@
     }
 },
 {
-    "pk": 92, 
+    "pk": 95, 
     "model": "tough.blockvariable", 
     "fields": {
         "blockType": 31, 

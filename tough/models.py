@@ -198,7 +198,7 @@ class Job(models.Model):
     jobname = models.CharField(max_length=256, blank=True)
     timeuse = models.CharField(max_length=256, blank=True)
 
-    project = models.ForeignKey(Project, null=True, blank=True, default=None)
+    project = models.ForeignKey(Project, null=True, blank=True, default=None, on_delete=models.SET_NULL)
    
 
     # Useful timestamps

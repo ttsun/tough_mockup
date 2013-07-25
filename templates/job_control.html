@@ -61,6 +61,10 @@
         .pages:before{
             content:"Page: ";
         }
+        #projectsearch{
+            width:100px;
+            margin:12px;
+        }
     </style>
     <script type="text/javascript">
         var MAX_ENTRIES =4;
@@ -118,15 +122,35 @@
                 }
             });
             $(".joboptions").tooltip({delay:{show:400, hide:225}});
-            // $("#projectsearch").typeahead();
-            $("#projectmovelist").append
+
+            var searchstring;
+            $("#projectsearch").keyup(function(e){
+                searchstring = $(this).val();
+                $(this).parent().siblings().each(function(){
+                    if($(this).text().indexOf(searchstring) >= 0){
+                        $(this).show();
+                        $(this).attr("selected", "selected");
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $("#projectsearch").keydown(function(e){
+                if(e.keyCode == 13){
+                    if($("#"+ $(this).val()).length == 1){
+                        $("#"+ $(this).val()).click();
+                    } else {
+                        $("#projectmovelist").focus();
+                    }
+                }
+            });
+
             $(".dropdown-toggle").click(function(e){
                 e.preventDefault();
                 if($(this).siblings("ul").is(":visible")){
-                    console.log("the thingy is visible");
                     $(this).siblings("ul").hide();
                 }else{
-                    console.log("the thingies are not visible");
                     $(this).siblings("ul").show(); 
                 }
             });
@@ -169,7 +193,7 @@
                 $(checkedjobs).each(function(){
                     selectedjobs.push($(this).attr('data-id'));
                 });
-                console.log(selectedjobs);
+                Alertify.log.info("Moving jobs to " + $(this).attr("id"));
                 $.post(url, {job_ids:JSON.stringify(selectedjobs)}, function(data){
                     window.location.reload();
                     return false;
@@ -288,10 +312,10 @@
                     <div class = "btn-group">
                         <a class="btn dropdown-toggle joboptions movetoproject" data-toggle="tooltip"  title="Project"><i class="icon-folder-close"></i> <span class="caret"></span></a>
                         <ul class="dropdown-menu" id="projectmovelist">
-                           {#  <li><input id="projectsearch" type="text" class="input-medium search-query" data-provide="typeahead" data-source={{user.project_set.all.name}}></li> #}
+                            <li><input id="projectsearch" type="text" class="input-medium search-query" value=""></li>
                             {% if user.get_projects.count > 0 %}
                                 {% for project in user.get_projects %}
-                                <li><a class = "projectmoveoptions" href = "{% url 'tough.views.change_project' to_project_id=project.pk %}">{{project.name}}</a></li>
+                                <li><a id = "{{project.name}}" class = "projectmoveoptions" href = "{% url 'tough.views.change_project' to_project_id=project.pk %}">{{project.name}}</a></li>
                                 {% endfor %}
                                 <li><a class = "projectmoveoptions" href = "{% url 'tough.views.change_project' to_project_id=0 %}">None</a></li>
                             {% else %}

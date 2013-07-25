@@ -487,7 +487,6 @@ class Job(models.Model):
         newt_command = "/bin/bash -c 'ls -a --full-time %s'" % path
         # response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         response, content = util.newt_request(url, 'POST', {"executable": newt_command}, cookie_str=cookie_str)
-        import ipdb; ipdb.set_trace()
         if response.status_code != 200:
             raise IOError(content)
         temp = response.json()['output'].split("\n")[1:-1]

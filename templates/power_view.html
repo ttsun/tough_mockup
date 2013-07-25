@@ -1,0 +1,105 @@
+<html>
+<head>
+	<title></title>	
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<script src="/static/js/jquery.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/main.css">	
+	<script type="text/javascript" src="/static/js/alertify.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.3.custom.min.css">
+    <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/alertify.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/css/alertify.bootstrap.css"/>
+	<script type="text/javascript">
+		$(document).ready(function(){
+		});
+
+		function loadPage(url){
+			$(".window-container").append("<div class='window'><header><div class='zoom-container'><button class='btn zoomout'>-</button><button class='btn zoomin'>+</button></div><a href='#' class='close'><i class='icon-remove'></i></a></header><div class='content'></div></div>");
+			var curr = $($(".window-container .window").last());
+			curr.find(".content").load(url);
+			resetListeners(curr);
+		}
+
+		function resetListeners(element){
+			$(element).resizable();
+			$(element).draggable({
+				handle:"header", 
+				snap: "#alignment", 
+				snapMode: "outer", 
+				scroll: true,
+				create: function(event, ui){
+					$(this).css("position", "absolute");
+					$(this).css("top", 72);
+					$(this).css("left", 72);
+				}
+			});
+			$(element).find(".zoomout").click(function(){
+				$(this).parent().parent().siblings(".content").children("#content").children().css({
+					'font-size':"-=2px",
+					'line-height':'1'
+				});
+			});
+			$(element).find(".zoomin").click(function(){
+				$(this).parent().parent().siblings(".content").children("#content").children().css({
+					'font-size':"+=2px",
+					'line-height':'1'
+				});
+			});
+			$(element).find(".close").click(function(e){
+				e.preventDefault();
+				$(this).parent().parent(".window").remove();
+				return false;
+			});
+		}
+	</script>
+	<style type="text/css">
+	.window{
+		width:400px;
+		height:400px;
+		position:absolute;
+		border:1px solid black;
+		background:white;
+	}
+	.window header{
+		width:100%;
+		border:1px solid black;
+		border-bottom:none;
+		height:30px;
+		top:-30px;
+		left:-1px;
+		position:absolute;
+		background-color:#DDDDDD;
+		cursor:move;
+	}
+	.window .content{
+		overflow:auto;
+		height:100%;
+		position:relative;
+	}
+	.navbar{
+		margin-bottom:30px;
+	}
+	#alignment{
+		width:100%;
+		position:absolute;
+		top:72px;
+	}
+	.window-container .content .navbar{
+		position:relative;
+	}
+	</style>
+</head>
+<body>
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Add Window</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="alignment"></div>
+	<div class="window-container">		
+	</div>
+</body>
+</html>

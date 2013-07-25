@@ -98,8 +98,8 @@ class NoahUser(AbstractBaseUser):
         Return a list of all jobs
         """
         all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
-        # for job in all_jobs:
-        #     job.check_exists()
+        for job in all_jobs:
+            job.check_exists()
 
         # get the list of jobs listed in the database as running and update them.
         dbrunning = all_jobs.filter(state__in=['submitted', 'started'])
@@ -508,7 +508,6 @@ class Job(models.Model):
 
         cookie_str = self.user.cookie
         url = '/command/%s/' % (self.machine)
-
         response, content = util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/mv %s %s"'%(srcdir, tgtdir) }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)

@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     url(r'^ajax/job/(?P<job_id>\d+)/file/(?P<directory>.+)/$', 'tough.views.ajax_get_job_dir'),
     url(r'^ajax/job/(?P<job_id>\d+)/file/$', 'tough.views.ajax_get_job_dir'),
     url(r'^ajax/move/$', 'tough.views.batch_move'),
+    url(r'^ajax/job/(?P<job_id>\d+)/delete/(?P<path>.+)/$', 'tough.views.ajax_file_delete'),
 )
 if settings.DEBUG:
     urlpatterns += patterns('',

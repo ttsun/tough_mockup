@@ -177,7 +177,7 @@ class Job(models.Model):
     dir_name = models.CharField(max_length=1024)
     machine = models.CharField(max_length=254)
     exists = models.BooleanField(blank = True, default = True)
-    executable = models.CharField(max_length=254, default="t+hydrate-hopper.debug")
+    executable = models.CharField(max_length=1024, default="/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug")
 
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
@@ -212,6 +212,10 @@ class Job(models.Model):
     maxwalltime = models.TimeField(default = time(hour = 0, minute = 15))
     nodemem = models.CharField(max_length=256, default = "first")
     emailnotifications = models.CharField(max_length = 256, default = "")
+
+    edit_type = models.IntegerField(default=1)
+    # 0: No guided blocks view
+    # 1: Guided blocks view
 
     
     def create_dir(self):
@@ -454,8 +458,8 @@ class Job(models.Model):
             path=self.jobdir
         cookie_str=self.user.cookie
         url = '/command/%s/' % (self.machine)    
-
-        response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/rm -rf %s"'%path }, cookie_str=cookie_str)
+        import ipdb; ipdb.set_trace()
+        response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/rm -rf \'%s\'"'%path }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)        
 
@@ -483,12 +487,13 @@ class Job(models.Model):
         newt_command = "/bin/bash -c 'ls -a --full-time %s'" % path
         # response, content = util.newt_request(url, 'GET', cookie_str=cookie_str)
         response, content = util.newt_request(url, 'POST', {"executable": newt_command}, cookie_str=cookie_str)
+        import ipdb; ipdb.set_trace()
         if response.status_code != 200:
             raise IOError(content)
         temp = response.json()['output'].split("\n")[1:-1]
         dir_info = []
         for line in temp:
-            line = line.split()
+            line = re.sub(r'\s+', " ", line).split(" ", 9)
             dir_info.append({
                 "perms": line[0],
                 "links": line[1],
@@ -737,7 +742,7 @@ class Job(models.Model):
         return self
 
     def get_comp_settings_form(self):
-        return CompSettingsForm(initial={"queue": self.queue, 
+        return CompSettingsForm(edit_type=self.edit_type, initial={"queue": self.queue,
                                 "num_procs": self.numprocs,
                                 "max_walltime": self.maxwalltime,
                                 "email_notifications": self.emailnotifications.split(","),
@@ -851,10 +856,10 @@ class TimeSelectorField(forms.Field):
         return value
 
 EXE_CHOICES = (
-    ("t+hydrate-hopper.debug", "Regular"),
-    ("t+hydrate-hopper.debug", "Debug"),
-    ("t+hydrate-hopper.debug", "Optimized"),
-    ("t+hydrate-hopper.debug", "Magical"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Regular"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Debug"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Optimized"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Magical"),
 )
 
 
@@ -864,6 +869,11 @@ class CompSettingsForm(forms.Form):
     num_procs = forms.IntegerField()
     max_walltime = TimeSelectorField()
     email_notifications = forms.MultipleChoiceField(choices=EMAIL_CHOICES, widget=forms.CheckboxSelectMultiple(), required=False)
+
+    def __init__(self, edit_type=None, *args, **kwargs):
+        super(CompSettingsForm, self).__init__(*args, **kwargs)
+        if(edit_type!=None and edit_type != 1):
+            self.fields['executable'] = forms.CharField(max_length=1024)
 
 
 class RawInputForm(forms.Form):

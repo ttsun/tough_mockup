@@ -28,21 +28,28 @@
                     <label for="jobname">What do you want to name this new job?</label>
                     <input type="text" name="jobname" id="id_name" size="50" value="{{job.jobname}}"/>
                 </div>
-            <div>
-                <label for="machine">Which machine should this job run on?</label>
-                <select name="machine" id="machine">
-                    <option value="hopper" selected="selected">hopper</option>
-                </select>
-            </div>
-            <div>
-                <label for="project">Add job to existing project?</label>
-                <select name="project">
-                    <option value=""> --- </option>
-                    {% for project in user.get_projects %}
-                        <option value="{{project.pk}}">{{project.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
+                <div>
+                    <label for="edit_type">Mode of edit? (Guided only for TOUGH+)</label>
+                    <select name="edit_type">
+                        <option value="1">Guided/Blocks View (TOUGH+)</option>
+                        <option value="0">Upload/Submit View (Other)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="machine">Which machine should this job run on?</label>
+                    <select name="machine" id="machine">
+                        <option value="hopper" selected="selected">hopper</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="project">Add job to existing project?</label>
+                    <select name="project">
+                        <option value=""> --- </option>
+                        {% for project in user.get_projects %}
+                            <option value="{{project.pk}}">{{project.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             {% else %}
                 <strong>Current Directory:</strong> <pre>{{job.jobdir}}</pre>
                 <input type="hidden" name="jobname" id="jobname" size="50" value="{{job.jobname}}"/>

@@ -251,7 +251,7 @@ def create_job(request, job_id=None, type="new"):
             messages.success(request, "%s successfully moved to %s" % (j.jobname, j.jobdir))
             return redirect('tough.views.jobs')
         else:
-            j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name)
+            j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name, edit_type=request.POST['edit_type'])
 
             #create directory with unique id
             j.create_dir()
@@ -329,9 +329,14 @@ def populate_job(job):
 @login_required
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
-    return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
-                              context_instance=RequestContext(request))
+    if j.edit_type != 1:
+        return render_to_response('unguided_job_edit.html',
+                                  {'job_name': j.jobname, 'job_id': job_id, 'job': j},
+                                  context_instance=RequestContext(request))
+    else:
+        return render_to_response('job_edit.html',
+                                  {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
+                                  context_instance=RequestContext(request))
 
 @login_required
 def file_upload_view(request, job_id, file_type):
@@ -486,7 +491,7 @@ def ajax_save(request, job_id, input_type):
                 content += 'cd $PBS_O_WORKDIR\n\n'
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
                 j.executable = form.cleaned_data['executable']
-                content += "aprun -n %d /global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/%s %s \n" %(j.numprocs, j.executable, j.jobname)
+                content += "aprun -n %d %s %s \n" %(j.numprocs, j.executable, j.jobname)
                 content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
             elif input_type == 'raw':
@@ -551,6 +556,16 @@ def delete_project(request, project_id):
             job.project = None
     project.delete()
     return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+
+
+def ajax_file_delete(request, job_id, path):
+    job = get_object_or_404(Job, pk=job_id)
+    try:
+        job.del_dir(dir=job.jobdir+"/"+path.strip("/"))
+    except Exception, e:
+        return HttpResponse(simplejson.dumps({"success":False, "error": str(e)}),content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
+
 
 def info_edit(request, job_id):
     job = get_object_or_404(Job, pk=job_id)

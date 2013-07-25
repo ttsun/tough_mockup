@@ -458,7 +458,6 @@ class Job(models.Model):
             path=self.jobdir
         cookie_str=self.user.cookie
         url = '/command/%s/' % (self.machine)    
-        import ipdb; ipdb.set_trace()
         response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/rm -rf \'%s\'"'%path }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)        

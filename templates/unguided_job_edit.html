@@ -103,10 +103,10 @@
 						curr_entry.append("<td>"+file.size+"</td>");
 						curr_entry.append("<td>"+file.date+"</td>");
 						if(file.is_folder == false){
-							curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/"+dir+file.name+"' class='delete'><i class='icon-trash'></i>Delete</a></td>");
+							curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/"+dir+file.name+"/' class='delete'><i class='icon-trash'></i>Delete</a></td>");
 						}else{
 							if(file.name != ".."){
-								curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/"+dir+file.name+"' class='delete'><i class='icon-trash'></i>Delete</a></td>");
+								curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/"+dir+file.name+"/' class='delete'><i class='icon-trash'></i>Delete</a></td>");
 							}
 						}
 					}

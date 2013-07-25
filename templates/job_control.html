@@ -63,7 +63,7 @@
         }
     </style>
     <script type="text/javascript">
-        var MAX_ENTRIES = 5;
+        var MAX_ENTRIES =4;
         $(document).ready(function(){
             // $(".optionbuttons").css('visibility', 'hidden');
             setupPaging();
@@ -167,6 +167,7 @@
                     $(this).addClass("icon-chevron-down").removeClass("icon-chevron-right");
                     $(this).addClass("open");
                 }
+                return false;
             });
             $("#projectbar a").click(function(e){
                 e.preventDefault();

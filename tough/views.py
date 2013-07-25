@@ -62,6 +62,7 @@ def view_file(request, job_id, filepath):
     current_line = len(totallines)
     return render_to_response("tail.html", {"success": True, "job_id": job.pk, "filepath": filepath, "file_content": content, "current_line":current_line, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:]}, context_instance=RequestContext(request))
 
+
 @login_required
 def view_graph(request, job_id, filepath):
     job = get_object_or_404(Job, pk=job_id)
@@ -88,6 +89,12 @@ def view_graph(request, job_id, filepath):
             data.append(float(datum))
         graph_data.append(data)
     return render_to_response("graph.html", {"success": True, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
+
+
+@login_required
+def power_view(request, job_id):
+    return render_to_response("power_view.html", {}, context_instance=RequestContext(request))
+
 
 @login_required
 def update_graph(request, job_id, filepath):
@@ -521,14 +528,21 @@ def delete_project(request, project_id):
         for job in project.job_set.all():
             job.project = None
     project.delete()
-    return HttpResponse(simplejson.dumps({"success":True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.jobs")}), content_type="application/json")
 
 def info_edit(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     if request.method == "POST":
         form = InfoEditForm(data=request.POST, job=job, instance=job)
         if form.is_valid():
-            form.save()
+            if Job.objects.get(pk=job.pk).jobdir != form.cleaned_data['jobdir']:
+                try:
+                    Job.objects.get(pk=job.pk).move_dir(tgtdir=form.cleaned_data['jobdir'])
+                    form.save()
+                except Exception:
+                    messages.error(request, "Failed to move current job to '%s'" % form.cleaned_data['jobdir'])
+            else:
+                form.save()
             if request.is_ajax():
                 return HttpResponse(simplejson.dumps({"success": True, "redirect":reverse("tough.views.job_edit", kwargs={"job_id": job.pk}),"info": {"name": job.jobname, "project": job.project.name if job.project else ""}}), content_type="application/json")
             return redirect("tough.views.job_edit", job_id=job.pk)

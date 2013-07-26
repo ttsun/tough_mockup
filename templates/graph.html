@@ -208,7 +208,7 @@
 					<option selected="selected">Select y axis</option>
 				</select> -->
 				<button class="btn btn-primary" id="graph_submit">Generate Graph</button>
-					<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/graph/{{filepath}}/">Auto Update On</a>	
+					<a id="tail" class="btn btn-primary" href="{% url 'tough.views.update_graph' job_id=job_id filepath=filepath %}">Auto Update On</a>	
 			</div>	
 		</div>
 	</div>

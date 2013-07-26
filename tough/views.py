@@ -166,13 +166,13 @@ def jobs(request):
 def rebuild_job(request, job_id):
     j = get_object_or_404(Job, pk = job_id)
     j.rebuild()
-    j.block_set.get(blockType__tough_name = "mesh").reset_block_upload_times()
-    j.block_set.get(blockType__tough_name = "incon").reset_block_upload_times()
-    j.block_set.get(blockType__tough_name = "sinks_sources").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="mesh").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="incon").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="sinks_sources").reset_block_upload_times()
     messages.success(request, "%s successfully rebuilt at %s" % (j.jobname, j.jobdir))
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
-    return redirect("/job/job_setup/%d/" % j.pk)
+        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+    return redirect("tough.views.job_edit", job_id=j.pk)
 
 
 @login_required
@@ -308,8 +308,8 @@ def create_job(request, job_id=None, type="new"):
             #render default setup form
             messages.success(request, "%s successfully created at %s" % (j.jobname, j.jobdir))
             if request.is_ajax():
-                return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
-            return redirect("/job/job_setup/%d/" % j.pk)
+                return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+            return redirect("tough.views.job_edit", job_id=j.pk)
     else:
         if job_id:
             job = get_object_or_404(Job, pk=job_id)

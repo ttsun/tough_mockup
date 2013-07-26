@@ -107,8 +107,8 @@
                     case 1:
                         // $(".optionbuttons").css('visibility', 'visible');
                         $("#singlejoboptions").fadeIn();
-                        $("#copybutton").attr("href", "/job/copy/" + $(this).attr("data-id") + "/");
-                        $("#movebutton").attr("href","/job/move/" + $(this).attr("data-id") + "/" );
+                        $("#copybutton").attr("href", "/job/" + $(this).attr("data-id") + "/copy/");
+                        $("#movebutton").attr("href","/job/" + $(this).attr("data-id") + "/move/" );
                         break;
                     case 2:
                         // $("#multiplejoboptions").css('visibility', 'visible');
@@ -116,7 +116,7 @@
                         $('input[name=jobcheck]:checked').each(function(){
                             selectedjobs.push($(this).attr('data-id'));
                         });
-                        $("#movebutton").attr("href", "/ajax/move/?jobs=" + selectedjobs.join(','))
+                        $("#movebutton").attr("href", "/ajax/job/move/?jobs=" + selectedjobs.join(','))
                         $("#singlejoboptions").fadeOut();
                         break;
                 }
@@ -156,7 +156,7 @@
             });
             $(".deletemultiple").click(function(e){
                 e.preventDefault;
-                var url = '/job/del/selected/'
+                var url = '/job/batch/del/'
                 var selectedjobs = new Array();
                 var checkedjobs = $('input[name=jobcheck]:checked');
                 $(checkedjobs).each(function(){
@@ -378,7 +378,6 @@
                                 <td class="time">{{job.time_started}}</td>
                                 <td class="numprocs">{{job.numprocs}}</td>
                                 <td class="job_id">{{job.pbsjob_id}}</td>
-                                
                             </tr>
                         {% else %}
                             <tr>

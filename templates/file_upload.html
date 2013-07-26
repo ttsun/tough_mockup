@@ -33,20 +33,35 @@ function addListeners(){
             url: $("#fileuploadform").attr("action"),  //server script to process data
             type: 'POST',
             //Ajax events
-            beforeSend: function(){
-                if($("#filetype").val() == 'infile'){
-                    Alertify.log.info("Uploading and parsing file...");
-                } else {
-                    Alertify.log.info("Uploading your {{file_type}} file...");
-                }
-            },
-            success: function(response){
-                if(response.success){
-                    window.location.href = response.redirect;
-                }else{
-                    Alertify.log.error("Something went wrong when parsing. Please try again.");
-                }
-            },
+            {% if job.edit_type != 1 %}
+                beforeSend: function(){
+                    Alertify.log.info("Uploading your file...");
+                },
+                success: function(response){
+                    if(response.success){
+                        $(".closedialog").click();
+                        $("[href='#files']").click();
+                        Alertify.log.success(response.filename + " was successfully uploaded!");
+                    }else{
+                        Alertify.log.error("Something went wrong when parsing. Please try again.");
+                    }
+                },
+            {% else %}
+                beforeSend: function(){
+                    if($("#filetype").val() == 'infile'){
+                        Alertify.log.info("Uploading and parsing file...");
+                    } else {
+                        Alertify.log.info("Uploading your {{file_type}} file...");
+                    }
+                },
+                success: function(response){
+                    if(response.success){
+                        window.location.href = response.redirect;
+                    }else{
+                        Alertify.log.error("Something went wrong when parsing. Please try again.");
+                    }
+                },
+            {% endif %}
             // Form data
             data: formData,
             //Options to tell JQuery not to process data or worry about content-type
@@ -88,54 +103,56 @@ function addListeners(){
     <div class = "span12" id = "fileform">
         <h2 id = "title">Upload {{file_type.upper}} File</h2>
         {% if file_type != "infile" %}
-        <select id="inputselect" placeholder="Select your MESH input method">
-            <option value = "none">None Selected</option>
-            <option class="inputoptions" id="upload" value = "upload">Upload from my computer</option>
-            <option class="inputoptions" id="import" value = "import">Import from another job</option>
-        </select>
-        <form class = "disabled" action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
-            {% csrf_token %}
-            <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
-            {%for field in job.get_file_upload_form %}
-            <div class="control-group">
-            <label for = "id_{{field.html_name}}" class = "control-label"></label>
-                <div class="controls">
-                {{ field }}
+            <select id="inputselect" placeholder="Select your MESH input method">
+                <option value = "none">None Selected</option>
+                <option class="inputoptions" id="upload" value = "upload">Upload from my computer</option>
+                {% if file_type != "file" %}
+                    <option class="inputoptions" id="import" value = "import">Import from another job</option>
+                {% endif %}
+            </select>
+            <form class = "disabled" action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+                {% csrf_token %}
+                <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
+                {%for field in job.get_file_upload_form %}
+                <div class="control-group">
+                <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                    <div class="controls">
+                    {{ field }}
+                    </div>
+                </div>                 
+                {%endfor%}
+                <input type="submit" class = "btn btn-primary" value="Upload" />
+                <button class = "closedialog btn">Cancel</button>
+            </form>
+            <form class = "disabled" action = "{% url 'tough.views.import_file' job_id=job_id file_type=file_type %}" method="POST" id = "fileimportform">
+                {% csrf_token %}
+                <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
+                <div class = "control-group">
+                    {% for field in block.get_import_form %}
+                    <div class = "control">
+                        {{field}}
+                    </div>
+                    {% endfor %}
                 </div>
-            </div>                 
-            {%endfor%}
-            <input type="submit" class = "btn btn-primary" value="Upload" />
-            <button class = "closedialog btn">Cancel</button>
-        </form>
-        <form class = "disabled" action = "{% url 'tough.views.import_file' job_id=job_id file_type=file_type %}" method="POST" id = "fileimportform">
-            {% csrf_token %}
-            <input type = "hidden" name = "blockType" value = "{{block.blockType.pk}}">
-            <div class = "control-group">
-                {% for field in block.get_import_form %}
-                <div class = "control">
-                    {{field}}
-                </div>
-                {% endfor %}
-            </div>
-            <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
-            <input class="btn btn-primary" type="submit" id='saveimportblock' value="Import"/>
-            <button class="btn" type="button" id='cancel'>Cancel</button>
-        </form>
+                <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
+                <input class="btn btn-primary" type="submit" id='saveimportblock' value="Import"/>
+                <button class="btn" type="button" id='cancel'>Cancel</button>
+            </form>
         {% else %}
-        <form action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
-            {% csrf_token %}
-            <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
-            {%for field in job.get_file_upload_form %}
-            <div class="control-group">
-            <label for = "id_{{field.html_name}}" class = "control-label"></label>
-                <div class="controls">
-                {{ field }}
-                </div>
-            </div>                 
-            {%endfor%}
-            <input type="submit" class = "btn btn-primary" value="Upload" />
-            <button class = "closedialog btn">Cancel</button>
-        </form>
+            <form action = "{% url 'tough.views.file_upload' job_id=job_id file_type=file_type %}" method = "POST" id = "fileuploadform" enctype = "multipart/form-data">
+                {% csrf_token %}
+                <input type = "hidden" id="filetype" name="filetype" value="{{file_type}}" />
+                {%for field in job.get_file_upload_form %}
+                <div class="control-group">
+                <label for = "id_{{field.html_name}}" class = "control-label"></label>
+                    <div class="controls">
+                    {{ field }}
+                    </div>
+                </div>                 
+                {%endfor%}
+                <input type="submit" class = "btn btn-primary" value="Upload" />
+                <button class = "closedialog btn">Cancel</button>
+            </form>
         {% endif %}
 
     </div>

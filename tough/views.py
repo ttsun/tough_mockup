@@ -252,7 +252,8 @@ def create_job(request, job_id=None, type="new"):
             return redirect('tough.views.jobs')
         else:
             j = Job(user=u, jobdir=jobdir, machine=request.POST['machine'], jobname=request.POST['jobname'], dir_name=folder_name, edit_type=request.POST['edit_type'])
-
+            if j.edit_type == 1:
+                j.infile = j.jobname
             #create directory with unique id
             j.create_dir()
 
@@ -341,7 +342,7 @@ def job_edit(request, job_id):
 @login_required
 def file_upload_view(request, job_id, file_type):
     j = get_object_or_404(Job , pk=job_id)
-    if (file_type != 'infile'):
+    if (file_type != 'infile' and file_type != "file"):
         block = j.block_set.get(blockType__tough_name = file_type)
     else:
         block = None
@@ -352,14 +353,29 @@ def file_upload_view(request, job_id, file_type):
 @login_required
 def file_upload(request, job_id, file_type):
     j = get_object_or_404(Job, pk=job_id)
-    if (file_type == 'infile'):
+    if j.edit_type == 1 and file_type == 'infile':
         file_from = request.FILES['files'].read()
         j.parse_input_file(file_from)
         messages.success(request, "File successfully uploaded and parsed!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     else:
-        response = j.upload_files(request.FILES['files'], filename=file_type)
-        messages.success(request, file_type.upper() + " was successfully uploaded and saved!")
+        if file_type == "file":
+            filename = request.FILES['files'].name
+            response = j.upload_files(request.FILES['files'], filename=filename, is_block=False)
+            return HttpResponse(simplejson.dumps({"success": True, "filename": filename}), content_type="application/json")
+        elif j.edit_type != 1 and file_type == "infile":
+            filename = request.FILES['files'].name
+            j.infile = filename
+            j.save()
+            response = j.upload_files(request.FILES['files'], filename=filename, is_block=False)
+            j.save_block(BlockType.objects.get(pk=1), j.generate_batch())
+            j.put_file(j.jobfile, j.block_set.get(blockType__pk=1).content)
+            return HttpResponse(simplejson.dumps({"success": True, "filename": filename}), content_type="application/json")
+        else:
+            filename = file_type
+            response = j.upload_files(request.FILES['files'], filename=filename)
+            filename = filename.upper()
+        messages.success(request, filename + " was successfully uploaded and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
     if request.is_ajax():
         return HttpResponse(response.json(), content_type="application/json")
@@ -370,23 +386,26 @@ def file_upload(request, job_id, file_type):
 def ajax_submit(request, job_id):
     #get the data from the ajax request
     j = Job.objects.get(id=job_id)
-    filename = j.jobname
-    submitted_text = combine_inputs(j)
 
-    #save via newt, then return an okay
-    try:
-        j.put_file(filename, submitted_text)
-    except Exception:
-        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save input file."}), content_type="application/json")
+    # Combines the blocks into an input file and
+    # The batch file into the batch file
+    # Only if the view is guided
+    if j.edit_type == 1:
+        filename = j.infile
+        submitted_text = combine_inputs(j)
 
-    batchname = "tough.pbs"
-    batch_text = j.block_set.get(blockType__pk=1).content
+        #save via newt, then return an okay
+        try:
+            j.put_file(filename, submitted_text)
+        except Exception:
+            return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save input file."}), content_type="application/json")
 
-    try:
-        j.put_file(batchname, batch_text)
-    except Exception:
-        return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
-    
+        batch_text = j.block_set.get(blockType__pk=1).content
+
+        try:
+            j.put_file(j.jobfile, batch_text)
+        except Exception:
+            return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save batch file."}), content_type="application/json")
     try:
         j.submit()
     except Exception:
@@ -470,30 +489,18 @@ def ajax_save(request, job_id, input_type):
         if form.is_valid():
             # If the block is a batch block (pk=1)
             if blocktype.pk == 1:
-                content = ''
-                content += '#PBS -N tough\n'
-                content += '#PBS -q ' + form.cleaned_data['queue'] + '\n'
                 j.queue = form.cleaned_data['queue']
-                content += '#PBS -l mppwidth=%d\n' % (form.cleaned_data['num_procs'])
-
                 j.numprocs = int(form.cleaned_data['num_procs'])
-
-                content += '#PBS -l walltime=' + form.cleaned_data["max_walltime"][0] + ':' + form.cleaned_data["max_walltime"][1] + ':00\n'
                 j.maxwalltime = time(hour=int(form.cleaned_data["max_walltime"][0]), minute=int(form.cleaned_data["max_walltime"][1]))
-                j.emailnotifications = ",".join(form.cleaned_data['email_notifications'])
+                
                 mail = "".join(form.cleaned_data['email_notifications'])
                 if not mail:
                     mail = 'n'
-                content += '#PBS -m %s \n' % mail
-                content += '#PBS -j oe\n'
-                content += '#PBS -d ' + j.jobdir + '\n'
-                content += '#PBS -V\n\n'
-                content += 'cd $PBS_O_WORKDIR\n\n'
-                content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > started\n"
+                j.emailnotifications = ",".join(mail)
+                
                 j.executable = form.cleaned_data['executable']
-                content += "aprun -n %d %s %s \n" %(j.numprocs, j.executable, j.jobname)
-                content += "/bin/date -u  +'%a %b %d %H:%M:%S %Z %Y' > completed\n"
                 j.save()
+                content = j.generate_batch()
             elif input_type == 'raw':
                 content = form.cleaned_data['rawinput']
             else:
@@ -502,6 +509,9 @@ def ajax_save(request, job_id, input_type):
                 j.save_block(blocktype, content)
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
                 j.save()
+                if j.edit_type != 1:
+                    batch_text = j.block_set.get(blockType__pk=1).content
+                    j.put_file(j.jobfile, batch_text)
                 return HttpResponse(simplejson.dumps({"success": True, "content": content}), content_type="application/json")
             except Exception:
                 return HttpResponse(simplejson.dumps({"success": False, "error": "Unable to save file."}), content_type="application/json")
@@ -563,8 +573,8 @@ def ajax_file_delete(request, job_id, path):
     try:
         job.del_dir(dir=job.jobdir+"/"+path.strip("/"))
     except Exception, e:
-        return HttpResponse(simplejson.dumps({"success":False, "error": str(e)}),content_type="application/json")
-    return HttpResponse(simplejson.dumps({"success": True}), content_type="application/json")
+        return HttpResponse(simplejson.dumps({"success":False, "error": str(e), "path": job.jobdir + "/" + path.strip("/")}),content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success": True, "path": job.jobdir + "/" + path.strip("/")}), content_type="application/json")
 
 
 def info_edit(request, job_id):
@@ -669,6 +679,7 @@ def ajax_get_job_dir(request, job_id, directory=""):
     listing = sorted(listing, key=lambda f: f['name'].lower())
     listing = sorted(listing, key=lambda f: f['is_folder'], reverse=True)
     return HttpResponse(simplejson.dumps({"success": True, "listing": listing}), content_type="application/json")
+
 
 @login_required
 def ajax_get_job_info(request, job_id):

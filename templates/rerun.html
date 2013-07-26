@@ -1,13 +1,35 @@
 {% extends "base.html"%}
 {% block head %}
 	<script type="text/javascript">
+	var jobname = "{{job.jobname}}";
+	var basedir = "{{job.jobdir}}".substring(0, "{{job.jobdir}}".lastIndexOf('/'));
+	var machine = "{{job.machine}}";
+	var editType = {{job.edit_type}};
+	var job_id = {{job.pk}};
 		$(document).ready(function(){
 			$("a").click(function(e){
 				if($(this).hasClass('disabled')){
 					e.preventDefault();
 				}
 			});
-		});
+			$("#create_rerun").click(function(e){
+				e.preventDefault();
+				var url = $(this).attr("href");
+				Alertify.log.info("Creating a rerun copy of " + jobname);
+				$.post(url, {'job_id':job_id, 'jobname':jobname + "_rerun", 'jobdir':basedir, 'setup_type':'copy', 'machine':machine, 'edit_type':editType}, function(data){
+					console.log(data['redirect']);
+					window.location = data['redirect'];
+				});
+			});
+			$("#choose_rerun").click(function(e){
+				e.preventDefault();
+				$("#jobnameform").show();
+			})
+			// $("#cancel").click(function(e){
+			// 	e.preventDefault();
+
+			// }
+		})
 	</script>
 	<style type="text/css">
 	.rebuildform{
@@ -18,9 +40,17 @@
 {% block content %}
 <div class = "row-fluid">
 	<div class="rebuildform span6 offset3">
-	<p>This job has already been run, would you like to edit inputs and rerun this job? Doing so will generate a copy of this job.</p>
-	<button class="btn">Cancel</button>
-	<button class="btn btn-primary">Create Rerun Job</button>
-</div>
+		<p>This job has already been run, would you like to edit inputs and rerun this job? Doing so will generate a copy of this job.</p>
+		<a href="{% url 'tough.views.jobs' %}" class="btn">Cancel</a>
+		<a href=""id="choose_rerun" class="btn btn-primary">Okay</a>
+			<div id="jobnameform" style="display:None">
+				<p>What do you want to name this new job?<p>
+				<input id="new_jobname" type="text" value="{{job.jobname}}"/>
+				<div>
+					<a href="{% url 'tough.views.create_job' type='copy' job_id=job.pk%}"id="create_rerun" class="btn btn-primary">Create Rerun Job</a>
+					<a href="{% url 'tough.views.jobs' %}" class="btn">Cancel</a>
+				</div>
+			</div>
+	</div>
 </div>
 {% endblock %}

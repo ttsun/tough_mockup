@@ -1,0 +1,204 @@
+{% extends "base.html" %} {% block head %}
+<style type="text/css">
+textarea {
+    width:auto;
+    font-family:Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    word-wrap: break-word;
+}
+[name='rawinput'] {
+    width:98%;
+}
+#id_max_walltime_0, #id_max_walltime_1 {
+    width: 65px;
+}
+#sidebar a.btn-large {
+    margin:8px;
+}
+</style>
+<script type="text/javascript">
+var curr_dir = "";
+$(document).ready(function() {
+    $("#compset").removeClass("inputarea").addClass("inputareaactive");
+    current_doc = "batch";
+    $(".inputarea:not(.inputareaactive)").hide();
+    // Listens for forms to be submitted
+    // Makes ajax calls when forms are submitted
+    // Makes an exception for dirinput because dirinput needs to change pages
+    $("form").submit(function(e) {
+        e.preventDefault();
+        Alertify.log.info("Saving " + current_doc + " block");
+        var href = $(this).parent().parent().parent(".inputarea").attr("id");
+        $.post($(this).attr("action"), $(this).serialize(), function(data) {
+            if (data.success) {
+                Alertify.log.success("Block successfully saved!");
+                if (data.content != "") {
+                    if ($("[href='#" + href + "']").children('i').length == 0) {
+                        $("[href='#" + href + "']").append("<i class='icon-ok'></i>");
+                    }
+                    $("#" + href).find("[name='rawinput']").val(data.content);
+                } else {
+                    $("[href='#" + href + "']").children("i").remove();
+                }
+            } else {
+                Alertify.log.error(data.error);
+            }
+        });
+        return false;
+    });
+
+    $(".showhide").click(function(e) {
+        e.preventDefault();
+        if ($(this).parent().parent().siblings().is(":hidden")) {
+            $(this).parent().parent().siblings().slideDown();
+            $(this).text("Hide");
+        } else {
+            $(this).parent().parent().siblings().slideUp();
+            $(this).text("Show");
+        }
+    });
+    $("#sidebar a:not(#submit_job, .popup, .showhide, .btn, #viewoutput)").click(function(e) {
+        if ($(this).parent("li[class~=disabled]").length == 0) {
+            e.preventDefault();
+            $("form:visible").submit();
+            $("#sidebar .active").removeClass("active");
+            $(this).parent("li").addClass("active");
+            showInputArea($(this).attr("href"));
+        }
+    });
+});
+
+function showInputArea(id) {
+    $(".inputareaactive").removeClass("inputareaactive").hide();
+    current_doc = $(id).attr("id");
+    $(id).addClass("inputareaactive").show();
+    if (id == "#files") {
+        getFolder(curr_dir);
+    }
+    $(".inputarea:not(.inputareaactive)").hide();
+}
+
+function getFolder(dir) {
+    $("#file_list").html("");
+    $(".loader").show();
+    $.get("{% url 'tough.views.ajax_get_job_dir' job_id=job.pk %}" + dir, function(response) {
+        $(".loader").hide();
+        if (response.success) {
+            for (var x in response.listing) {
+                var file = response.listing[x];
+                $("#file_list").append("<tr class='entry'></tr>");
+                var curr_entry = $($(".entry").last());
+                if (file.is_folder) {
+                    if (file.name == "..") {
+                        curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/" + dir + file.name + "/' data-dir='" + dir + file.name + "/'><i class='icon-folder-close'></i>" + file.name + "</a></td>");
+                    } else {
+                        curr_entry.append("<td><a class='folder' href='/job/{{job.pk}}/file/" + dir + file.name + "/' data-dir='" + dir + file.name + "/'><i class='icon-folder-close'></i>" + file.name + "</a></td>");
+                    }
+                } else {
+                    curr_entry.append("<td><a class = 'view file' target='_blank' href = '/job/{{job.pk}}/view/" + dir + file.name + "/'><i class='icon-file'></i>" + file.name + "</a></td>");
+                }
+                curr_entry.append("<td>" + file.size + "</td>");
+                curr_entry.append("<td>" + file.date + "</td>");
+                if (file.is_folder == false) {
+                    curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/" + dir + file.name + "/' class='delete'><i class='icon-trash'></i>Delete</a></td>");
+                } else {
+                    if (file.name != "..") {
+                        curr_entry.append("<td><a href='/ajax/job/{{job.pk}}/delete/" + dir + file.name + "/' class='delete'><i class='icon-trash'></i>Delete</a></td>");
+                    }
+                }
+            }
+            $(".folder").click(function(e) {
+                e.preventDefault();
+                getFolder($(this).attr("data-dir"));
+                current_folder = ($(this).attr("data-dir"))
+                return false;
+            });
+            $(".view").click(function(e) {
+                e.preventDefault();
+                window.open($(this).attr("href"), "", 'width=800,height=500,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1');
+                return false;
+            });
+            $(".delete").click(function(e){
+                e.preventDefault();
+                Alertify.log.info("Deleting file...")
+                $(".loader").show();
+                $.get($(this).attr("href"), function(data){
+                    $(".loader").hide();
+                    if(data.success){
+                        Alertify.log.success("Successfully deleted " + data.path);
+                    }else{
+                        Alertify.log.error("Unable to delete " + data.path + ". " + data.error);
+                    }
+                    getFolder(curr_dir);
+                });
+                return false;
+            });
+        }
+    });
+}
+</script>
+
+{% endblock head %} 
+{% block content %}
+<div class="row-fluid">
+    <div class="span2 well" id="sidebar">
+        {% if job_id %}
+        <ul id="jobdetails" class="nav nav-list">
+            <li class="nav-header">Job Details |
+                <small><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Edit </a> | <a id="viewoutput" href="{% url 'tough.views.job_view' job_id=job.pk %}">Info</a>
+                </small>
+            </li>
+            <li>
+                <strong>Machine:</strong>{{job.machine|capfirst}}</li>
+            <li>
+                <strong>Project:</strong>{{job.project.name|capfirst}}</li>
+            <li>
+                <strong>Job Name:</strong>{{job_name|capfirst}}</li>
+        </ul>
+        {% endif %}
+        <ul class="nav nav-list">
+            <li class="nav-header">Required Information</li>
+            <li id="batchselect" class="blockchoice active">
+                <a href="#compset" id="batch">Computational Settings</a>
+            </li>
+            <li class="blockchoice">
+                <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='infile' %}" id = "upload_input" class = "popup">Upload Input File</a>
+            </li>
+            <li class="blockchoice">
+                <a href="#files">Files</a>
+            </li>
+        </ul>
+        {% if job_id %}
+        <a href="{% url 'tough.views.ajax_submit' job_id=job_id %}" id="submit_job" class="btn btn-success btn-large">SUBMIT</a>
+        {% endif %}
+    </div>
+    <div class="span10 inputarea" id="compset">
+        <h2>Computational Settings</h2>
+        {% include "batch_form.html" %}
+    </div>
+    <div class="span10 inputarea" id="files">
+        <h2>Files
+            <img class='loader' src='/static/img/ajax-loader.gif' />
+        </h2>
+        <a href="{% url 'tough.views.file_upload_view' job_id=job_id file_type='file' %}" class='btn popup'><i class='icon-upload'></i> Upload File</a>	
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Size</th>
+                    <th>Last Modified</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <form id="file_select_form">
+                <tbody id="file_list">
+                </tbody>
+            </form>
+        </table>
+    </div>
+</div>
+{% endblock content %}

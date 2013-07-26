@@ -98,8 +98,8 @@ class NoahUser(AbstractBaseUser):
         Return a list of all jobs
         """
         all_jobs = self.job_set.all().order_by("-time_last_updated", "project__name", "-id")
-        for job in all_jobs:
-            job.check_exists()
+        # for job in all_jobs:
+        #     job.check_exists()
 
         # get the list of jobs listed in the database as running and update them.
         dbrunning = all_jobs.filter(state__in=['submitted', 'started'])
@@ -264,11 +264,27 @@ class Job(models.Model):
         
        
     def upload_files(self, uploaded_file, filename):
+        elem_regex = '(\w)+(\s)+(&Elem)'
+        conn_regex = '(\w)+(\s)+(&ConX)'
+        elem_count = 0
+        conn_count = 0
         path = self.jobdir
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
+
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
+        if filename == 'mesh':
+            for chunk in uploaded_file.chunks():
+                lines = chunk.split('\n')
+                for line in lines:
+                    if re.search(elem_regex, line) >= 1:
+                        elem_count += 1
+                    elif re.search(conn_regex, line) >= 1:
+                        conn_count += 1
         b = self.block_set.get(blockType__tough_name = filename)
+        b.upload_file_name = uploaded_file.name
+        b.num_elem = elem_count
+        b.num_conn = conn_count
         b.last_uploaded = datetime.now()
         b.save()
         if response.status_code!=200:
@@ -912,6 +928,9 @@ class Block(models.Model):
     job = models.ForeignKey(Job)
     content = models.TextField(blank=True)
     last_uploaded = models.DateTimeField(null = True, default = None)
+    num_elem = models.IntegerField(null = True, default = None)
+    num_conn = models.IntegerField(null = True, default = None)
+    upload_file_name = models.CharField(null = True, default = None, max_length=256)
 
     class Meta:
         ordering = ['blockType__ordering', 'blockType__id']
@@ -929,6 +948,7 @@ class Block(models.Model):
         self.last_uploaded = None
         self.save()
         return
+
 
 class QualifiedBlockRef(models.Model):
     blockType = models.ForeignKey(BlockType)

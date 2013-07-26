@@ -329,9 +329,14 @@ def populate_job(job):
 @login_required
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
-    return render_to_response('job_edit.html',
-                              {'job_name': j.jobname, 'job_id': job_id, "mesh_last_uploaded": j.block_set.get(blockType__tough_name='mesh').last_uploaded, "incon_last_uploaded":j.block_set.get(blockType__tough_name='incon').last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
-                              context_instance=RequestContext(request))
+    if j.state and j.state in ['completed', 'aborted', 'started', 'submitted']:
+        return render_to_response('rerun.html', {"job":j}, context_instance=RequestContext(request))
+    else:
+        mesh = j.block_set.get(blockType__tough_name = 'mesh')
+        incon = j.block_set.get(blockType__tough_name = 'incon')
+        return render_to_response('job_edit.html',
+                                  {'job_name': j.jobname, 'job_id': job_id, "mesh_upload_name": mesh.upload_file_name, "mesh_elems":mesh.num_elem, "mesh_conns":mesh.num_conn,  "mesh_last_uploaded": mesh.last_uploaded, "incon_upload_name":incon.upload_file_name, "incon_last_uploaded":incon.last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
+                                  context_instance=RequestContext(request))
 
 @login_required
 def file_upload_view(request, job_id, file_type):
@@ -658,22 +663,19 @@ def ajax_get_job_dir(request, job_id, directory=""):
 @login_required
 def ajax_get_job_info(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
+    if j.state and j.state not in ['completed', 'aborted', 'toberun']:
+        j.update()
     time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
     time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
     time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
     if j.state == 'completed':
         timeuse = str(j.time_completed-j.time_started)
-        jobdone = True
     elif j.state == 'started':
-        jobdone = False
-        timeuse = datetime(datetime.utcnow().replace(tzinfo = utc) - j.time_submitted).strftime("%I:%M:%S")
+        timedif = str(datetime.utcnow().replace(tzinfo = utc) - j.time_started)
+        timeuse = timedif[0: timedif.index(".")]
     else:
-        if j.state == 'aborted':
-            jobdone = True
-        else:
-            jobdone = False
         timeuse = None
-    return HttpResponse(simplejson.dumps({"success":True, "job_done": jobdone, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
+    return HttpResponse(simplejson.dumps({"success":True, "job_state":j.state, "time_submitted": time_submitted, "time_started": time_started, "time_completed": time_completed, "time_used": timeuse}), content_type="application/json")
 
 @login_required
 def ajax_mkdir(request, machine, directory):

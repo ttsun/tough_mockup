@@ -262,7 +262,7 @@ def create_job(request, job_id=None, type="new"):
 
             # Copy over the files to the new dir, if this is an import or copy
             if srcdir:
-                if j.edit_type == 1:
+                if int(j.edit_type) == 1:
                     j.import_files(srcdir, filelist=['incon', 'mesh'])
                 else:
                     j.import_files(srcdir)
@@ -694,9 +694,9 @@ def ajax_get_job_info(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
     if j.state and j.state not in ['completed', 'aborted', 'toberun']:
         j.update()
-    time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
-    time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
-    time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
+    time_completed = djangolocaltime(j.time_completed).strftime("%B %d, %Y, %I:%M %p") if j.time_completed else None
+    time_submitted = djangolocaltime(j.time_submitted).strftime("%B %d, %Y, %I:%M %p") if j.time_submitted else None
+    time_started = djangolocaltime(j.time_started).strftime("%B %d, %Y, %I:%M %p") if j.time_started else None
     if j.state == 'completed':
         timeuse = str(j.time_completed-j.time_started)
     elif j.state == 'started':

@@ -889,10 +889,9 @@ class TimeSelectorField(forms.Field):
         return value
 
 EXE_CHOICES = (
-    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Regular"),
-    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Debug"),
-    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Optimized"),
-    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Magical"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Regular (t+hydrate-hopper.regular)"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Debug (t+hydrate-hopper.debug)"),
+    ("/global/common/hopper2/osp/tough/esd-ptoughplusv2-science-gateway/t+hydrate-hopper.debug", "Optimized (t+hydrate-hopper.op)"),
 )
 
 

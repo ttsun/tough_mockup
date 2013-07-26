@@ -79,9 +79,9 @@ $(document).ready(function(){
                                 <td class="state">{{job.state}}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{% url 'tough.views.create_job' 'copy' job.pk %}" class="btn cp popup">Copy</a>
-                                        <a href="{% url 'tough.views.create_job' 'move' job.pk %}" class="btn mv popup">Move</a>
-                                        <a href="{% url 'tough.views.delete_job' job.pk %}" class="btn del">Delete</a>
+                                        <a href="{% url 'tough.views.create_job' type='copy' job_id=job.pk %}" class="btn cp popup">Copy</a>
+                                        <a href="{% url 'tough.views.create_job' type='move' job_id=job.pk %}" class="btn mv popup">Move</a>
+                                        <a href="{% url 'tough.views.delete_job' job_id=job.pk %}" class="btn del">Delete</a>
                                         <a href = "{% url 'tough.views.job_view' job_id=job.pk %}" class="btn">Details</a>
                                     </div>
                                 </td>

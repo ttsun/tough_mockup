@@ -101,7 +101,11 @@ function addListeners(){
 </script>
 <div class="row-fluid">    
     <div class = "span12" id = "fileform">
-        <h2 id = "title">Upload {{file_type.upper}} File</h2>
+        {% if file_type != "file" %}
+            <h2 id = "title">Upload {{file_type.upper}} File</h2>
+        {% else %}
+            <h2 id="title"> Upload File</h2>
+        {% endif %}
         {% if file_type != "infile" %}
             <select id="inputselect" placeholder="Select your MESH input method">
                 <option value = "none">None Selected</option>

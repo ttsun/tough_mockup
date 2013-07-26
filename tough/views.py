@@ -336,9 +336,9 @@ def job_edit(request, job_id):
                                   {'job_name': j.jobname, 'job_id': job_id, 'job': j},
                                   context_instance=RequestContext(request))
         else:
-        mesh = j.block_set.get(blockType__tough_name = 'mesh')
-        incon = j.block_set.get(blockType__tough_name = 'incon')
-        return render_to_response('job_edit.html',
+            mesh = j.block_set.get(blockType__tough_name = 'mesh')
+            incon = j.block_set.get(blockType__tough_name = 'incon')
+            return render_to_response('job_edit.html',
                                   {'job_name': j.jobname, 'job_id': job_id, "mesh_upload_name": mesh.upload_file_name, "mesh_elems":mesh.num_elem, "mesh_conns":mesh.num_conn,  "mesh_last_uploaded": mesh.last_uploaded, "incon_upload_name":incon.upload_file_name, "incon_last_uploaded":incon.last_uploaded, "sinks_sources_last_uploaded":j.block_set.get(blockType__tough_name='sinks_sources').last_uploaded, 'job': j},
                                   context_instance=RequestContext(request))
 

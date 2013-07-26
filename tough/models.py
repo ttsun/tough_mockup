@@ -273,6 +273,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/file/%s%s/' % (self.machine, path)
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
+
         if is_block:
             b = self.block_set.get(blockType__tough_name = filename)
             b.last_uploaded = datetime.now()

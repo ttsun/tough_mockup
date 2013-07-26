@@ -38,13 +38,17 @@ p{
     font-size:0.9em;
     padding-left:1em;
 }
-.upload-info+p{
+.upload-info{
     font-size:0.8em;
-    padding-left:2em;
+    padding-left:1em;
 }
 .others{
     width:700px;
     height:100px;
+}
+.tooltip{
+    width: 150px;
+    font-size:15px;
 }
 </style>
 <script type="text/javascript">
@@ -61,6 +65,7 @@ function parse_raw_for_varvals(blockname){
         return;
     }
     var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-\+]*)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
+    var extravarregex = /(\s*([\w\d(\)]+)\s*)/
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
     $("#" + blockname + "-comments").val("");
     for (x in lines){
@@ -73,7 +78,14 @@ function parse_raw_for_varvals(blockname){
             $("#" + name.replace("(", "\\(").replace(")","\\)")).val(line.match(varregex)[3]);
             $("#" + name.replace("(", "\\(").replace(")","\\)") + "-comments").val(comments);
         }else if(line.search(/\w+/) >= 0 && line.search(/[><]+/) < 0){
-            $("#" + blockname + "-comments").append(line);
+            if(line.search(extravarregex) == 0){
+                console.log("found a loose input");
+                $("#" + blockname + "-looseinput").val($("#"+blockname+"-looseinput").val() + line + "\n");
+            } else {
+                console.log("found a comment");
+                $("#" + blockname + "-comments").val($("#"+blockname+"-comments").val() + line + "\n");
+            }
+            
         }
     }
 }
@@ -192,7 +204,7 @@ $(document).ready(function(){
         });
         return false;
    });   
-
+    $("#upload_MESH").tooltip({delay:{show:400, hide:225}});
    $(".showhide").click(function(e){
         e.preventDefault();
         if ($(this).parent().parent().siblings().is(":hidden")){
@@ -213,6 +225,9 @@ $(document).ready(function(){
             showInputArea($(this).attr("href"));
         }
     });
+   $("#submit_job").click(function(e){
+        Alertify.log.success("Submitting Job...");
+   })
    $(".saveguided").click(function(e){
         e.preventDefault();
         recreate_raw($(this).attr("data-blockname"));
@@ -266,16 +281,22 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         {% if job_id %}
-            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10">Upload a MESH File</a>
-            <p class="upload-info">
+            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" data-toggle="tooltip" title="Current Mesh:      Elments: {{mesh_elems}}      Connections: {{mesh_conns}}">Upload a MESH File</a>
+            <p class="">
                 <strong>Last MESH upload:</strong>
             </p>
-            <p>{{mesh_last_uploaded}}</p>
+            <div class="upload-info")>
+                <p>{{mesh_last_uploaded}}</p>
+                <p><strong>Name:</strong> {{mesh_upload_name}}</p>
+            </div>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='incon' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10">Upload an INCON File</a>
-            <p class="upload-info">
+            <p class="">
                 <strong>Last INCON upload:</strong>
             </p>
-            <p>{{incon_last_uploaded}}</p>
+            <div class="upload-info">
+                <p>{{incon_last_uploaded}}</p>
+                <p><strong>Name:</strong> {{incon_upload_name}}</p>
+            </div>
             <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='sinks_sources' %}" id = "upload_incon" class = "popup btn btn-small btn-primary span10" style = "font-size:10px">Upload SINKS&SOURCES</a>
             <p class="upload-info">
                 <strong>Last SS upload:</strong>

@@ -5,6 +5,12 @@
 	var current_folder = "";
 	var intervalID;
 		$(document).ready(function(){
+			$("a").click(function(e){
+				if($(this).hasClass('disabled')){
+					e.preventDefault();
+				}
+			});
+			$(".edit_or_rerun").tooltip({delay:{show:400, hide:225}});
 			getFolder("");
 			intervalID = setInterval(function(){
 				console.log("intervaling again");
@@ -36,6 +42,7 @@
                 );
             });	
             $("#refresh").click(function(e){
+            	console.log("clicked");
             	e.preventDefault();
             	refreshInfo();
             });
@@ -43,10 +50,10 @@
 		
 		function refreshInfo(){
 			getFolder(current_folder);
+			console.log("abotut to refresh info");
 			$.get("{% url 'tough.views.ajax_get_job_info' job_id=job.pk %}", function(data){
 				if (data.success){	
-					console.log(data['job_done']);
-					if(data['job_done']){
+					if(data['job_state'] == 'completed' || data['job_state'] == 'aborted' || data['job_state'] == 'toberun'){
 						window.clearInterval(intervalID);
 					}
 					$("#time_submitted").text(data['time_submitted']);
@@ -113,7 +120,13 @@
 	<div class = "span2 well">
 		<ul class = "nav nav-list">
 			<li class="nav-header">Options</li>
+			{% if j.state == 'completed' or j.state == 'aborted' %}
+			<li class="disabled"><a class="edit_or_rerun disabled" data-toggle="tooltip" title="Rerun this job to edit inputs" href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
+			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Rerun Job</a></li>
+			{% else %}
 			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
+			<li class="disabled"><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}" data-toggle="tooltip" title="This job has not yet been run!" class="edit_or_rerun disabled">Rerun Job</a></li>
+			{% endif %}
 			<li><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Change Info</a></li>
 		   	<li><a href = "{% url 'tough.views.create_job' 'copy' job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
 			<li><a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob">Delete Job</a></li>

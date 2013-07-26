@@ -1,0 +1,26 @@
+{% extends "base.html"%}
+{% block head %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("a").click(function(e){
+				if($(this).hasClass('disabled')){
+					e.preventDefault();
+				}
+			});
+		});
+	</script>
+	<style type="text/css">
+	.rebuildform{
+
+	}
+	</style>
+{% endblock head %}
+{% block content %}
+<div class = "row-fluid">
+	<div class="rebuildform span6 offset3">
+	<p>This job has already been run, would you like to edit inputs and rerun this job? Doing so will generate a copy of this job.</p>
+	<button class="btn">Cancel</button>
+	<button class="btn btn-primary">Create Rerun Job</button>
+</div>
+</div>
+{% endblock %}

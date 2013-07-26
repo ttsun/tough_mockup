@@ -300,6 +300,8 @@ def create_job(request, job_id=None, type="new"):
                 j.emailnotifications = old_job.emailnotifications
                 j.nodemem = old_job.nodemem
                 j.save()
+                m.num_conn = old_job.block_set.get(blockType__tough_name = 'mesh').num_conn
+                m.num_elem = old_job.block_set.get(blockType__tough_name = 'mesh').num_elem
                 for block in old_job.block_set.all():
                     temp_block = j.block_set.get(blockType__pk=block.blockType.pk)
                     temp_block.content = block.content
@@ -464,6 +466,9 @@ def import_file(request, job_id, file_type):
         j.import_file(filename = file_type, from_job_id = job_from.pk)
         b = j.block_set.get(blockType__tough_name = file_type)
         b.last_uploaded = datetime.utcnow().replace(tzinfo=utc)
+        if file_type == 'mesh':
+            b.num_conn = job_from.block_set.get(blockType__tough_name = 'mesh').num_conn
+            b.num_elem = job_from.block_set.get(blockType__tough_name = 'mesh').num_elem
         b.save()
         messages.success(request, file_type.upper() + " was successfully imported from " + job_from.jobname + " and saved!")
         return HttpResponse(simplejson.dumps({"success": True, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")

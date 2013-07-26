@@ -262,7 +262,10 @@ def create_job(request, job_id=None, type="new"):
 
             # Copy over the files to the new dir, if this is an import or copy
             if srcdir:
-                j.import_files(srcdir, filelist=['incon', 'mesh'])
+                if j.edit_type == 1:
+                    j.import_files(srcdir, filelist=['incon', 'mesh'])
+                else:
+                    j.import_files(srcdir)
                 # Delete any old timestamp files and update directory in batch file
                 # running this on imports, too, in case the user imports an old nova directory
                 dir_info = j.get_dir()
@@ -272,12 +275,7 @@ def create_job(request, job_id=None, type="new"):
                 if 'completed' in filelist:
                     j.del_file('completed')
                 if 'tough.pbs' in filelist:
-                    batch_string = j.get_file('tough.pbs')
-                    d_repl = "#PBS -d " + jobdir + '\n'
-                    cd_repl = "cd " + jobdir + '\n'
-                    batch_string = re.sub(r'#PBS -d \S+\n', d_repl, batch_string)
-                    batch_string = re.sub(r'cd \S+\n', cd_repl, batch_string)
-                    j.put_file('tough.pbs', batch_string)
+                    j.put_file('tough.pbs', j.generate_batch())
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
                 j.save()
                 populate_job(j)

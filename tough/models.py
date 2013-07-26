@@ -578,7 +578,7 @@ class Job(models.Model):
         cookie_str=self.user.cookie
         url = '/command/%s/' % (self.machine)
         
-        response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/cp %s %s"'%(filestr, path) }, cookie_str=cookie_str)
+        response, content=util.newt_request(url, 'POST',  params={'executable': '/bin/bash -c "/bin/cp -r %s %s"'%(filestr, path) }, cookie_str=cookie_str)
         if response.status_code != 200:
             raise Exception(response)        
         

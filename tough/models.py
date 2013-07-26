@@ -278,6 +278,7 @@ class Job(models.Model):
         url = '/file/%s%s/' % (self.machine, path)
 
         response = util.upload_request(url=url, uploaded_file=uploaded_file, filename = filename, cookie_str=cookie_str) #problem here
+
         if filename == 'mesh':
             for chunk in uploaded_file.chunks():
                 lines = chunk.split('\n')

@@ -32,7 +32,7 @@
 		}
 
 		function validateSpecialChars(str){
-            var regex = /[^a-zA-Z0-9\_\-\)\(]/g;
+            var regex = /[^a-zA-Z0-9\_\-\)\(\s]/g;
             if(str.length == 0 || str.search(regex) != -1){
                 return false;
             }

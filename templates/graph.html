@@ -85,6 +85,7 @@
 					graphData();
 				}else{
 					dataY.splice(dataY.indexOf($(this).val()), 1);
+					console.log(colorsY.indexOf($(this).parent().attr("data-color"));
 					colorsY.splice(colorsY.indexOf($(this).parent().attr("data-color")), 1);
 					colors[$(this).parent().attr("data-color")][0] = 0;
 					$(this).parent().css('color', 'grey');

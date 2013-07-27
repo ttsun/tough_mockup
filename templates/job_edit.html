@@ -177,6 +177,9 @@ function getjobfiles(){
 }
 
 $(document).ready(function(){    
+    $(".blockinputarea").each(function(){
+        parse_raw_for_varvals($(this).attr("id"));
+    });
     $("#compset").removeClass("inputarea").addClass("inputareaactive");
     current_doc = "batch";
     $(".inputarea:not(.inputareaactive)").hide();
@@ -281,7 +284,7 @@ function showInputArea(id){
             {% endfor %}
         </ul>
         {% if job_id %}
-            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" data-toggle="tooltip" title="Current Mesh:      Elments: {{mesh_elems}}      Connections: {{mesh_conns}}">Upload a MESH File</a>
+            <a href = "{% url 'tough.views.file_upload_view' job_id=job_id file_type='mesh' %}" id = "upload_MESH" class = "popup btn btn-small btn-primary span10" data-toggle="tooltip" title="Current Mesh:      Elements: {{mesh_elems}}      Connections: {{mesh_conns}}">Upload a MESH File</a>
             <p class="">
                 <strong>Last MESH upload:</strong>
             </p>

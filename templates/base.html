@@ -13,7 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/alertify.css"/>
 	<link rel="stylesheet" type="text/css" href="/static/css/alertify.bootstrap.css"/>
 	<script type="text/javascript">
-		var TOUGH_SUBDIR = "/job"
+		var TOUGH_SUBDIR = "{% url 'tough.views.jobs' %}"
 		var csrftoken = getCookie('csrftoken');
 		function getCookie(name) {
 			var cookieValue = null;
@@ -109,7 +109,7 @@
 			<a href="/" class="brand">{{APP_NAME}}<small>WIMP</small></a>
 			<ul class="nav">
 				{% if user.is_authenticated %}
-				<li><a href="/job">Manage Jobs</a></li>
+				<li><a href="{% url 'tough.views.jobs' %}">Manage Jobs</a></li>
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Recent Jobs <b class="caret"></b></a>
 					<ul class="dropdown-menu">

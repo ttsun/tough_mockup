@@ -83,10 +83,10 @@ function showInputArea(id) {
 }
 
 function getFolder(dir) {
-    $("#file_list").html("");
     $(".loader").show();
     $.get("{% url 'tough.views.ajax_get_job_dir' job_id=job.pk %}" + dir, function(response) {
         $(".loader").hide();
+        $("#file_list").html("");
         if (response.success) {
             for (var x in response.listing) {
                 var file = response.listing[x];
@@ -137,6 +137,8 @@ function getFolder(dir) {
                 });
                 return false;
             });
+        }else{
+            $("#file_name").html("");
         }
     });
 }

@@ -66,9 +66,9 @@
 			});
 		}
 		function getFolder(dir){
-			$("#file_list").html("");
 			$(".loader").show();
 			$.get("{% url 'tough.views.ajax_get_job_dir' job_id=job.pk %}" + dir, function(response){
+				$("#file_list").html("");
 				$(".loader").hide();
 				if(response.success){
 					for(var x in response.listing){
@@ -91,6 +91,8 @@
 						}else{
 							if(file.name != ".."){
 								curr_entry.append("<td><a href='/job/{{job.pk}}/zip/"+dir+file.name+"'><i class='icon-download-alt'></i>Download .tar.gz</a></td>");
+							}else{
+								curr_entry.append("<td></td>");
 							}
 						}
 					}
@@ -110,6 +112,8 @@
 						window.open($(this).attr("href"), "", 'width=800,height=500,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1');
 						return false;
 					});
+				}else{
+					$("#file_list").html("");
 				}
 			});
 		}
@@ -128,8 +132,8 @@
 			<li class="disabled"><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}" data-toggle="tooltip" title="This job has not yet been run!" class="edit_or_rerun disabled">Rerun Job</a></li>
 			{% endif %}
 			<li><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Change Info</a></li>
-		   	<li><a href = "{% url 'tough.views.create_job' 'copy' job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
-			<li><a href = "{% url 'tough.views.delete_job' job.pk %}" id = "deljob">Delete Job</a></li>
+		   	<li><a href = "{% url 'tough.views.create_job' type='copy' job_id=job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
+			<li><a href = "{% url 'tough.views.delete_job' job_id=job.pk %}" id = "deljob">Delete Job</a></li>
 		</ul>
 	</div>
 	<div class = "span10">
@@ -144,13 +148,13 @@
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}
-					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, g:i A"}}</span></p>
+					<p ><strong>Time Submitted: </strong><span id = "time_submitted">{{job.time_submitted|date:"N j, Y, h:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_started %}
-					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started|date:"N j, Y, g:i A"}}</span></p>
+					<p><strong>Time Started: </strong><span id = "time_started">{{job.time_started|date:"N j, Y, h:i A"}}</span></p>
 				{% endif %}
 				{% if job.time_completed %}
-					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed|date:"N j, Y, g:i A"}}</span></p>
+					<p><strong>Time Completed: </strong><span id = "time_completed">{{job.time_completed|date:"N j, Y, h:i A"}}</span></p>
 				{% endif %}
 				{% if job.project %}
 					<p><strong>Project:</strong> {{job.project.name}}</p>

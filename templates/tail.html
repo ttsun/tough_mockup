@@ -123,7 +123,7 @@
 			</div>
 			<div id="button-container">				
 				<a id="scrollBot" class="btn" href="#">AutoScroll Off</a>
-				<a id="tail" class="btn btn-primary" href="/job/status/{{job_id}}/tail/{{filepath}}/">Auto Update On</a>
+				<a id="tail" class="btn btn-primary" href="{% url 'tough.views.tail_file' job_id=job_id filepath=filepath %}">Auto Update On</a>
 			</div>
 		</div>
 		<input type = "hidden" id = "current_line" value = "{{current_line}}" />

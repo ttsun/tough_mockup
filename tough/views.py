@@ -166,13 +166,13 @@ def jobs(request):
 def rebuild_job(request, job_id):
     j = get_object_or_404(Job, pk = job_id)
     j.rebuild()
-    j.block_set.get(blockType__tough_name = "mesh").reset_block_upload_times()
-    j.block_set.get(blockType__tough_name = "incon").reset_block_upload_times()
-    j.block_set.get(blockType__tough_name = "sinks_sources").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="mesh").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="incon").reset_block_upload_times()
+    j.block_set.get(blockType__tough_name="sinks_sources").reset_block_upload_times()
     messages.success(request, "%s successfully rebuilt at %s" % (j.jobname, j.jobdir))
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
-    return redirect("/job/job_setup/%d/" % j.pk)
+        return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+    return redirect("tough.views.job_edit", job_id=j.pk)
 
 
 @login_required
@@ -262,7 +262,7 @@ def create_job(request, job_id=None, type="new"):
 
             # Copy over the files to the new dir, if this is an import or copy
             if srcdir:
-                if j.edit_type == 1:
+                if int(j.edit_type) == 1:
                     j.import_files(srcdir, filelist=['incon', 'mesh'])
                 else:
                     j.import_files(srcdir)
@@ -310,8 +310,8 @@ def create_job(request, job_id=None, type="new"):
             #render default setup form
             messages.success(request, "%s successfully created at %s" % (j.jobname, j.jobdir))
             if request.is_ajax():
-                return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": "/job/job_setup/%d/" % j.pk}), content_type="application/json")
-            return redirect("/job/job_setup/%d/" % j.pk)
+                return HttpResponse(simplejson.dumps({"success": True, "job_id": j.pk, "redirect": reverse("tough.views.job_edit", kwargs={"job_id": j.pk})}), content_type="application/json")
+            return redirect("tough.views.job_edit", job_id=j.pk)
     else:
         if job_id:
             job = get_object_or_404(Job, pk=job_id)
@@ -694,9 +694,9 @@ def ajax_get_job_info(request, job_id):
     j = get_object_or_404(Job, pk=job_id)
     if j.state and j.state not in ['completed', 'aborted', 'toberun']:
         j.update()
-    time_completed = djangolocaltime(j.time_completed).strftime("%b %d, %Y, %I:%M %p") if j.time_completed else None
-    time_submitted = djangolocaltime(j.time_submitted).strftime("%b %d, %Y, %I:%M %p") if j.time_submitted else None
-    time_started = djangolocaltime(j.time_started).strftime("%b %d, %Y, %I:%M %p") if j.time_started else None
+    time_completed = djangolocaltime(j.time_completed).strftime("%B %d, %Y, %I:%M %p") if j.time_completed else None
+    time_submitted = djangolocaltime(j.time_submitted).strftime("%B %d, %Y, %I:%M %p") if j.time_submitted else None
+    time_started = djangolocaltime(j.time_started).strftime("%B %d, %Y, %I:%M %p") if j.time_started else None
     if j.state == 'completed':
         timeuse = str(j.time_completed-j.time_started)
     elif j.state == 'started':

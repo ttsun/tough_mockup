@@ -280,13 +280,9 @@ def create_job(request, job_id=None, type="new"):
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
                 j.save()
                 populate_job(j)
-                m = j.block_set.get(blockType__tough_name = "mesh")
-                m.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
-                m.save()
+                
 
-                inconblock = j.block_set.get(blockType__tough_name = "incon")
-                inconblock.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
-                inconblock.save()
+                
                 #note creation time so that sorting works
             else:
                 j.time_last_updated = datetime.utcnow().replace(tzinfo=utc)
@@ -301,8 +297,18 @@ def create_job(request, job_id=None, type="new"):
                 j.emailnotifications = old_job.emailnotifications
                 j.nodemem = old_job.nodemem
                 j.save()
+
+                inconblock = j.block_set.get(blockType__tough_name = "incon")
+                inconblock.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
+                inconblock.upload_file_name = old_job.block_set.get(blockType__tough_name = 'incon').upload_file_name
+                inconblock.save()
+
+                m = j.block_set.get(blockType__tough_name = "mesh")
+                m.last_uploaded = (datetime.utcnow().replace(tzinfo=utc))
+                m.upload_file_name = old_job.block_set.get(blockType__tough_name = 'mesh').upload_file_name
                 m.num_conn = old_job.block_set.get(blockType__tough_name = 'mesh').num_conn
                 m.num_elem = old_job.block_set.get(blockType__tough_name = 'mesh').num_elem
+                m.save()
                 for block in old_job.block_set.all():
                     temp_block = j.block_set.get(blockType__pk=block.blockType.pk)
                     temp_block.content = block.content

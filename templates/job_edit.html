@@ -59,6 +59,7 @@ var homedir;
 var scratchdir;
 var jobfiles;
 var job_id;
+var current_tab;
 
 function parse_raw_for_varvals(blockname){
     if(blockname == "title" || blockname == "rocks"){
@@ -87,9 +88,13 @@ function parse_raw_for_varvals(blockname){
             
         }
     }
+    current_tab = "guided";
 }
 
 function recreate_raw(blockname){
+    if (current_tab != 'guided'){
+        return;
+    }
     if(blockname == "title" || blockname == "rocks"){
         return;
     }
@@ -158,6 +163,7 @@ function recreate_raw(blockname){
     raw_text += " " + $($("#" + blockname + "-guided .comments")[x]).val() + "\n" + indents + "/" + "\n";
     raw_text += ">>>END of the " + blockname.toUpperCase() + " data block";
     $("#" + blockname + "-raw textarea").val(raw_text);
+    current_tab = "raw";
 }
 
 function setupBlocks(blockName){
@@ -184,6 +190,9 @@ function getjobfiles(){
 }
 
 $(document).ready(function(){    
+    $(".importinputtab").click(function(e){
+        current_tab = "import";
+    });
     $(".blockinputarea").each(function(){
         parse_raw_for_varvals($(this).attr("id"));
     });
@@ -249,6 +258,7 @@ function showInputArea(id){
     $(".inputareaactive").removeClass("inputareaactive").hide();
     current_doc = $(id).attr("id");
     $(id).addClass("inputareaactive").show();
+    current_tab = $(".inputareaactive li.active").attr("data-input-type");
     console.log($(id));
     $(".inputarea:not(.inputareaactive)").hide();
 }

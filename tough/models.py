@@ -102,7 +102,7 @@ class NoahUser(AbstractBaseUser):
         #     job.check_exists()
 
         # get the list of jobs listed in the database as running and update them.
-        dbrunning = all_jobs.filter(state__in=['in queue', 'started'])
+        dbrunning = all_jobs.filter(state__in=['in queue', 'started']).exclude(jobdir__contains='/scratch/')
         for runningjob in dbrunning: runningjob.update();
 
         # get the updated list 

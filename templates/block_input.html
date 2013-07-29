@@ -2,9 +2,9 @@
 
 <div class = "span10 inputarea blockinputarea" id = "{{block.blockType.tough_name}}">
     <ul class = "nav nav-tabs">
-        <li ><a onclick = "parse_raw_for_varvals('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
-        <li class = "active"><a onclick = "recreate_raw('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
-        <li><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
+        <li data-input-type="guided"><a onclick = "parse_raw_for_varvals('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-guided" data-toggle = "tab">Guided</a></li>
+        <li data-input-type="raw" class = "active"><a onclick = "recreate_raw('{{block.blockType.tough_name}}')" href="#{{block.blockType.tough_name}}-raw" data-toggle = "tab">Raw Text</a></li>
+        <li class="importinputtab" data-input-type="import"><a href="#{{block.blockType.tough_name}}-import" data-toggle = "tab">Import from another job</a></li>
     </ul>
     <div class = "tab-content">
         <div class = "tab-pane" id = "{{block.blockType.tough_name}}-guided">

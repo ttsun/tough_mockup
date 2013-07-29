@@ -18,17 +18,17 @@
 		var graphoptions = {{graph_options|safe}};
 		var dataX;
 		var dataXname;
-		var dataY = new Array();
+		var dataY = [];
 		var colorsY = new Array();
 		var tailing;
 		var colors = [
-					[0,'black'],
-					[0, 'blue'],
+					[0, 'black'],
+					[0, 'blue'], 
 					[0, 'green'],
 					[0, 'purple'],
 					[0, 'orange'],
-					[0, 'red']
-				]
+					[0,'red']
+					];
 
 		function taildata(){
 			$.get($("#tail").attr("href"), {'curr':currentLine}, function(data){
@@ -66,33 +66,41 @@
 				dataXname = $(this).children(":selected").attr("id");
 			});
 			$(".y_axis_check").click(function(e){
+				console.log("Starting dataY: " + dataY.length);
 				if($(this).is(":checked")){
-					dataY.push($(this).val());
-					for (var colorsindex = 0; colorsindex < colors.length; colorsindex++){
-						if (colors[colorsindex][0] == 0){
-							$(this).parent().css('color', colors[colorsindex][1]);
-							$(this).parent().attr("data-color", colorsindex);
-							colors[colorsindex][0] = 1;
-							colorsY.push(colors[colorsindex][1]);
+					if(dataY.length <= colors.length){
+						for (color in colors){
+							if (colors[color][0] == 0){
+								var datacolor = colors[color][1];
+								colors[color][0] = 1;
+								dataY.push([$(this).val(), datacolor]);
+								$(this).parent().css('color', datacolor);
+								$(this).parent().attr('data-color-index', color);
+								rescaleY();
+								$(".line").remove();
+								graphData();
+								break;
+							}
+						}
+					} else {
+						e.preventDefault();
+					}
+					// $(this).parent().attr("data-color", colors[0]);
+					
+				}else{
+					for (array in dataY){
+						if (dataY[array].indexOf($(this).val()) >= 0){
+							colors[$(this).parent().attr('data-color-index')][0] = 0;
+							dataY.splice(array, 1);
+							$(this).parent().css('color', 'grey');
+							$(".graph_"+$(this).val()).remove();
+							$(".line").remove();
+							rescaleY();
+							graphData();
 							break;
 						}
-						if(colorsindex == colors.length - 1){
-							return;
-						}	
 					}
-					rescaleY();
-					$(".line").remove();
-					graphData();
-				}else{
-					dataY.splice(dataY.indexOf($(this).val()), 1);
-					console.log(colorsY.indexOf($(this).parent().attr("data-color"));
-					colorsY.splice(colorsY.indexOf($(this).parent().attr("data-color")), 1);
-					colors[$(this).parent().attr("data-color")][0] = 0;
-					$(this).parent().css('color', 'grey');
-					$(".graph_"+$(this).val()).remove();
-					$(".line").remove();
-					rescaleY();
-					graphData();
+					
 				}
 			})
 			$("#graph_submit").click(function(e){

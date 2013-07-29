@@ -22,7 +22,7 @@ var line = d3.svg.line()
 		return xScale(d[dataX]);
 	})
 	.y(function(d){
-		return yScale(d[dataY[dataYindex]]);
+		return yScale(d[dataY[dataYindex][0]]);
 	});
 
 var svg = d3.select("body")
@@ -129,10 +129,10 @@ function graphData(){
 	while (dataYindex < dataY.length){
 		chartBody.append("svg:path")
 		.datum(graphdata)
-		.attr("class", "line graph_"+dataY[dataYindex])
+		.attr("class", "line graph_"+dataY[dataYindex][0])
 		.attr("transform", "translate(50, 0)")
 		.attr("d", line)
-		.attr("stroke", colorsY[dataYindex])
+		.attr("stroke", dataY[dataYindex][1])
 		.attr("fill", 'None')
 		dataYindex++;
 	}
@@ -144,7 +144,7 @@ function rescaleY(){
 		var minsArray = new Array();
 		for (index in dataY){
 			minsArray.push(d3.min(graphdata, function(d){
-				return d[dataY[index]];
+				return d[dataY[index][0]];
 			}));
 		}
 		console.log(minsArray);
@@ -154,7 +154,7 @@ function rescaleY(){
 		var maxArray = new Array();
 		for (index in dataY){
 			maxArray.push(d3.max(graphdata, function(d){
-				return d[dataY[index]];
+				return d[dataY[index][0]];
 			}));
 		}
 		console.log(maxArray);

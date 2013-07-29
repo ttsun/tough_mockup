@@ -1,3 +1,6 @@
+html,body{
+    height:100%;
+}
 .container{
     width:1200px;
 }
@@ -25,10 +28,39 @@
 .loader{
     display:none;
 }
+.page-wrap{
+    min-height: 100%;
+    margin-bottom: -75px;
+}
+.page-wrap:after{
+    content:"";
+    display:block;
+}
+footer, .page-wrap:after{
+    height:60px;
+}
 footer{
     text-align:center;
     font-size:0.8em;
     padding:0.5em 2em;
+    background-image: linear-gradient(bottom, rgb(255,255,255) 20%, rgb(242,242,242) 75%);
+    background-image: -o-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(242,242,242) 75%);
+    background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(242,242,242) 75%);
+    background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(242,242,242) 75%);
+    background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 20%, rgb(242,242,242) 75%);
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.2, rgb(255,255,255)),
+        color-stop(0.75, rgb(242,242,242))
+    );
+}
+footer p{
+    margin:0;
+}
+footer img{
+    height:25px;
 }
 .icon{
     width:30px;

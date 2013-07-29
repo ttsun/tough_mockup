@@ -104,6 +104,7 @@
 	{% endblock head %}
 </head>
 <body>
+	<div class="page-wrap">
 	<div class="navbar ">
 		<div class="navbar-inner">
 			<a href="/" class="brand">{{APP_NAME}}<small>WIMP</small><span class="beta">Beta</span></a>
@@ -140,19 +141,24 @@
 			</div>
 		</div>
 	</div>
-	
-	<div class="container">
-		{% block content%}
-		
-		{% endblock content%}
-	</div>
-	
+		<div class="container" id="content-container">
+			{% block content%}
+			
+			{% endblock content%}
+		</div>
 	<div id = "popupbox">
+	</div>
 	</div>
 	
 	<footer>
         <p>
-            &copy; Team Albatross<img src="/static/img/albatross.png" class="icon" alt="">, 2013. All rights reserved 
+            &copy; Team Albatross<img src="/static/img/albatross.png" class="icon" alt="">, 2013. All rights reserved
+        </p>
+        <p>
+            <a href="http://www.lbl.gov/"><img src="/static/img/doe.png" alt="Powered by NEWT"/></a>
+            <a href="http://science.energy.gov/"><img src="/static/img/lbl.png" alt="Powered by NEWT"/></a>
+            <a href="http://www.nersc.gov/"><img src="/static/img/poweredbynersc.png" alt="Powered by NERSC"/></a>
+            <a href="https://newt.nersc.gov/"><img src="/static/img/newt2.png" alt="Powered by NEWT"/></a>
         </p>
     </footer>
 </body>

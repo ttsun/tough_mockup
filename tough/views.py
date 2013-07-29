@@ -222,7 +222,6 @@ def create_job(request, job_id=None, type="new"):
         #create new job in database
         u = NoahUser.objects.get(username=request.user)
         #add a timestamp-based directory name to the path that will become jobdir
-        import ipdb; ipdb.set_trace()
         folder_name = re.sub(r"\s+", "_", request.POST['jobname']) + '_TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
         jobdir = request.POST['jobdir'] + '/' + folder_name
 

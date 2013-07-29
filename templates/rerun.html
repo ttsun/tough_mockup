@@ -16,7 +16,7 @@
 				e.preventDefault();
 				var url = $(this).attr("href");
 				Alertify.log.info("Creating a rerun copy of " + jobname);
-				$.post(url, {'job_id':job_id, 'jobname':jobname + "_rerun", 'jobdir':basedir, 'setup_type':'copy', 'machine':machine, 'edit_type':editType}, function(data){
+				$.post(url, {'job_id':job_id, 'jobname':$("#new_jobname").val(), 'jobdir':basedir, 'setup_type':'copy', 'machine':machine, 'edit_type':editType}, function(data){
 					console.log(data['redirect']);
 					window.location = data['redirect'];
 				});

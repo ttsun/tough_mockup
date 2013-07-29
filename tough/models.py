@@ -307,6 +307,7 @@ class Job(models.Model):
         content += '#PBS -l mppwidth=%d\n' % (self.numprocs)
         content += '#PBS -m %s \n' % "".join(self.emailnotifications.split(","))
         content += '#PBS -j oe\n'
+        import ipdb; ipdb.set_trace()
         content += '#PBS -d ' + self.jobdir + '\n'
         content += '#PBS -V\n\n'
         content += 'cd $PBS_O_WORKDIR\n\n'

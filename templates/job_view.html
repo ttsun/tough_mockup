@@ -124,12 +124,12 @@
 	<div class = "span2 well">
 		<ul class = "nav nav-list">
 			<li class="nav-header">Options</li>
-			{% if j.state == 'completed' or j.state == 'aborted' %}
-			<li class="disabled"><a class="edit_or_rerun disabled" data-toggle="tooltip" title="Rerun this job to edit inputs" href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
-			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Rerun Job</a></li>
-			{% else %}
+			{% if j.state == 'toberun' %}
 			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
 			<li class="disabled"><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}" data-toggle="tooltip" title="This job has not yet been run!" class="edit_or_rerun disabled">Rerun Job</a></li>
+			{% else %}
+			<li class="disabled"><a class="edit_or_rerun disabled" data-toggle="tooltip" title="Rerun this job to edit inputs" href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
+			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Rerun Job</a></li>
 			{% endif %}
 			<li><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Change Info</a></li>
 		   	<li><a href = "{% url 'tough.views.create_job' type='copy' job_id=job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>

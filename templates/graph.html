@@ -36,6 +36,9 @@
 					if(data['current_line']!=currentLine){
 						currentLine = data['current_line'];
 					}
+					for (datapoint in data['graph_data']){
+						console.log(data['graph_data'][datapoint][dataX]);
+					}
 					graphdata = graphdata.concat(data['graph_data']);
 					rescaleY();
 					rescaleX();
@@ -49,7 +52,7 @@
 			$("#y_axis_select").hide();
 			$("#y_axis_select_well").hide();
 			graphdata = {{graph_data}};
-			currentLine = 1;
+			currentLine = {{current_line}};
 			var option;
 			tailing = false;
 			for (var x in graphoptions){

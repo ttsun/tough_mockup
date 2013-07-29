@@ -2,39 +2,163 @@
 
 {% block head %}
     <style type="text/css">
-        .span3{
+        .contributor img{
+            margin:10px;
+        }
+        .contributor .row-fluid, .contributor h3{
+            text-align: center;
+        }
+        #contributors .row-fluid{
+            padding:1em;
+        }
+        #contributors h2{
+            color:green;
+            font-variant: small-caps;
+        }
+        #features h3{
             text-align: center;
         }
     </style>
 {% endblock head %}
 
 {% block content %}
+    <h1>About the Project</h1>
     <div class = "row-fluid">
-        <div class = "span9">
+        <div class = "span6">
             <h2>
-                TOUGH: Suite of Simulators for Nonisothermal Multiphase Flow and Transport in Fractured Porous Media
+                What is TOUGH?
             </h2>
             <p>
                 The TOUGH ("Transport Of Unsaturated Groundwater and Heat") suite of software codes are multi-dimensional numerical models for simulating the coupled transport of water, vapor, non-condensible gas, and heat in porous and fractured media. Developed at the Lawrence Berkeley National Laboratory (LBNL) in the early 1980s primarily for geothermal reservoir engineering, the suite of simulators is now widely used at universities, government organizations, and private industry for applications to nuclear waste disposal, environmental remediation problems, energy production from geothermal, oil and gas reservoirs as well as gas hydrate deposits, geological carbon sequestration, vadose zone hydrology, and other uses that involve coupled thermal, hydrological, geochemical, and mechanical processes in permeable media. The TOUGH suite of simulators is continually updated, with new equation-of-state (EOS) modules being developed, and refined process descriptions implemented into the TOUGH framework (see the overview of the TOUGH development history). Notably, EOS property modules for mixtures of water, NaCl, and CO2 has been developed and is widely used for the analysis of geologic carbon sequestration processes.
-                <br>
-                Karsten Pruess was presented a Lifetime Achievement Award for Development of the TOUGH Codes on Tuesday, September 18th at the 2012 TOUGH Symposium in Berkeley, CA.
-            </p>
+             </p>
         </div>
-        <div class = "span3">
-            <img src="http://lorempixel.com/300/300/cats"/>
+        <div class="span6">
+            <h2>What does TOUGH-WIMP do?</h2>
+            <p>
+                3D simulations are becoming increasingly important for the geosciences. Parallel simulation codes are needed in order to obtain crucial answers for 3D problems, but it remains difficult to run these codes. To make parallel simulations easier for researchers interested in modeling 3D environments, we present the TOUGH-WIMP (TOUGH Web Interface for Massive Parallelism). TOUGH-WIMP moves TOUGH+ input and simulation management away from command line into a user-friendly web-based system that allows users to create and run simulation jobs on NERSC’s Hopper supercomputer, maximizing input simplicity while minimizing command line confusion. We will demonstrate how to use TOUGH-WIMP’s block-based job creation system, as well as how to import existing input files and meshes, how to follow output files through raw text and graphs as they run, and how to extract output files from completed simulations.
+            </p>
+            <p>
+                <a href="#features">Full Feature List</a>
+            </p>
         </div>
     </div>
-    <div class = "row-fluid">
-        <div class = "span3">
-            <img src="http://lorempixel.com/300/300/animals"/>
+    <hr>
+    <div id="features" class='container-fluid'>
+        <h2>Features</h2>
+        <div class="row-fluid feature">
+            <div class="span10 offset1">
+                <h3>Feature name</h3>
+                <p>
+                    This is a feature description...
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Declinare firmissimum extremo easque reici incidunt commemorandis, ludicra alios consilia incorruptis suam posse scriptum theophrastus harum, utrumvis sibi apte omnium oratione requirere conciliant, putanda abest variari philosophiae mentitum sicut amorem me, mutae nisi. Aequo meminerunt poterimus erat interpretum necessitatibus animadversionis vexetur, cruciantur temeritas delectatum testibus chorusque. Sapientiam monet perpauca timorem inanium philosophi, pariant copulationes corrupisti insolens usus censes via corrigere fungimur finibus, fit desideret conveniunt vulgo oportet nemini suscipiantur dicam dicantur, commodi.
+                </p>
+            </div>
         </div>
-        <div class = "span9">
-            <h2>
-                Person 1
-            </h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nec eros justo. Proin at lacus vel arcu iaculis pretium. Quisque in rutrum nibh, ut luctus orci. Ut dictum fringilla lacus sed tempor. Suspendisse nec aliquam nunc. Aenean a elit id ipsum varius faucibus non a sapien. Duis posuere ante a velit lacinia laoreet. Donec ullamcorper risus lobortis diam scelerisque, in consectetur ipsum adipiscing. Duis in augue eget enim mollis sollicitudin. Integer sodales nisi risus, sed ornare diam pretium sit amet. Cras ut libero ut lorem faucibus cursus in eget orci. Nulla sagittis rhoncus augue vel elementum. Aenean et mattis odio. Morbi laoreet semper nunc, at condimentum enim ultrices in. Donec id orci quam. Praesent consectetur, justo ac faucibus tempus, quam quam suscipit augue, quis fringilla leo nunc nec nunc.
-            </p>
+        <div class="row-fluid feature">
+            <div class="span10 offset1">
+                <h3>Feature name</h3>
+                <p>
+                    This is a feature description...
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Declinare firmissimum extremo easque reici incidunt commemorandis, ludicra alios consilia incorruptis suam posse scriptum theophrastus harum, utrumvis sibi apte omnium oratione requirere conciliant, putanda abest variari philosophiae mentitum sicut amorem me, mutae nisi. Aequo meminerunt poterimus erat interpretum necessitatibus animadversionis vexetur, cruciantur temeritas delectatum testibus chorusque. Sapientiam monet perpauca timorem inanium philosophi, pariant copulationes corrupisti insolens usus censes via corrigere fungimur finibus, fit desideret conveniunt vulgo oportet nemini suscipiantur dicam dicantur, commodi.
+                </p>
+            </div>
+        </div>
+        <div class="row-fluid feature">
+            <div class="span10 offset1">
+                <h3>Feature name</h3>
+                <p>
+                    This is a feature description...
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Declinare firmissimum extremo easque reici incidunt commemorandis, ludicra alios consilia incorruptis suam posse scriptum theophrastus harum, utrumvis sibi apte omnium oratione requirere conciliant, putanda abest variari philosophiae mentitum sicut amorem me, mutae nisi. Aequo meminerunt poterimus erat interpretum necessitatibus animadversionis vexetur, cruciantur temeritas delectatum testibus chorusque. Sapientiam monet perpauca timorem inanium philosophi, pariant copulationes corrupisti insolens usus censes via corrigere fungimur finibus, fit desideret conveniunt vulgo oportet nemini suscipiantur dicam dicantur, commodi.
+                </p>
+            </div>
+        </div>
+        <div class="row-fluid feature">
+            <div class="span10 offset1">
+                <h3>Feature name</h3>
+                <p>
+                    This is a feature description...
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Declinare firmissimum extremo easque reici incidunt commemorandis, ludicra alios consilia incorruptis suam posse scriptum theophrastus harum, utrumvis sibi apte omnium oratione requirere conciliant, putanda abest variari philosophiae mentitum sicut amorem me, mutae nisi. Aequo meminerunt poterimus erat interpretum necessitatibus animadversionis vexetur, cruciantur temeritas delectatum testibus chorusque. Sapientiam monet perpauca timorem inanium philosophi, pariant copulationes corrupisti insolens usus censes via corrigere fungimur finibus, fit desideret conveniunt vulgo oportet nemini suscipiantur dicam dicantur, commodi.
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class='container-fluid' id="contributors">        
+        <h2>Developers</h2>
+        <div class = "row-fluid well" id="developers">
+            <div class="span4 contributor">
+                <div class="row-fluid">
+                    <img src="http://lorempixel.com/150/150/people/"/>
+                </div>
+                <h3>
+                    James Ren
+                </h3>
+                <p>
+                    is a 17-year-old rising freshman at UC Berkeley, intending to major in physics with a minor in computer science. This is his first year working at NERSC and last summer he gained some TOUGH experience working with TOUGHREACT. He wants to continue working with computing in science. 
+                </p>
+            </div>
+            <div class="span4 contributor">
+                <div class="row-fluid">
+                    <img src="http://lorempixel.com/150/150/animals/"/>
+                </div>
+                <h3>
+                    Terence Sun
+                </h3>
+                <p>
+                    Terence is in the undergraduate class of 2017 at Carnegie Mellon University in Pittsburgh, PA studying Electrical and Computer Engineering. In the summer of 2013, Terence worked at NERSC to help create TOUGH-WIMP.
+                </p>
+            </div>
+            <div class="span4 contributor">
+                <div class="row-fluid">
+                    <img src="http://lorempixel.com/150/150/food/"/>
+                </div>
+                <h3>
+                    Tony Wang
+                </h3>
+                <p>
+                    is a 17 year old high school graduate going undeclared to UC Berkeley.
+                </p>
+            </div>
+        </div>
+        <h2>The Supervisors</h2>
+        <div class = "container-fluid well" id="mentors">
+            <div class="row-fluid">                
+                <div class="span4 contributor">
+                    <h3>
+                        Annette Greiner
+                    </h3>
+                </div>
+                <div class="span4 contributor">
+                    <h3>
+                        Noel Keen
+                    </h3>
+                </div>
+                <div class="span4 contributor">
+                    <h3>
+                        Jeffrey Johnson
+                    </h3>
+                </div>
+            </div>
+            <div class = "row-fluid">
+                <div class="span4 contributor">
+                    <h3>
+                        David Skinner
+                    </h3>
+                </div>
+                <div class="span4 contributor">
+                    <h3>
+                        Shreyas Cholia
+                    </h3>
+                </div>
+            </div>            
         </div>
     </div>
 {% endblock content %}

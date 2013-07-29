@@ -70,7 +70,8 @@ def view_graph(request, job_id, filepath):
     content = job.tail_file(filepath = filepath, fromlinenumber = 0)
     newcontent = json.loads(content)['output']
     totallines = newcontent.split('\n')
-    if len(totallines) > 2:
+    current_line = len(totallines)
+    if current_line > 2:
         graphable = True
     else:
         graphable = False
@@ -88,7 +89,7 @@ def view_graph(request, job_id, filepath):
         for datum in row:
             data.append(float(datum))
         graph_data.append(data)
-    return render_to_response("graph.html", {"success": True, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
+    return render_to_response("graph.html", {"success": True, "current_line": current_line, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -221,6 +222,7 @@ def create_job(request, job_id=None, type="new"):
         #create new job in database
         u = NoahUser.objects.get(username=request.user)
         #add a timestamp-based directory name to the path that will become jobdir
+        import ipdb; ipdb.set_trace()
         folder_name = re.sub(r"\s+", "_", request.POST['jobname']) + '_TOUGH_' + strftime("%Y%b%d-%H%M%S", localtime())
         jobdir = request.POST['jobdir'] + '/' + folder_name
 

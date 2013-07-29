@@ -218,7 +218,8 @@ class Job(models.Model):
     # 0: No guided blocks view
     # 1: Guided blocks view
 
-    
+    class Meta:
+        ordering = ['-time_last_updated']
     def create_dir(self):
         # TODO: add kwargs for dir
         cookie_str=self.user.cookie
@@ -306,6 +307,7 @@ class Job(models.Model):
         content += '#PBS -l mppwidth=%d\n' % (self.numprocs)
         content += '#PBS -m %s \n' % "".join(self.emailnotifications.split(","))
         content += '#PBS -j oe\n'
+        import ipdb; ipdb.set_trace()
         content += '#PBS -d ' + self.jobdir + '\n'
         content += '#PBS -V\n\n'
         content += 'cd $PBS_O_WORKDIR\n\n'

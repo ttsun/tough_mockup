@@ -54,9 +54,9 @@
         .pages a.active:hover{
             text-decoration:none;
         }
-        .edit-btn{
+        .pages{
             float:right;
-            padding:0 10px;
+            padding:0 1em;
         }
         .pages:before{
             content:"Page: ";
@@ -167,12 +167,14 @@
                     function(){
                         Alertify.dialog.confirm("Do you want to delete the associated job files?", 
                             function(){
+                                Alertify.log.info("Deleting selected jobs and files on HPC...");
                                 $.post(url, {files: true, job_ids: JSON.stringify(selectedjobs)}, function(data){
                                     window.location.reload();
                                     return false;
                                 });
                             }, 
                             function(){
+                                Alertify.log.info("Deleting selected jobs, but keeping files on HPC...");
                                 $.post(url, {job_ids:selectedjobs}, function(data){
                                     window.location.reload();
                                     return false;
@@ -342,7 +344,7 @@
                 {% for project in user.get_projects %}
                     <tbody id="project-{{project.pk}}" class = "project">
                         <tr class="project-name">
-                            <th colspan="5"><i class = "icon-chevron-down project_header open"></i> <strong>{{project.name}} |</strong> <span class="pages"></span><a class="edit-btn" href="{% url 'tough.views.project_view' project_id=project.pk %}"><small>Edit Project</small></a></th>
+                            <th colspan="5"><i class = "icon-chevron-down project_header open"></i> <strong>{{project.name}} | </strong><a class="edit-btn" href="{% url 'tough.views.project_view' project_id=project.pk %}"><small>Edit Project</small></a> <span class="pages"></span></th>
                         </tr>   
                         {% for job in project.job_set.all %}
                             {% if job.exists %}
@@ -367,7 +369,7 @@
                 <tbody id="project-ungrouped" class = "project">
                     {% if user.get_orphan_jobs %}
                     <tr class="project-name">
-                        <th colspan="5"><i class = "icon-chevron-down project_header open"></i>Ungrouped | <span class="pages"></span></th>
+                        <th colspan="5"><i class = "icon-chevron-down project_header open"></i>Ungrouped <span class="pages"></span></th>
                     </tr>
                     {% endif %}
                     {% for job in user.get_orphan_jobs %}

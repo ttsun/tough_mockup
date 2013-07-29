@@ -64,13 +64,12 @@ function parse_raw_for_varvals(blockname){
     if(blockname == "title" || blockname == "rocks"){
         return;
     }
-    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-\+]*)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=]*)/;
+    var varregex = /(?:&([\w\d\(\)]+)\s*){0,1}([\w\(\)\d]+)\s*=\s*([\w\d\'\.\-\+\s]*)[,\s]\s*\!{0,1}([\s\w\d\.\:\'\,\=><;]*)/;
     var extravarregex = /(\s*([\w\d(\)]+)\s*)/
     var lines = $("#"+blockname+"-raw").find("textarea").val().split("\n");
     $("#" + blockname + "-comments").val("");
     for (x in lines){
         line = lines[x];
-        console.log(line.search(varregex));
         if(line.search(varregex) >= 0){
             console.log("matched" + line.match(varregex)[2].toLowerCase().trim());
             var name = line.match(varregex)[2].toLowerCase().trim();
@@ -104,7 +103,6 @@ function recreate_raw(blockname){
         console.log("first comment if entered");
         raw_text += "! " + $("#" + blockname + "-comments").val() + "\n";
     }
-    console.log(raw_text);
     for(var x = 0; x <= $("#" + blockname + "-guided .varvals").length; x++){
         if (x == $("#" + blockname + "-guided .varvals").length){
             indents = "";
@@ -133,22 +131,31 @@ function recreate_raw(blockname){
                 for(var y = 0; y < num_indents; y++){
                     indents += " ";
                 }
-                    raw_text += indents + "/" + "\n";
+                raw_text = raw_text.slice(0,raw_text.lastIndexOf(","));
+                raw_text += " " + $($("#" + blockname + "-guided .comments")[x]).val() + "\n" + indents + "/" + "\n";
             }
-                raw_text += "&" + name_list + "  ";
-                var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
+            raw_text += "&" + name_list + "  ";
+            var varname = "    " + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
         }
         else{
             var varname = indents + $($("#" + blockname + "-guided .varvals")[x]).attr('id');
         }
         var varval = $($("#" + blockname + "-guided .varvals")[x]).val();
         var comment = $($("#" + blockname + "-guided .comments")[x]).val();
+        var varcommented = $($("#" + blockname + "-guided .varvals")[x]).attr("disabled");
         if(comment){
             console.log("second comment if entered");
             comment = "! " + comment;
         }
-        raw_text += varname + " = " + varval + ", " + comment + "\n";
+        if(varcommented == "disabled"){
+            raw_text += "! " + varname + " = " + varval + ", " + comment + "\n";
+        }
+        else{
+            raw_text += varname + " = " + varval + ", " + comment + "\n";
+        }
     }
+    raw_text = raw_text.slice(0,raw_text.lastIndexOf(","));
+    raw_text += " " + $($("#" + blockname + "-guided .comments")[x]).val() + "\n" + indents + "/" + "\n";
     raw_text += ">>>END of the " + blockname.toUpperCase() + " data block";
     $("#" + blockname + "-raw textarea").val(raw_text);
 }

@@ -56,6 +56,7 @@
 					if(data['job_state'] == 'completed' || data['job_state'] == 'aborted' || data['job_state'] == 'toberun'){
 						window.clearInterval(intervalID);
 					}
+					$("#job_status").text(capsfirst(data['job_state']));
 					$("#time_submitted").text(data['time_submitted']);
 					$("#time_started").text(data['time_started']);
 					$("#time_completed").text(data['time_completed']);
@@ -64,6 +65,11 @@
 					}
 				}
 			});
+		}
+		function capsfirst(word){
+			var first = word.substring(0, 1);
+			first = first.toUpperCase();
+			return first + word.substring(1);
 		}
 		function getFolder(dir){
 			$(".loader").show();
@@ -124,12 +130,12 @@
 	<div class = "span2 well">
 		<ul class = "nav nav-list">
 			<li class="nav-header">Options</li>
-			{% if j.state == 'completed' or j.state == 'aborted' %}
-			<li class="disabled"><a class="edit_or_rerun disabled" data-toggle="tooltip" title="Rerun this job to edit inputs" href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
-			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Rerun Job</a></li>
-			{% else %}
+			{% if j.state == 'toberun' %}
 			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
 			<li class="disabled"><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}" data-toggle="tooltip" title="This job has not yet been run!" class="edit_or_rerun disabled">Rerun Job</a></li>
+			{% else %}
+			<li class="disabled"><a class="edit_or_rerun disabled" data-toggle="tooltip" title="Rerun this job to edit inputs" href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Edit Input</a></li>
+			<li><a href = "{% url 'tough.views.job_edit' job_id=job.pk %}">Rerun Job</a></li>
 			{% endif %}
 			<li><a class="popup" href="{% url 'tough.views.info_edit' job_id=job.pk %}">Change Info</a></li>
 		   	<li><a href = "{% url 'tough.views.create_job' type='copy' job_id=job.pk%}" id = "copyjob" class = "popup">Copy Job</a></li>
@@ -144,7 +150,7 @@
 				<p><strong>System:</strong> Hopper</p>
 				<p><strong>Job Directory:</strong> {{jobdir}}</p>
 				<p><strong>Number of Processors:</strong> {{job.numprocs}}</p>		
-				<p><strong>Job Status:</strong> {{job.state | capfirst}}</p>
+				<p><strong>Job Status:</strong> <span id = "job_status">{{job.state | capfirst}}</span></p>
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}

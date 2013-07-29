@@ -70,7 +70,8 @@ def view_graph(request, job_id, filepath):
     content = job.tail_file(filepath = filepath, fromlinenumber = 0)
     newcontent = json.loads(content)['output']
     totallines = newcontent.split('\n')
-    if len(totallines) > 2:
+    current_line = len(totallines)
+    if current_line > 2:
         graphable = True
     else:
         graphable = False
@@ -88,7 +89,7 @@ def view_graph(request, job_id, filepath):
         for datum in row:
             data.append(float(datum))
         graph_data.append(data)
-    return render_to_response("graph.html", {"success": True, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
+    return render_to_response("graph.html", {"success": True, "current_line": current_line, "graphable": graphable, "job_id": job.pk, "filepath": filepath, "file_content": content, "title": "View file: " + filepath[filepath.rstrip("/").rfind("/")+1:], "graph_options": graph_options, "graph_data": graph_data}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -330,7 +331,7 @@ def populate_job(job):
 @login_required
 def job_edit(request, job_id):
     j = get_object_or_404(Job, id=int(job_id))
-    if j.state and j.state in ['completed', 'aborted', 'started', 'submitted']:
+    if j.state and j.state in ['completed', 'aborted', 'started', 'in queue']:
         return render_to_response('rerun.html', {"job":j}, context_instance=RequestContext(request))
     else:
         if j.edit_type != 1:
@@ -792,7 +793,7 @@ def ajax_run_job(request, job_id):
             raise Exception(errors)
 
     else:
-        content = 'job already submitted'
+        content = 'job already in queue'
         return HttpResponse(content, content_type='text/plain')
 
 

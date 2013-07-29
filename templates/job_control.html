@@ -167,12 +167,14 @@
                     function(){
                         Alertify.dialog.confirm("Do you want to delete the associated job files?", 
                             function(){
+                                Alertify.log.info("Deleting selected jobs and files on HPC...");
                                 $.post(url, {files: true, job_ids: JSON.stringify(selectedjobs)}, function(data){
                                     window.location.reload();
                                     return false;
                                 });
                             }, 
                             function(){
+                                Alertify.log.info("Deleting selected jobs, but keeping files on HPC...");
                                 $.post(url, {job_ids:selectedjobs}, function(data){
                                     window.location.reload();
                                     return false;

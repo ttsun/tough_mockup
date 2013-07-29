@@ -5,6 +5,8 @@
     float:right;
     font-size: 20px;
     padding:10px 20px 10px;
+}
+.login a{
     text-decoration: none;
 }
 .login:hover{

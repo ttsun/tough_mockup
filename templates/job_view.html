@@ -56,6 +56,7 @@
 					if(data['job_state'] == 'completed' || data['job_state'] == 'aborted' || data['job_state'] == 'toberun'){
 						window.clearInterval(intervalID);
 					}
+					$("#job_status").text(capsfirst(data['job_state']));
 					$("#time_submitted").text(data['time_submitted']);
 					$("#time_started").text(data['time_started']);
 					$("#time_completed").text(data['time_completed']);
@@ -64,6 +65,11 @@
 					}
 				}
 			});
+		}
+		function capsfirst(word){
+			var first = word.substring(0, 1);
+			first = first.toUpperCase();
+			return first + word.substring(1);
 		}
 		function getFolder(dir){
 			$(".loader").show();
@@ -144,7 +150,7 @@
 				<p><strong>System:</strong> Hopper</p>
 				<p><strong>Job Directory:</strong> {{jobdir}}</p>
 				<p><strong>Number of Processors:</strong> {{job.numprocs}}</p>		
-				<p><strong>Job Status:</strong> {{job.state | capfirst}}</p>
+				<p><strong>Job Status:</strong> <span id = "job_status">{{job.state | capfirst}}</span></p>
 			</div>
 			<div class="span6">				
 				{% if job.time_submitted %}

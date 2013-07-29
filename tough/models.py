@@ -102,7 +102,7 @@ class NoahUser(AbstractBaseUser):
         #     job.check_exists()
 
         # get the list of jobs listed in the database as running and update them.
-        dbrunning = all_jobs.filter(state__in=['submitted', 'started'])
+        dbrunning = all_jobs.filter(state__in=['in queue', 'started'])
         for runningjob in dbrunning: runningjob.update();
 
         # get the updated list 
@@ -182,7 +182,7 @@ class Job(models.Model):
     # field to keep track of the job's state from Nova's point of view
     NOVA_STATE_CHOICES = (
                          ('toberun', 'to be run but not yet queued'),
-                         ('submitted', 'in a queue'),
+                         ('in queue', 'in a queue'),
                          ('started', 'running on a nersc machine'),
                          ('aborted', 'started and no longer running but did not run to completion'),
                          ('completed', 'completed or stopped'),
@@ -307,7 +307,6 @@ class Job(models.Model):
         content += '#PBS -l mppwidth=%d\n' % (self.numprocs)
         content += '#PBS -m %s \n' % "".join(self.emailnotifications.split(","))
         content += '#PBS -j oe\n'
-        import ipdb; ipdb.set_trace()
         content += '#PBS -d ' + self.jobdir + '\n'
         content += '#PBS -V\n\n'
         content += 'cd $PBS_O_WORKDIR\n\n'
@@ -662,7 +661,7 @@ class Job(models.Model):
         self.time_submitted=datetime.utcnow().replace(tzinfo=utc)
         #self.time_started=NULL
         #self.time_completed=NULL
-        self.state = 'submitted'
+        self.state = 'in queue'
         self.save()
         return self
     
@@ -699,7 +698,7 @@ class Job(models.Model):
         >>> j.update()
         """        
         if (self.pbsjob_id==''):
-            raise Exception("Job must be submitted before you can update")
+            raise Exception("Job must be in queue before you can update")
         
         cookie_str=self.user.cookie
         

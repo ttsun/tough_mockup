@@ -31,3 +31,7 @@ footer{
 .icon{
     width:30px;
 }
+.beta{
+    color:red;
+    font-size: 0.6em;
+}

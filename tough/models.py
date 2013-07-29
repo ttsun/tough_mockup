@@ -218,7 +218,8 @@ class Job(models.Model):
     # 0: No guided blocks view
     # 1: Guided blocks view
 
-    
+    class Meta:
+        ordering = ['-time_last_updated']
     def create_dir(self):
         # TODO: add kwargs for dir
         cookie_str=self.user.cookie
